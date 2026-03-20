@@ -1,0 +1,124 @@
+.container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── Column Clues ────────────────────────────────────── */
+
+.colCluesRow {
+  display: flex;
+  margin-left: auto;
+}
+
+.colClue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 4px 0 6px;
+}
+
+/* ── Grid Rows ───────────────────────────────────────── */
+
+.gridRow {
+  display: flex;
+  align-items: center;
+}
+
+/* ── Row Clues ───────────────────────────────────────── */
+
+.rowClue {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding-right: 8px;
+}
+
+/* ── Individual Clue Numbers ─────────────────────────── */
+
+.clueNumber {
+  font-family: var(--font-clue);
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: var(--color-dark);
+  line-height: 1;
+  min-width: 14px;
+  text-align: center;
+}
+
+/* ── Cells ───────────────────────────────────────────── */
+
+.cell {
+  min-width: 30px;
+  min-height: 30px;
+  max-width: 40px;
+  max-height: 40px;
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--color-white);
+  border: 1px solid var(--color-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.cell:hover {
+  background: var(--color-pink-light);
+  border-color: var(--color-pink);
+}
+
+/* ── Cell States ─────────────────────────────────────── */
+
+.filled {
+  background: var(--color-dark);
+  border-color: var(--color-dark);
+}
+
+.filled:hover {
+  background: var(--color-dark);
+  border-color: var(--color-dark);
+  opacity: 0.85;
+}
+
+.crossed {
+  background: var(--color-white);
+}
+
+.xMark {
+  width: 14px;
+  height: 14px;
+  stroke: var(--color-pink);
+  stroke-width: 2.5px;
+  stroke-linecap: round;
+}
+
+/* ── Thick Borders (every 5 cells) ───────────────────── */
+
+.thickRight {
+  border-right: 2px solid var(--color-dark);
+}
+
+.thickBottom {
+  border-bottom: 2px solid var(--color-dark);
+}
+
+/* ── Completion State ────────────────────────────────── */
+
+.completed {
+  box-shadow: 0 0 24px rgba(116, 191, 4, 0.3);
+  border-radius: var(--radius-md);
+}
+
+.completed .cell {
+  pointer-events: none;
+}

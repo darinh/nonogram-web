@@ -1,0 +1,103 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-light);
+  background: var(--color-white);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.toolButton:hover {
+  border-color: var(--color-pink);
+  color: var(--color-pink);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.active {
+  background: var(--color-pink);
+  color: var(--color-white);
+  border-color: var(--color-pink);
+  box-shadow: var(--shadow-pink);
+}
+
+.active:hover {
+  background: var(--color-pink);
+  color: var(--color-white);
+  border-color: var(--color-pink);
+  transform: translateY(-1px);
+}
+
+.active .icon {
+  fill: var(--color-white);
+  stroke: var(--color-white);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: var(--color-dark);
+  stroke: var(--color-dark);
+  transition:
+    fill var(--transition),
+    stroke var(--transition);
+}
+
+.toolButton:hover .icon {
+  fill: var(--color-pink);
+  stroke: var(--color-pink);
+}
+
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-light);
+  background: var(--color-white);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.resetButton:hover {
+  border-color: var(--color-orange);
+  color: var(--color-orange);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}

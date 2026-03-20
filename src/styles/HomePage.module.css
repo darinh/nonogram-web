@@ -1,0 +1,103 @@
+.hero {
+  text-align: center;
+  padding: 64px 24px 48px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 3rem;
+  color: var(--color-pink);
+  text-shadow: 0 2px 12px rgba(242, 5, 116, 0.15);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.125rem;
+  color: var(--color-dark);
+  opacity: 0.7;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ── Featured Section ────────────────────────────────── */
+
+.featuredSection {
+  max-width: 480px;
+  margin: 32px auto;
+}
+
+/* ── Navigation Actions ──────────────────────────────── */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+/* ── Continue Section ────────────────────────────────── */
+
+.continueSection {
+  max-width: 720px;
+  margin: 48px auto 0;
+}
+
+.continueSection h2 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-dark);
+  margin-bottom: 16px;
+}
+
+/* ── Action Buttons ──────────────────────────────────── */
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
+
+.actionButton:hover {
+  transform: translateY(-2px);
+}
+
+.actionButtonPrimary {
+  composes: actionButton;
+  background: var(--color-pink);
+  color: var(--color-white);
+  border: none;
+  box-shadow: var(--shadow-pink);
+}
+
+.actionButtonPrimary:hover {
+  box-shadow: 0 6px 24px rgba(242, 5, 116, 0.3);
+}
+
+.actionButtonSecondary {
+  composes: actionButton;
+  background: var(--color-white);
+  color: var(--color-blue);
+  border: 2px solid var(--color-blue);
+}
+
+.actionButtonSecondary:hover {
+  background: var(--color-blue-light);
+  box-shadow: var(--shadow-sm);
+}

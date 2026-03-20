@@ -1,0 +1,119 @@
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--color-light);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Difficulty Borders ──────────────────────────────── */
+
+.easy {
+  border-left-color: var(--color-pink);
+}
+
+.medium {
+  border-left-color: var(--color-blue);
+}
+
+.hard {
+  border-left-color: var(--color-orange);
+}
+
+/* ── Header ──────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.size {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: var(--color-blue);
+  background: var(--color-blue-light);
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Status ──────────────────────────────────────────── */
+
+.status {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.completed {
+  color: var(--color-green);
+}
+
+.inProgress {
+  color: var(--color-yellow);
+}
+
+.notStarted {
+  color: var(--color-light);
+}
+
+/* ── Badges & Actions ────────────────────────────────── */
+
+.sourceBadge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: var(--color-dark);
+  border: 1.5px solid var(--color-light);
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.exportButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--color-dark);
+  border: 1.5px solid var(--color-light);
+  background: var(--color-white);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.exportButton:hover {
+  border-color: var(--color-blue);
+  color: var(--color-blue);
+}

@@ -1,0 +1,70 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Nav Bar ─────────────────────────────────────────── */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--color-pink);
+  margin-right: auto;
+  letter-spacing: -0.02em;
+}
+
+.navLink {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  transition:
+    background var(--transition),
+    color var(--transition),
+    transform var(--transition);
+  cursor: pointer;
+}
+
+.navLink:hover {
+  background: var(--color-pink-light);
+  color: var(--color-pink);
+  transform: scale(1.05);
+}
+
+.navLinkActive {
+  composes: navLink;
+  background: var(--color-pink);
+  color: var(--color-white);
+}
+
+.navLinkActive:hover {
+  background: var(--color-pink);
+  color: var(--color-white);
+  transform: scale(1.05);
+}
+
+/* ── Content Area ────────────────────────────────────── */
+
+.content {
+  flex: 1;
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
