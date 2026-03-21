@@ -1,0 +1,52 @@
+# Dev-Team Organizational Structure
+# Maintained by: hiring-manager (sole writer)
+# Readable by: all agents
+
+team:
+  name: "Dev Team"
+  version: 1
+  operator: "operator"
+  hiring_manager: "hiring-manager"
+  project_manager: "project-manager"
+
+  agents:
+    - name: "operator"
+      role: "Operator"
+      domain: "Team operations and state queries"
+      reports_to: null
+      status: active
+      skills:
+        - "Cross-agent state queries"
+        - "Truth-verified reporting"
+
+    - name: "project-manager"
+      role: "Project Manager"
+      domain: "Requirements, planning, brainstorming"
+      reports_to: null
+      status: active
+      skills:
+        - "Requirements elicitation"
+        - "Project decomposition"
+        - "Brainstorming facilitation"
+
+    - name: "hiring-manager"
+      role: "Hiring Manager"
+      domain: "Agent creation, onboarding, team structure"
+      reports_to: "project-manager"
+      status: active
+      skills:
+        - "Agent design and creation"
+        - "Organizational structure management"
+
+    - name: "tech-lead"
+      role: "Tech Lead"
+      domain: "Work quality, retrospectives, agent probation"
+      reports_to: null
+      status: active
+      skills:
+        - "Work quality assessment"
+        - "Failure pattern analysis"
+        - "Retrospective facilitation"
+
+  divisions: []
+  v_teams: []
