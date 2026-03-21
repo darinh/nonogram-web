@@ -94,9 +94,14 @@ export default function GamePage() {
             <span className={styles.checkMark}>✓</span>
             <h2>Puzzle Complete!</h2>
             <p>Great job solving "{game.puzzle.title}"!</p>
-            <button className={styles.continueButton} onClick={() => navigate('/puzzles')}>
-              More Puzzles
-            </button>
+            <div className={styles.completionButtons}>
+              <button className={styles.playAgainButton} onClick={game.resetGrid}>
+                Play Again
+              </button>
+              <button className={styles.continueButton} onClick={() => navigate('/puzzles')}>
+                More Puzzles
+              </button>
+            </div>
           </div>
         </div>
       )}

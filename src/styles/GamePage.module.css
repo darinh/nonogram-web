@@ -140,6 +140,57 @@
   background: var(--color-green);
 }
 
+/* ── Completion Buttons ──────────────────────────────── */
+
+.completionButtons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: center;
+}
+
+.playAgainButton {
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-pink);
+  background: var(--color-pink);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-white);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.playAgainButton:hover {
+  background: #d1046a;
+  transform: translateY(-2px);
+}
+
+.continueButton {
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-light);
+  background: var(--color-white);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark);
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.continueButton:hover {
+  border-color: var(--color-blue);
+  color: var(--color-blue);
+  transform: translateY(-2px);
+}
+
 /* ── Animations ──────────────────────────────────────── */
 
 @keyframes fadeIn {
