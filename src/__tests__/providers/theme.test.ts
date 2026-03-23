@@ -4,9 +4,10 @@ import { StaticThemeProvider } from '../../providers/theme/StaticThemeProvider';
 describe('StaticThemeProvider', () => {
   const provider = new StaticThemeProvider();
 
-  it('returns empty array when no themes are bundled', async () => {
+  it('returns bundled themes', async () => {
     const themes = await provider.getAllThemes();
-    expect(themes).toEqual([]);
+    expect(themes.length).toBeGreaterThan(0);
+    expect(themes[0].id).toBe('nature');
   });
 
   it('returns null for unknown theme id', async () => {

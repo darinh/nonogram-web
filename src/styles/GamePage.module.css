@@ -99,28 +99,28 @@
 }
 
 .badgeBlue {
-  background: var(--color-blue);
-  color: var(--color-white);
+  background: #0597F2;
+  color: white;
 }
 
 .badgeGreen {
-  background: var(--color-green);
-  color: var(--color-white);
+  background: #74BF04;
+  color: white;
 }
 
 .badgeYellow {
   background: #BFA004;
-  color: var(--color-white);
+  color: white;
 }
 
 .badgeOrange {
-  background: var(--color-orange);
-  color: var(--color-white);
+  background: #F28705;
+  color: white;
 }
 
 .badgeRed {
-  background: var(--color-pink);
-  color: var(--color-white);
+  background: #F20574;
+  color: white;
 }
 
 /* ── Game Area ───────────────────────────────────────── */
@@ -175,11 +175,11 @@
 }
 
 .confetti:nth-child(odd) {
-  background: var(--color-pink);
+  background: #F20574;
 }
 
 .confetti:nth-child(even) {
-  background: var(--color-blue);
+  background: #0597F2;
 }
 
 .confetti:nth-child(3n) {
@@ -187,7 +187,7 @@
 }
 
 .confetti:nth-child(4n) {
-  background: var(--color-green);
+  background: #74BF04;
 }
 
 /* ── Completion Buttons ──────────────────────────────── */
@@ -203,11 +203,11 @@
   padding: 12px 28px;
   border-radius: var(--radius-pill);
   border: 2px solid var(--color-pink);
-  background: var(--color-pink);
+  background: #F20574;
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 1rem;
-  color: var(--color-white);
+  color: white;
   cursor: pointer;
   transition:
     background var(--transition),

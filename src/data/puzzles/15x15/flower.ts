@@ -29,7 +29,7 @@ export const flower: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'red',
+  difficulty: 'orange',
   description: 'A blooming flower with a leaf',
   source: 'bundled',
 };
