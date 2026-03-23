@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { usePuzzles } from '../hooks/usePuzzles';
 import { useProgress } from '../hooks/useProgress';
+import { usePageTitle } from '../hooks/usePageTitle';
 import styles from '../styles/HomePage.module.css';
 
 export default function HomePage() {
+  usePageTitle('Nonogram — Puzzle Game');
   const navigate = useNavigate();
   const { puzzles } = usePuzzles();
   const { allProgress } = useProgress();

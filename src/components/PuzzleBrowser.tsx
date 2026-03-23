@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { usePuzzles } from '../hooks/usePuzzles';
 import { useProgress } from '../hooks/useProgress';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { downloadPuzzleFile, importPuzzle, readPuzzleFile } from '../engine/serialization';
 import { usePuzzleProvider } from '../providers/ProviderContext';
 import PuzzleCard from './PuzzleCard';
@@ -8,6 +9,7 @@ import styles from '../styles/PuzzleBrowser.module.css';
 import type { GridSize } from '../engine/types';
 
 export default function PuzzleBrowser() {
+  usePageTitle('Puzzles — Nonogram');
   const navigate = useNavigate();
   const { puzzles, loading, refresh } = usePuzzles();
   const { allProgress } = useProgress();

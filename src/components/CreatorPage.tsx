@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePuzzleProvider } from '../providers/ProviderContext';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { createPuzzleFromImage, createPuzzleFromGrid } from '../engine/pixelizer';
 import type { GridSize } from '../engine/types';
 import styles from '../styles/CreatorPage.module.css';
@@ -8,6 +9,7 @@ import styles from '../styles/CreatorPage.module.css';
 type CreatorTab = 'photo' | 'manual';
 
 export default function CreatorPage() {
+  usePageTitle('Create Puzzle — Nonogram');
   const navigate = useNavigate();
   const puzzleProvider = usePuzzleProvider();
   const [tab, setTab] = useState<CreatorTab>('photo');
