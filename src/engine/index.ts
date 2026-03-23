@@ -25,3 +25,7 @@ export {
   MAX_TRANSACTIONS,
   DIFFICULTY_COLORS,
 } from './constants';
+export { calculateReward, earnCoins, spendCoins, createEmptyWallet } from './coins';
+export { getDifficultyColor, getDifficultyLabel, getDifficultyOrder, suggestGridSize } from './difficulty';
+export { applyRowHint, applyColHint, getHintCost } from './hints';
+export { getEdgeCells, applyEdgeReveal, generateBombTargets, applyBomb } from './powerups';
