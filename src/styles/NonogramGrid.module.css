@@ -145,17 +145,6 @@
   text-decoration: line-through;
 }
 
-/* ── Satisfied Clue (player matched the clue pattern) ── */
-
-.satisfied .clueNumber {
-  opacity: 0.4;
-  text-decoration: line-through;
-  color: var(--color-light);
-  transition:
-    opacity var(--transition),
-    color var(--transition);
-}
-
 /* ── Tablet ──────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
