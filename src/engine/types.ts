@@ -13,6 +13,8 @@ export const Tool = {
 
 export type Tool = (typeof Tool)[keyof typeof Tool];
 
+export type DragMode = 'fill' | 'erase';
+
 export type GridSize = 5 | 10 | 15;
 
 export interface PuzzleDefinition {

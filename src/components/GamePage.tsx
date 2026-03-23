@@ -64,6 +64,7 @@ export default function GamePage() {
 
   const dragPaint = useDragPaint({
     onPaintCell: game.paintCell,
+    getDragMode: game.getDragMode,
     gridSize: game.puzzle?.size ?? 0,
   });
 

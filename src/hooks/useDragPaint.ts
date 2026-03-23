@@ -1,4 +1,5 @@
 import { useRef, useCallback } from 'react';
+import type { DragMode } from '../engine/types';
 
 type Direction = 'horizontal' | 'vertical' | null;
 
@@ -8,10 +9,12 @@ interface DragState {
   startCol: number;
   direction: Direction;
   paintedCells: Set<string>;
+  mode: DragMode | null;
 }
 
 interface UseDragPaintOptions {
-  onPaintCell: (row: number, col: number) => boolean;
+  onPaintCell: (row: number, col: number, mode: DragMode) => boolean;
+  getDragMode: (row: number, col: number) => DragMode | null;
   onDragEnd?: () => void;
   gridSize: number;
 }
@@ -20,33 +23,49 @@ function cellKey(row: number, col: number): string {
   return `${row},${col}`;
 }
 
-export function useDragPaint({ onPaintCell, onDragEnd, gridSize }: UseDragPaintOptions) {
+export function useDragPaint({ onPaintCell, getDragMode, onDragEnd, gridSize }: UseDragPaintOptions) {
   const dragState = useRef<DragState>({
     isDragging: false,
     startRow: -1,
     startCol: -1,
     direction: null,
     paintedCells: new Set(),
+    mode: null,
   });
 
   const handleCellMouseDown = useCallback(
     (row: number, col: number) => {
-      const painted = onPaintCell(row, col);
+      const mode = getDragMode(row, col);
+      if (mode === null) {
+        // No-op: cell set by other tool, don't start drag
+        dragState.current = {
+          isDragging: false,
+          startRow: -1,
+          startCol: -1,
+          direction: null,
+          paintedCells: new Set(),
+          mode: null,
+        };
+        return;
+      }
+
+      const painted = onPaintCell(row, col, mode);
       dragState.current = {
         isDragging: true,
         startRow: row,
         startCol: col,
         direction: null,
         paintedCells: new Set(painted ? [cellKey(row, col)] : []),
+        mode,
       };
     },
-    [onPaintCell],
+    [onPaintCell, getDragMode],
   );
 
   const handleCellMouseEnter = useCallback(
     (row: number, col: number) => {
       const state = dragState.current;
-      if (!state.isDragging) return;
+      if (!state.isDragging || state.mode === null) return;
 
       // Determine direction on the second cell
       if (state.direction === null) {
@@ -70,7 +89,7 @@ export function useDragPaint({ onPaintCell, onDragEnd, gridSize }: UseDragPaintO
       // Paint all cells between last painted and current (fill gaps from fast mouse movement)
       const key = cellKey(row, col);
       if (!state.paintedCells.has(key)) {
-        onPaintCell(row, col);
+        onPaintCell(row, col, state.mode);
         state.paintedCells.add(key);
       }
     },
@@ -85,6 +104,7 @@ export function useDragPaint({ onPaintCell, onDragEnd, gridSize }: UseDragPaintO
         startCol: -1,
         direction: null,
         paintedCells: new Set(),
+        mode: null,
       };
       onDragEnd?.();
     }

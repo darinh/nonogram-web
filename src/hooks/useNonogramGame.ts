@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { CellState, Tool } from '../engine/types';
-import type { PuzzleDefinition, PuzzleProgress } from '../engine/types';
+import type { DragMode, PuzzleDefinition, PuzzleProgress } from '../engine/types';
 import { validateGrid } from '../engine/validation';
 
 interface GameState {
@@ -50,19 +50,47 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
     setState(prev => ({ ...prev, tool }));
   }, []);
 
+  const getDragMode = useCallback(
+    (row: number, col: number): DragMode | null => {
+      const s = stateRef.current;
+      if (!s.puzzle || s.completed) return null;
+
+      const index = row * s.puzzle.size + col;
+      if (index < 0 || index >= s.grid.length) return null;
+
+      const cellState = s.grid[index];
+      if (cellState === CellState.Empty) return 'fill';
+
+      // Cell matches active tool → erase it
+      const toolState = s.tool === Tool.Fill ? CellState.Filled : CellState.Crossed;
+      if (cellState === toolState) return 'erase';
+
+      // Cell set by other tool → no-op
+      return null;
+    },
+    [],
+  );
+
   const paintCell = useCallback(
-    (row: number, col: number): boolean => {
+    (row: number, col: number, mode: DragMode): boolean => {
       const s = stateRef.current;
       if (!s.puzzle || s.completed) return false;
 
       const index = row * s.puzzle.size + col;
       if (index < 0 || index >= s.grid.length) return false;
 
-      // Only paint empty cells
-      if (s.grid[index] !== CellState.Empty) return false;
+      const toolState = s.tool === Tool.Fill ? CellState.Filled : CellState.Crossed;
+
+      if (mode === 'fill') {
+        // Only paint empty cells
+        if (s.grid[index] !== CellState.Empty) return false;
+      } else {
+        // Erase mode: only unset cells that match the active tool's state
+        if (s.grid[index] !== toolState) return false;
+      }
 
       const newGrid = [...s.grid];
-      newGrid[index] = s.tool === Tool.Fill ? CellState.Filled : CellState.Crossed;
+      newGrid[index] = mode === 'fill' ? toolState : CellState.Empty;
 
       const isCompleted = validateGrid(newGrid, s.puzzle.solution);
 
@@ -117,6 +145,7 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
     loadPuzzle,
     setTool,
     paintCell,
+    getDragMode,
     resetGrid,
   };
 }
