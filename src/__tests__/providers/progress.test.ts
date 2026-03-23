@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LocalStorageProgressProvider } from '../../providers/progress/LocalStorageProgressProvider';
 import { CellState } from '../../engine/types';
-import type { PuzzleProgress } from '../../engine/types';
+import type { PuzzleProgress, ThemeProgress } from '../../engine/types';
 
 const mockStorage: Record<string, string> = {};
 
@@ -58,5 +58,33 @@ describe('LocalStorageProgressProvider', () => {
     await provider.clearProgress('test-1');
     expect(await provider.getProgress('test-1')).toBeNull();
     expect(await provider.getProgress('test-2')).not.toBeNull();
+  });
+});
+
+describe('LocalStorageProgressProvider - theme progress', () => {
+  const provider = new LocalStorageProgressProvider();
+  const sampleThemeProgress: ThemeProgress = {
+    themeId: 'theme-1',
+    completedPuzzles: ['puzzle-1', 'puzzle-2'],
+    hintsUsed: 3,
+    powerUpsUsed: 1,
+  };
+
+  it('returns null for missing theme progress', async () => {
+    const result = await provider.getThemeProgress('nonexistent');
+    expect(result).toBeNull();
+  });
+
+  it('saves and retrieves theme progress', async () => {
+    await provider.saveThemeProgress(sampleThemeProgress);
+    const result = await provider.getThemeProgress('theme-1');
+    expect(result).toEqual(sampleThemeProgress);
+  });
+
+  it('returns all theme progress entries', async () => {
+    await provider.saveThemeProgress(sampleThemeProgress);
+    await provider.saveThemeProgress({ ...sampleThemeProgress, themeId: 'theme-2' });
+    const all = await provider.getAllThemeProgress();
+    expect(all).toHaveLength(2);
   });
 });
