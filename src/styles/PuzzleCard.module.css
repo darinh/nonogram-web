@@ -17,16 +17,24 @@
 
 /* ── Difficulty Borders ──────────────────────────────── */
 
-.easy {
-  border-left-color: var(--color-pink);
-}
-
-.medium {
+.blue {
   border-left-color: var(--color-blue);
 }
 
-.hard {
+.green {
+  border-left-color: var(--color-green);
+}
+
+.yellow {
+  border-left-color: #BFA004;
+}
+
+.orange {
   border-left-color: var(--color-orange);
+}
+
+.red {
+  border-left-color: var(--color-pink);
 }
 
 /* ── Header ──────────────────────────────────────────── */

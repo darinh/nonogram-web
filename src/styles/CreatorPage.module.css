@@ -287,3 +287,51 @@
   background: var(--color-dark);
   opacity: 0.85;
 }
+
+/* ── Mobile ──────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .page {
+    padding: 16px 12px;
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .controls {
+    width: 100%;
+  }
+
+  .sizeSelector {
+    flex-wrap: wrap;
+  }
+
+  .sizeOption {
+    min-height: 44px;
+  }
+
+  .manualCell {
+    width: 24px;
+    height: 24px;
+  }
+
+  .manualCellFilled {
+    width: 24px;
+    height: 24px;
+  }
+
+  .createButton {
+    min-height: 44px;
+  }
+
+  .tab {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .uploadArea {
+    padding: 32px 16px;
+  }
+}

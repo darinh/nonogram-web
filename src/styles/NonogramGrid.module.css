@@ -127,3 +127,49 @@
 .highlightedClue {
   background-color: rgba(255, 200, 210, 0.3);
 }
+
+/* ── Satisfied Clue (player matched the clue pattern) ── */
+
+.satisfied .clueNumber {
+  opacity: 0.4;
+  text-decoration: line-through;
+  color: var(--color-light);
+  transition:
+    opacity var(--transition),
+    color var(--transition);
+}
+
+/* ── Tablet ──────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .cell {
+    min-width: 26px;
+    min-height: 26px;
+    max-width: 34px;
+    max-height: 34px;
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .cell {
+    min-width: 22px;
+    min-height: 22px;
+    max-width: 28px;
+    max-height: 28px;
+  }
+
+  .clueNumber {
+    font-size: 0.65rem;
+    min-width: 10px;
+  }
+
+  .rowClueCell {
+    padding: 0 3px 0 1px;
+  }
+
+  .colClueCell {
+    padding: 1px 0;
+  }
+}

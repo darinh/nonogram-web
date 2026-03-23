@@ -68,3 +68,28 @@
   margin: 0 auto;
   padding: 32px 24px;
 }
+
+/* ── Mobile ──────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .nav {
+    padding: 8px 12px;
+    gap: 4px;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+
+  .navLink {
+    font-size: 0.75rem;
+    padding: 8px 12px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .content {
+    padding: 16px 12px;
+  }
+}

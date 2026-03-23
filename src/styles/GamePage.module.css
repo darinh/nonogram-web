@@ -98,17 +98,27 @@
   vertical-align: middle;
 }
 
-.badgeEasy {
-  background: var(--color-green);
-  color: var(--color-white);
-}
-
-.badgeMedium {
+.badgeBlue {
   background: var(--color-blue);
   color: var(--color-white);
 }
 
-.badgeHard {
+.badgeGreen {
+  background: var(--color-green);
+  color: var(--color-white);
+}
+
+.badgeYellow {
+  background: #BFA004;
+  color: var(--color-white);
+}
+
+.badgeOrange {
+  background: var(--color-orange);
+  color: var(--color-white);
+}
+
+.badgeRed {
   background: var(--color-pink);
   color: var(--color-white);
 }
@@ -257,5 +267,53 @@
   100% {
     opacity: 0;
     transform: translateY(100vh) rotate(720deg);
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .page {
+    padding: 12px;
+  }
+
+  .puzzleTitle {
+    font-size: 1rem;
+  }
+
+  .timer {
+    font-size: 0.75rem;
+  }
+
+  .header {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .backButton {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    min-height: 44px;
+  }
+
+  .completionMessage {
+    font-size: 1.75rem;
+  }
+
+  .completionCheck {
+    font-size: 3rem;
+  }
+
+  .completionButtons {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding: 0 24px;
+  }
+
+  .playAgainButton,
+  .continueButton {
+    width: 100%;
+    min-height: 44px;
   }
 }
