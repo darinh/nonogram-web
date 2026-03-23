@@ -1,7 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
 import { CellState, Tool } from '../engine/types';
-import type { DragMode, PuzzleDefinition, PuzzleProgress } from '../engine/types';
+import type { DragMode, PuzzleDefinition, PuzzleProgress, BombConfig, BombResult } from '../engine/types';
 import { validateGrid } from '../engine/validation';
+import { applyRowHint, applyColHint } from '../engine/hints';
+import { applyEdgeReveal, applyBomb } from '../engine/powerups';
+import { DEFAULT_BOMB_CONFIG } from '../engine/constants';
 
 const MAX_UNDO_HISTORY = 100;
 
@@ -166,6 +169,120 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
     setState(cur => ({ ...cur, grid: next, completed: isCompleted }));
   }, []);
 
+  const applyRowHintAction = useCallback(
+    (row: number): boolean => {
+      const s = stateRef.current;
+      if (!s.puzzle || s.completed) return false;
+      if (row < 0 || row >= s.puzzle.size) return false;
+
+      undoStack.current = [...undoStack.current.slice(-(MAX_UNDO_HISTORY - 1)), [...s.grid]];
+      redoStack.current = [];
+
+      const newGrid = applyRowHint(s.grid, s.puzzle.solution, s.puzzle.size, row);
+      const isCompleted = validateGrid(newGrid, s.puzzle.solution);
+
+      setState(cur => ({ ...cur, grid: newGrid, completed: isCompleted }));
+
+      if (options.onSaveProgress && s.puzzle) {
+        options.onSaveProgress({
+          puzzleId: s.puzzle.id,
+          grid: newGrid,
+          completed: isCompleted,
+          elapsedTime: s.elapsedTime,
+          lastPlayed: new Date().toISOString(),
+        });
+      }
+
+      return true;
+    },
+    [options],
+  );
+
+  const applyColHintAction = useCallback(
+    (col: number): boolean => {
+      const s = stateRef.current;
+      if (!s.puzzle || s.completed) return false;
+      if (col < 0 || col >= s.puzzle.size) return false;
+
+      undoStack.current = [...undoStack.current.slice(-(MAX_UNDO_HISTORY - 1)), [...s.grid]];
+      redoStack.current = [];
+
+      const newGrid = applyColHint(s.grid, s.puzzle.solution, s.puzzle.size, col);
+      const isCompleted = validateGrid(newGrid, s.puzzle.solution);
+
+      setState(cur => ({ ...cur, grid: newGrid, completed: isCompleted }));
+
+      if (options.onSaveProgress && s.puzzle) {
+        options.onSaveProgress({
+          puzzleId: s.puzzle.id,
+          grid: newGrid,
+          completed: isCompleted,
+          elapsedTime: s.elapsedTime,
+          lastPlayed: new Date().toISOString(),
+        });
+      }
+
+      return true;
+    },
+    [options],
+  );
+
+  const applyEdgeRevealAction = useCallback((): CellState[] => {
+    const s = stateRef.current;
+    if (!s.puzzle || s.completed) return [...s.grid];
+
+    undoStack.current = [...undoStack.current.slice(-(MAX_UNDO_HISTORY - 1)), [...s.grid]];
+    redoStack.current = [];
+
+    const newGrid = applyEdgeReveal(s.grid, s.puzzle.solution, s.puzzle.size);
+    const isCompleted = validateGrid(newGrid, s.puzzle.solution);
+
+    setState(cur => ({ ...cur, grid: newGrid, completed: isCompleted }));
+
+    if (options.onSaveProgress && s.puzzle) {
+      options.onSaveProgress({
+        puzzleId: s.puzzle.id,
+        grid: newGrid,
+        completed: isCompleted,
+        elapsedTime: s.elapsedTime,
+        lastPlayed: new Date().toISOString(),
+      });
+    }
+
+    return newGrid;
+  }, [options]);
+
+  const applyBombAction = useCallback(
+    (config?: BombConfig): BombResult => {
+      const s = stateRef.current;
+      if (!s.puzzle || s.completed) {
+        return { grid: [...s.grid], revealedPositions: [] };
+      }
+
+      undoStack.current = [...undoStack.current.slice(-(MAX_UNDO_HISTORY - 1)), [...s.grid]];
+      redoStack.current = [];
+
+      const bombConfig = config ?? DEFAULT_BOMB_CONFIG;
+      const result = applyBomb(s.grid, s.puzzle.solution, s.puzzle.size, bombConfig);
+      const isCompleted = validateGrid(result.grid, s.puzzle.solution);
+
+      setState(cur => ({ ...cur, grid: result.grid, completed: isCompleted }));
+
+      if (options.onSaveProgress && s.puzzle) {
+        options.onSaveProgress({
+          puzzleId: s.puzzle.id,
+          grid: result.grid,
+          completed: isCompleted,
+          elapsedTime: s.elapsedTime,
+          lastPlayed: new Date().toISOString(),
+        });
+      }
+
+      return result;
+    },
+    [options],
+  );
+
   const canUndo = undoStack.current.length > 0;
   const canRedo = redoStack.current.length > 0;
 
@@ -183,5 +300,9 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
     redo,
     canUndo,
     canRedo,
+    applyRowHint: applyRowHintAction,
+    applyColHint: applyColHintAction,
+    applyEdgeReveal: applyEdgeRevealAction,
+    applyBomb: applyBombAction,
   };
 }
