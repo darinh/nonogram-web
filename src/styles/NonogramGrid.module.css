@@ -109,3 +109,9 @@
 .completed .cell {
   pointer-events: none;
 }
+
+/* ── Row/Column Highlight on Hover ───────────────────── */
+
+.highlighted {
+  background-color: rgba(255, 200, 210, 0.3);
+}

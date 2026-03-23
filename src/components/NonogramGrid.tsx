@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { CellState } from '../engine/types';
 import styles from '../styles/NonogramGrid.module.css';
 
@@ -22,6 +23,7 @@ export default function NonogramGrid({
   onCellMouseEnter,
   onMouseUp,
 }: NonogramGridProps) {
+  const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
   const maxRowClueLen = Math.max(...rowClues.map(c => c.length));
   const maxColClueLen = Math.max(...colClues.map(c => c.length));
 
@@ -32,7 +34,7 @@ export default function NonogramGrid({
     <div
       className={`${styles.container} ${completed ? styles.completed : ''}`}
       onMouseUp={onMouseUp}
-      onMouseLeave={onMouseUp}
+      onMouseLeave={() => { onMouseUp(); setHoveredCell(null); }}
       style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${maxRowClueLen}, auto) repeat(${size}, 1fr)`,
@@ -49,7 +51,7 @@ export default function NonogramGrid({
         return paddedClue.map((n, clueRow) => (
           <div
             key={`cc-${colIdx}-${clueRow}`}
-            className={styles.colClueCell}
+            className={`${styles.colClueCell} ${!completed && hoveredCell?.col === colIdx ? styles.highlighted : ''}`}
             style={{
               gridColumn: maxRowClueLen + 1 + colIdx,
               gridRow: clueRow + 1,
@@ -70,7 +72,7 @@ export default function NonogramGrid({
         return paddedClue.map((n, clueCol) => (
           <div
             key={`rc-${rowIdx}-${clueCol}`}
-            className={styles.rowClueCell}
+            className={`${styles.rowClueCell} ${!completed && hoveredCell?.row === rowIdx ? styles.highlighted : ''}`}
             style={{
               gridColumn: clueCol + 1,
               gridRow: maxColClueLen + 1 + rowIdx,
@@ -88,6 +90,9 @@ export default function NonogramGrid({
           const cellState = grid[index];
           const isThickRight = (col + 1) % 5 === 0 && col + 1 !== size;
           const isThickBottom = (row + 1) % 5 === 0 && row + 1 !== size;
+          const isHighlighted = !completed && hoveredCell !== null &&
+            (hoveredCell.row === row || hoveredCell.col === col) &&
+            !(hoveredCell.row === row && hoveredCell.col === col);
 
           return (
             <div
@@ -96,7 +101,9 @@ export default function NonogramGrid({
                 cellState === CellState.Filled ? styles.filled : ''
               } ${cellState === CellState.Crossed ? styles.crossed : ''} ${
                 isThickRight ? styles.thickRight : ''
-              } ${isThickBottom ? styles.thickBottom : ''}`}
+              } ${isThickBottom ? styles.thickBottom : ''} ${
+                isHighlighted ? styles.highlighted : ''
+              }`}
               style={{
                 gridColumn: maxRowClueLen + 1 + col,
                 gridRow: maxColClueLen + 1 + row,
@@ -105,7 +112,7 @@ export default function NonogramGrid({
                 e.preventDefault();
                 onCellMouseDown(row, col);
               }}
-              onMouseEnter={() => onCellMouseEnter(row, col)}
+              onMouseEnter={() => { onCellMouseEnter(row, col); setHoveredCell({ row, col }); }}
             >
               {cellState === CellState.Crossed && (
                 <svg viewBox="0 0 24 24" className={styles.xMark}>
