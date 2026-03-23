@@ -91,7 +91,7 @@ export default function NonogramGrid({
         return paddedClue.map((n, clueRow) => (
           <div
             key={`cc-${colIdx}-${clueRow}`}
-            className={`${styles.colClueCell} ${!completed && hoveredCell?.col === colIdx ? styles.highlighted : ''}`}
+            className={`${styles.colClueCell} ${!completed && hoveredCell?.col === colIdx ? styles.highlightedClue : ''}`}
             style={{
               gridColumn: maxRowClueLen + 1 + colIdx,
               gridRow: clueRow + 1,
@@ -112,7 +112,7 @@ export default function NonogramGrid({
         return paddedClue.map((n, clueCol) => (
           <div
             key={`rc-${rowIdx}-${clueCol}`}
-            className={`${styles.rowClueCell} ${!completed && hoveredCell?.row === rowIdx ? styles.highlighted : ''}`}
+            className={`${styles.rowClueCell} ${!completed && hoveredCell?.row === rowIdx ? styles.highlightedClue : ''}`}
             style={{
               gridColumn: clueCol + 1,
               gridRow: maxColClueLen + 1 + rowIdx,
