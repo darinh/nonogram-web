@@ -21,11 +21,9 @@ export default function PuzzleCard({ puzzle, progress, onClick, onExport }: Puzz
       ? styles.inProgress
       : styles.notStarted;
 
-  const difficultyClass = puzzle.difficulty === 'easy'
-    ? styles.easy
-    : puzzle.difficulty === 'medium'
-      ? styles.medium
-      : styles.hard;
+  const difficultyClass = puzzle.difficulty
+    ? styles[puzzle.difficulty]
+    : undefined;
 
   return (
     <div className={`${styles.card} ${difficultyClass}`} onClick={onClick}>

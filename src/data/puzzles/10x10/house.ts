@@ -24,7 +24,7 @@ export const house: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'medium',
+  difficulty: 'yellow',
   description: 'A cozy house with a door',
   source: 'bundled',
 };

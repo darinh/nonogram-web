@@ -24,7 +24,7 @@ export const cat: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'medium',
+  difficulty: 'yellow',
   description: 'A curious cat face',
   source: 'bundled',
 };

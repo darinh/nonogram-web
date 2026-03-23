@@ -1,5 +1,7 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import { CellState } from '../engine/types';
+import { isLineSatisfied, getRowLine, getColLine } from '../engine/validation';
+import { useGridNavigation } from '../hooks/useGridNavigation';
 import styles from '../styles/NonogramGrid.module.css';
 
 interface NonogramGridProps {
@@ -11,6 +13,8 @@ interface NonogramGridProps {
   onCellMouseDown: (row: number, col: number) => void;
   onCellMouseEnter: (row: number, col: number) => void;
   onMouseUp: () => void;
+  /** Called when a cell is activated via keyboard (Enter/Space). */
+  onActivateCell: (row: number, col: number) => void;
 }
 
 function getCellCoords(el: Element | null): { row: number; col: number } | null {
@@ -23,6 +27,18 @@ function getCellCoords(el: Element | null): { row: number; col: number } | null 
   return { row, col };
 }
 
+/** Describe a cell state for screen readers. */
+function cellStateLabel(state: CellState): string {
+  switch (state) {
+    case CellState.Filled:
+      return 'filled';
+    case CellState.Crossed:
+      return 'crossed';
+    default:
+      return 'empty';
+  }
+}
+
 export default function NonogramGrid({
   grid,
   size,
@@ -32,12 +48,32 @@ export default function NonogramGrid({
   onCellMouseDown,
   onCellMouseEnter,
   onMouseUp,
+  onActivateCell,
 }: NonogramGridProps) {
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastHoveredRef = useRef<{ row: number; col: number } | null>(null);
   const maxRowClueLen = Math.max(...rowClues.map(c => c.length));
   const maxColClueLen = Math.max(...colClues.map(c => c.length));
+
+  const {
+    handleCellKeyDown,
+    getCellTabIndex,
+    gridRef,
+  } = useGridNavigation({
+    size,
+    onActivateCell,
+    enabled: !completed,
+  });
+
+  const satisfiedRows = useMemo(
+    () => new Set(rowClues.map((clue, i) => isLineSatisfied(getRowLine(grid, size, i), clue) ? i : -1).filter(i => i >= 0)),
+    [grid, size, rowClues],
+  );
+  const satisfiedCols = useMemo(
+    () => new Set(colClues.map((clue, i) => isLineSatisfied(getColLine(grid, size, i), clue) ? i : -1).filter(i => i >= 0)),
+    [grid, size, colClues],
+  );
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
@@ -70,8 +106,14 @@ export default function NonogramGrid({
 
   return (
     <div
-      ref={containerRef}
+      ref={(el) => {
+        // Merge refs: containerRef for pointer capture, gridRef for keyboard focus management
+        (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+        (gridRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+      }}
       className={`${styles.container} ${completed ? styles.completed : ''}`}
+      role="grid"
+      aria-label="Nonogram puzzle grid"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerLeave}
@@ -91,7 +133,7 @@ export default function NonogramGrid({
         return paddedClue.map((n, clueRow) => (
           <div
             key={`cc-${colIdx}-${clueRow}`}
-            className={`${styles.colClueCell} ${!completed && hoveredCell?.col === colIdx ? styles.highlightedClue : ''}`}
+            className={`${styles.colClueCell} ${!completed && hoveredCell?.col === colIdx ? styles.highlightedClue : ''} ${satisfiedCols.has(colIdx) ? styles.satisfied : ''}`}
             style={{
               gridColumn: maxRowClueLen + 1 + colIdx,
               gridRow: clueRow + 1,
@@ -112,7 +154,7 @@ export default function NonogramGrid({
         return paddedClue.map((n, clueCol) => (
           <div
             key={`rc-${rowIdx}-${clueCol}`}
-            className={`${styles.rowClueCell} ${!completed && hoveredCell?.row === rowIdx ? styles.highlightedClue : ''}`}
+            className={`${styles.rowClueCell} ${!completed && hoveredCell?.row === rowIdx ? styles.highlightedClue : ''} ${satisfiedRows.has(rowIdx) ? styles.satisfied : ''}`}
             style={{
               gridColumn: clueCol + 1,
               gridRow: maxColClueLen + 1 + rowIdx,
@@ -137,6 +179,10 @@ export default function NonogramGrid({
           return (
             <div
               key={`cell-${row}-${col}`}
+              role="gridcell"
+              aria-label={`Row ${row + 1}, Column ${col + 1}, ${cellStateLabel(cellState)}`}
+              tabIndex={getCellTabIndex(row, col)}
+              onKeyDown={handleCellKeyDown}
               className={`${styles.cell} ${
                 cellState === CellState.Filled ? styles.filled : ''
               } ${cellState === CellState.Crossed ? styles.crossed : ''} ${

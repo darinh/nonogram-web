@@ -19,7 +19,7 @@ export const heart: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'easy',
+  difficulty: 'blue',
   description: 'A lovely heart',
   source: 'bundled',
 };

@@ -19,7 +19,7 @@ export const arrow: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'easy',
+  difficulty: 'green',
   description: 'An arrow pointing right',
   source: 'bundled',
 };

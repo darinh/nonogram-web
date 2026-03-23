@@ -24,7 +24,7 @@ export const tree: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'medium',
+  difficulty: 'orange',
   description: 'A tall evergreen tree',
   source: 'bundled',
 };

@@ -29,7 +29,7 @@ export const gamepad: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'hard',
+  difficulty: 'orange',
   description: 'A retro game controller',
   source: 'bundled',
 };

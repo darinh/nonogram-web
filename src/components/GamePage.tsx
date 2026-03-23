@@ -86,6 +86,15 @@ export default function GamePage() {
     gridSize: game.puzzle?.size ?? 0,
   });
 
+  /** Keyboard activation: same effect as a single click on the cell. */
+  const handleActivateCell = useCallback(
+    (row: number, col: number) => {
+      const mode = game.getDragMode(row, col);
+      if (mode) game.paintCell(row, col, mode);
+    },
+    [game],
+  );
+
   // Pre-generate confetti particles so they're stable across renders
   const confettiParticles = useMemo(
     () =>
@@ -153,6 +162,7 @@ export default function GamePage() {
           onCellMouseDown={dragPaint.handleCellMouseDown}
           onCellMouseEnter={dragPaint.handleCellMouseEnter}
           onMouseUp={dragPaint.handleMouseUp}
+          onActivateCell={handleActivateCell}
         />
       </div>
 

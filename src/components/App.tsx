@@ -8,6 +8,7 @@ import HomePage from './HomePage';
 import PuzzleBrowser from './PuzzleBrowser';
 import GamePage from './GamePage';
 import CreatorPage from './CreatorPage';
+import StatsPage from './StatsPage';
 import ThemeToggle from './ThemeToggle';
 import styles from '../styles/App.module.css';
 import '../styles/global.css';
@@ -46,6 +47,14 @@ export default function App() {
                 >
                   Create
                 </NavLink>
+                <NavLink
+                  to="/stats"
+                  className={({ isActive }) =>
+                    `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+                  }
+                >
+                  📊 Stats
+                </NavLink>
               </div>
               <ThemeToggle />
             </nav>
@@ -55,6 +64,7 @@ export default function App() {
                 <Route path="/puzzles" element={<PuzzleBrowser />} />
                 <Route path="/play/:puzzleId" element={<GamePage />} />
                 <Route path="/create" element={<CreatorPage />} />
+                <Route path="/stats" element={<StatsPage />} />
               </Routes>
             </main>
           </div>

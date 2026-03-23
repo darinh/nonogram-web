@@ -19,7 +19,7 @@ export const star: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'easy',
+  difficulty: 'blue',
   description: 'A shining star',
   source: 'bundled',
 };

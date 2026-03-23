@@ -15,7 +15,7 @@ const samplePuzzle: PuzzleDefinition = {
   ],
   rowClues: [[1, 1], [5], [5], [3], [1]],
   colClues: [[2], [4], [4], [4], [2]],
-  difficulty: 'easy',
+  difficulty: 'blue',
   description: 'A simple heart',
   source: 'bundled',
 };

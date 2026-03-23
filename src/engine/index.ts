@@ -13,7 +13,7 @@ export type {
   BombResult,
 } from './types';
 export { deriveRowClues, deriveColClues } from './clues';
-export { validateGrid, isCluesSatisfied, getSatisfiedClues } from './validation';
+export { validateGrid, isLineSatisfied, getRowLine, getColLine, isCluesSatisfied, getSatisfiedClues } from './validation';
 export { exportPuzzle, importPuzzle, downloadPuzzleFile, readPuzzleFile } from './serialization';
 export { pixelizeImage, createPuzzleFromImage, createPuzzleFromGrid } from './pixelizer';
 export {

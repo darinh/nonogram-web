@@ -29,7 +29,7 @@ export const rocket: PuzzleDefinition = {
   solution,
   rowClues: deriveRowClues(solution, size),
   colClues: deriveColClues(solution, size),
-  difficulty: 'hard',
+  difficulty: 'red',
   description: 'A rocket ship blasting off',
   source: 'bundled',
 };
