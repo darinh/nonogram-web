@@ -1,0 +1,17 @@
+[data-theme="dark"] {
+  --color-pink: #F20574;
+  --color-blue: #0597F2;
+  --color-green: #74BF04;
+  --color-yellow: #BFA004;
+  --color-orange: #F28705;
+  --color-dark: #E5E5E5;
+  --color-light: #333333;
+  --color-white: #1a1a2e;
+  --color-pink-light: #3a1a2e;
+  --color-blue-light: #1a2a3e;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-pink: 0 4px 16px rgba(242, 5, 116, 0.3);
+}

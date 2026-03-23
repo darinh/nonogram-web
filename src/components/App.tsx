@@ -8,6 +8,7 @@ import HomePage from './HomePage';
 import PuzzleBrowser from './PuzzleBrowser';
 import GamePage from './GamePage';
 import CreatorPage from './CreatorPage';
+import ThemeToggle from './ThemeToggle';
 import styles from '../styles/App.module.css';
 import '../styles/global.css';
 import { useMemo } from 'react';
@@ -46,6 +47,7 @@ export default function App() {
                   Create
                 </NavLink>
               </div>
+              <ThemeToggle />
             </nav>
             <main className={styles.content}>
               <Routes>
