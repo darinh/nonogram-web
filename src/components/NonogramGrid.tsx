@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { CellState } from '../engine/types';
 import styles from '../styles/NonogramGrid.module.css';
 
@@ -13,6 +13,16 @@ interface NonogramGridProps {
   onMouseUp: () => void;
 }
 
+function getCellCoords(el: Element | null): { row: number; col: number } | null {
+  if (!el) return null;
+  const cellEl = el.closest<HTMLElement>('[data-row]');
+  if (!cellEl) return null;
+  const row = Number(cellEl.dataset.row);
+  const col = Number(cellEl.dataset.col);
+  if (isNaN(row) || isNaN(col)) return null;
+  return { row, col };
+}
+
 export default function NonogramGrid({
   grid,
   size,
@@ -24,17 +34,47 @@ export default function NonogramGrid({
   onMouseUp,
 }: NonogramGridProps) {
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastHoveredRef = useRef<{ row: number; col: number } | null>(null);
   const maxRowClueLen = Math.max(...rowClues.map(c => c.length));
   const maxColClueLen = Math.max(...colClues.map(c => c.length));
 
-  // Grid layout: maxRowClueLen columns for row clues + size columns for cells
-  //              maxColClueLen rows for col clues + size rows for cells
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const coords = getCellCoords(el);
+      if (coords) {
+        const last = lastHoveredRef.current;
+        if (!last || last.row !== coords.row || last.col !== coords.col) {
+          lastHoveredRef.current = coords;
+          setHoveredCell(coords);
+          onCellMouseEnter(coords.row, coords.col);
+        }
+      } else if (lastHoveredRef.current !== null) {
+        lastHoveredRef.current = null;
+        setHoveredCell(null);
+      }
+    },
+    [onCellMouseEnter],
+  );
+
+  const handlePointerUp = useCallback(() => {
+    onMouseUp();
+  }, [onMouseUp]);
+
+  const handlePointerLeave = useCallback(() => {
+    onMouseUp();
+    lastHoveredRef.current = null;
+    setHoveredCell(null);
+  }, [onMouseUp]);
 
   return (
     <div
+      ref={containerRef}
       className={`${styles.container} ${completed ? styles.completed : ''}`}
-      onMouseUp={onMouseUp}
-      onMouseLeave={() => { onMouseUp(); setHoveredCell(null); }}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerLeave}
       style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${maxRowClueLen}, auto) repeat(${size}, 1fr)`,
@@ -108,11 +148,15 @@ export default function NonogramGrid({
                 gridColumn: maxRowClueLen + 1 + col,
                 gridRow: maxColClueLen + 1 + row,
               }}
-              onMouseDown={(e) => {
+              data-row={row}
+              data-col={col}
+              onPointerDown={(e) => {
                 e.preventDefault();
                 onCellMouseDown(row, col);
+                lastHoveredRef.current = { row, col };
+                setHoveredCell({ row, col });
+                containerRef.current?.setPointerCapture(e.pointerId);
               }}
-              onMouseEnter={() => { onCellMouseEnter(row, col); setHoveredCell({ row, col }); }}
             >
               {cellState === CellState.Crossed && (
                 <svg viewBox="0 0 24 24" className={styles.xMark}>

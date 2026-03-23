@@ -2,6 +2,7 @@
   display: grid;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: none;
   gap: 0;
   width: fit-content;
 }
@@ -53,6 +54,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: none;
+  -webkit-touch-callout: none;
   transition:
     background var(--transition),
     border-color var(--transition),
