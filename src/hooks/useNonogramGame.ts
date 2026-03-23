@@ -3,6 +3,8 @@ import { CellState, Tool } from '../engine/types';
 import type { DragMode, PuzzleDefinition, PuzzleProgress } from '../engine/types';
 import { validateGrid } from '../engine/validation';
 
+const MAX_UNDO_HISTORY = 100;
+
 interface GameState {
   puzzle: PuzzleDefinition | null;
   grid: CellState[];
@@ -26,6 +28,9 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
 
   const stateRef = useRef(state);
   stateRef.current = state;
+
+  const undoStack = useRef<CellState[][]>([]);
+  const redoStack = useRef<CellState[][]>([]);
 
   const loadPuzzle = useCallback(
     (puzzle: PuzzleDefinition, existingProgress?: PuzzleProgress | null) => {
@@ -89,6 +94,10 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
         if (s.grid[index] !== toolState) return false;
       }
 
+      // Snapshot current grid for undo before mutating
+      undoStack.current = [...undoStack.current.slice(-(MAX_UNDO_HISTORY - 1)), [...s.grid]];
+      redoStack.current = [];
+
       const newGrid = [...s.grid];
       newGrid[index] = mode === 'fill' ? toolState : CellState.Empty;
 
@@ -119,6 +128,8 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
   );
 
   const resetGrid = useCallback(() => {
+    undoStack.current = [];
+    redoStack.current = [];
     setState(prev => {
       if (!prev.puzzle) return prev;
       const newGrid = new Array(prev.puzzle.size * prev.puzzle.size).fill(CellState.Empty);
@@ -137,6 +148,27 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
     });
   }, [options]);
 
+  const undo = useCallback(() => {
+    const prev = undoStack.current.pop();
+    if (!prev) return;
+    const s = stateRef.current;
+    redoStack.current.push([...s.grid]);
+    const isCompleted = s.puzzle ? validateGrid(prev, s.puzzle.solution) : false;
+    setState(cur => ({ ...cur, grid: prev, completed: isCompleted }));
+  }, []);
+
+  const redo = useCallback(() => {
+    const next = redoStack.current.pop();
+    if (!next) return;
+    const s = stateRef.current;
+    undoStack.current.push([...s.grid]);
+    const isCompleted = s.puzzle ? validateGrid(next, s.puzzle.solution) : false;
+    setState(cur => ({ ...cur, grid: next, completed: isCompleted }));
+  }, []);
+
+  const canUndo = undoStack.current.length > 0;
+  const canRedo = redoStack.current.length > 0;
+
   return {
     puzzle: state.puzzle,
     grid: state.grid,
@@ -147,5 +179,9 @@ export function useNonogramGame(options: UseNonogramGameOptions = {}) {
     paintCell,
     getDragMode,
     resetGrid,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   };
 }

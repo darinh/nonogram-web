@@ -62,6 +62,24 @@ export default function GamePage() {
     setElapsedTime(0);
   }, [game]);
 
+  // Keyboard shortcuts: Ctrl+Z → undo, Ctrl+Shift+Z / Ctrl+Y → redo
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        game.undo();
+      } else if (
+        ((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) ||
+        ((e.ctrlKey || e.metaKey) && e.key === 'y')
+      ) {
+        e.preventDefault();
+        game.redo();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [game]);
+
   const dragPaint = useDragPaint({
     onPaintCell: game.paintCell,
     getDragMode: game.getDragMode,
@@ -117,6 +135,10 @@ export default function GamePage() {
           activeTool={game.tool}
           onToolChange={game.setTool}
           onReset={handleReset}
+          onUndo={game.undo}
+          onRedo={game.redo}
+          canUndo={game.canUndo}
+          canRedo={game.canRedo}
           completed={game.completed}
         />
 

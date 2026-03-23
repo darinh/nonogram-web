@@ -75,6 +75,47 @@
   stroke: var(--color-pink);
 }
 
+.historyButtons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.historyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-light);
+  background: var(--color-white);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    opacity var(--transition);
+}
+
+.historyButton:hover:not(:disabled) {
+  border-color: var(--color-pink);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.historyButton:hover:not(:disabled) .icon {
+  fill: var(--color-pink);
+  stroke: var(--color-pink);
+}
+
+.historyButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .resetButton {
   display: inline-flex;
   align-items: center;

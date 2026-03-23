@@ -5,10 +5,14 @@ interface ToolbarProps {
   activeTool: Tool;
   onToolChange: (tool: Tool) => void;
   onReset: () => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
   completed: boolean;
 }
 
-export default function Toolbar({ activeTool, onToolChange, onReset, completed }: ToolbarProps) {
+export default function Toolbar({ activeTool, onToolChange, onReset, onUndo, onRedo, canUndo, canRedo, completed }: ToolbarProps) {
   return (
     <div className={styles.toolbar}>
       <div className={styles.tools}>
@@ -36,6 +40,29 @@ export default function Toolbar({ activeTool, onToolChange, onReset, completed }
             <line x1="18" y1="6" x2="6" y2="18" strokeWidth="2.5" />
           </svg>
           <span>Mark X</span>
+        </button>
+      </div>
+
+      <div className={styles.historyButtons}>
+        <button
+          className={styles.historyButton}
+          onClick={onUndo}
+          disabled={!canUndo || completed}
+          title="Undo (Ctrl+Z)"
+        >
+          <svg viewBox="0 0 24 24" className={styles.icon}>
+            <path d="M12.5 8c-2.65 0-5.05 1.04-6.83 2.73L3 8v9h9l-2.83-2.83A7.95 7.95 0 0 1 12.5 12c3.04 0 5.64 1.7 6.96 4.21l1.77-.89A9.96 9.96 0 0 0 12.5 8z" />
+          </svg>
+        </button>
+        <button
+          className={styles.historyButton}
+          onClick={onRedo}
+          disabled={!canRedo || completed}
+          title="Redo (Ctrl+Shift+Z)"
+        >
+          <svg viewBox="0 0 24 24" className={styles.icon}>
+            <path d="M11.5 8c2.65 0 5.05 1.04 6.83 2.73L21 8v9h-9l2.83-2.83A7.95 7.95 0 0 0 11.5 12c-3.04 0-5.64 1.7-6.96 4.21l-1.77-.89A9.96 9.96 0 0 1 11.5 8z" />
+          </svg>
         </button>
       </div>
 

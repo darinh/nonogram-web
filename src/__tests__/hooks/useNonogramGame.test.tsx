@@ -159,6 +159,77 @@ describe('useNonogramGame', () => {
     expect(onSaveProgress).toHaveBeenCalledTimes(1);
   });
 
+  describe('undo/redo', () => {
+    it('undo restores the previous grid state', () => {
+      const { result } = renderHook(() => useNonogramGame());
+      act(() => result.current.loadPuzzle(testPuzzle));
+      act(() => { result.current.paintCell(0, 0, 'fill'); });
+      expect(result.current.grid[0]).toBe(CellState.Filled);
+      act(() => result.current.undo());
+      expect(result.current.grid[0]).toBe(CellState.Empty);
+    });
+
+    it('redo re-applies the undone state', () => {
+      const { result } = renderHook(() => useNonogramGame());
+      act(() => result.current.loadPuzzle(testPuzzle));
+      act(() => { result.current.paintCell(0, 0, 'fill'); });
+      act(() => result.current.undo());
+      expect(result.current.grid[0]).toBe(CellState.Empty);
+      act(() => result.current.redo());
+      expect(result.current.grid[0]).toBe(CellState.Filled);
+    });
+
+    it('new paint clears the redo stack', () => {
+      const { result } = renderHook(() => useNonogramGame());
+      act(() => result.current.loadPuzzle(testPuzzle));
+      act(() => { result.current.paintCell(0, 0, 'fill'); });
+      act(() => result.current.undo());
+      expect(result.current.canRedo).toBe(true);
+      act(() => { result.current.paintCell(1, 1, 'fill'); });
+      expect(result.current.canRedo).toBe(false);
+    });
+
+    it('reset clears both stacks', () => {
+      const { result } = renderHook(() => useNonogramGame());
+      act(() => result.current.loadPuzzle(testPuzzle));
+      act(() => { result.current.paintCell(0, 0, 'fill'); });
+      expect(result.current.canUndo).toBe(true);
+      act(() => result.current.undo());
+      expect(result.current.canRedo).toBe(true);
+      act(() => result.current.redo());
+      act(() => result.current.resetGrid());
+      expect(result.current.canUndo).toBe(false);
+      expect(result.current.canRedo).toBe(false);
+    });
+
+    it('canUndo and canRedo reflect stack state', () => {
+      const { result } = renderHook(() => useNonogramGame());
+      act(() => result.current.loadPuzzle(testPuzzle));
+      expect(result.current.canUndo).toBe(false);
+      expect(result.current.canRedo).toBe(false);
+      act(() => { result.current.paintCell(0, 0, 'fill'); });
+      expect(result.current.canUndo).toBe(true);
+      expect(result.current.canRedo).toBe(false);
+      act(() => result.current.undo());
+      expect(result.current.canUndo).toBe(false);
+      expect(result.current.canRedo).toBe(true);
+    });
+
+    it('multiple undo steps restore each prior state', () => {
+      const { result } = renderHook(() => useNonogramGame());
+      act(() => result.current.loadPuzzle(testPuzzle));
+      act(() => { result.current.paintCell(0, 0, 'fill'); });
+      act(() => { result.current.paintCell(0, 1, 'fill'); });
+      expect(result.current.grid[0]).toBe(CellState.Filled);
+      expect(result.current.grid[1]).toBe(CellState.Filled);
+      act(() => result.current.undo());
+      expect(result.current.grid[0]).toBe(CellState.Filled);
+      expect(result.current.grid[1]).toBe(CellState.Empty);
+      act(() => result.current.undo());
+      expect(result.current.grid[0]).toBe(CellState.Empty);
+    });
+  });
+
   describe('getDragMode', () => {
     it('returns fill for empty cells', () => {
       const { result } = renderHook(() => useNonogramGame());
