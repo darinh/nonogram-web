@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePuzzleProvider, useProgressProvider } from '../providers/ProviderContext';
 import { useNonogramGame } from '../hooks/useNonogramGame';
@@ -7,8 +7,13 @@ import { downloadPuzzleFile } from '../engine/serialization';
 import NonogramGrid from './NonogramGrid';
 import Toolbar from './Toolbar';
 import styles from '../styles/GamePage.module.css';
-import { useState } from 'react';
 import type { PuzzleDefinition } from '../engine/types';
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
 
 export default function GamePage() {
   const { puzzleId } = useParams<{ puzzleId: string }>();
@@ -16,6 +21,7 @@ export default function GamePage() {
   const puzzleProvider = usePuzzleProvider();
   const progressProvider = useProgressProvider();
   const [loading, setLoading] = useState(true);
+  const [elapsedTime, setElapsedTime] = useState(0);
 
   const onSaveProgress = useCallback(
     (progress: import('../engine/types').PuzzleProgress) => {
@@ -37,20 +43,50 @@ export default function GamePage() {
       }
       const progress = await progressProvider.getProgress(puzzleId);
       game.loadPuzzle(puzzle, progress);
+      setElapsedTime(progress?.elapsedTime ?? 0);
       setLoading(false);
     }
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [puzzleId]);
 
+  // Timer: tick every second while puzzle is active
+  useEffect(() => {
+    if (!game.puzzle || game.completed) return;
+    const id = setInterval(() => setElapsedTime(t => t + 1), 1000);
+    return () => clearInterval(id);
+  }, [game.puzzle, game.completed]);
+
+  const handleReset = useCallback(() => {
+    game.resetGrid();
+    setElapsedTime(0);
+  }, [game]);
+
   const dragPaint = useDragPaint({
     onPaintCell: game.paintCell,
     gridSize: game.puzzle?.size ?? 0,
   });
 
+  // Pre-generate confetti particles so they're stable across renders
+  const confettiParticles = useMemo(
+    () =>
+      Array.from({ length: 30 }, (_, i) => ({
+        key: i,
+        left: `${Math.random() * 100}%`,
+        animationDelay: `${Math.random() * 1.5}s`,
+        animationDuration: `${1.5 + Math.random() * 1.5}s`,
+      })),
+    [],
+  );
+
   if (loading || !game.puzzle) {
     return <div className={styles.page}>Loading...</div>;
   }
+
+  const difficulty = game.puzzle.difficulty;
+  const badgeClass = difficulty
+    ? `${styles.difficultyBadge} ${styles[`badge${difficulty.charAt(0).toUpperCase()}${difficulty.slice(1)}`]}`
+    : undefined;
 
   return (
     <div className={styles.page}>
@@ -58,7 +94,14 @@ export default function GamePage() {
         <button className={styles.backButton} onClick={() => navigate('/puzzles')}>
           ← Back
         </button>
-        <h1 className={styles.puzzleTitle}>{game.puzzle.title}</h1>
+        <h1 className={styles.puzzleTitle}>
+          {game.puzzle.title}
+          {difficulty && (
+            <span className={badgeClass}>
+              {difficulty} · {game.puzzle.size}×{game.puzzle.size}
+            </span>
+          )}
+        </h1>
         <button
           className={styles.exportButton}
           onClick={() => downloadPuzzleFile(game.puzzle as PuzzleDefinition)}
@@ -72,9 +115,11 @@ export default function GamePage() {
         <Toolbar
           activeTool={game.tool}
           onToolChange={game.setTool}
-          onReset={game.resetGrid}
+          onReset={handleReset}
           completed={game.completed}
         />
+
+        <div className={styles.timer}>{formatTime(elapsedTime)}</div>
 
         <NonogramGrid
           grid={game.grid}
@@ -90,12 +135,23 @@ export default function GamePage() {
 
       {game.completed && (
         <div className={styles.completionOverlay}>
+          {confettiParticles.map(p => (
+            <div
+              key={p.key}
+              className={styles.confetti}
+              style={{
+                left: p.left,
+                animationDelay: p.animationDelay,
+                animationDuration: p.animationDuration,
+              }}
+            />
+          ))}
           <div className={styles.completionMessage}>
             <span className={styles.checkMark}>✓</span>
             <h2>Puzzle Complete!</h2>
-            <p>Great job solving "{game.puzzle.title}"!</p>
+            <p>Solved "{game.puzzle.title}" in {formatTime(elapsedTime)}!</p>
             <div className={styles.completionButtons}>
-              <button className={styles.playAgainButton} onClick={game.resetGrid}>
+              <button className={styles.playAgainButton} onClick={handleReset}>
                 Play Again
               </button>
               <button className={styles.continueButton} onClick={() => navigate('/puzzles')}>
