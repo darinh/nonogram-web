@@ -354,12 +354,21 @@
   .header {
     gap: 8px;
     margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .headerRight {
+    gap: 8px;
   }
 
   .backButton {
     padding: 6px 12px;
     font-size: 0.75rem;
     min-height: 44px;
+  }
+
+  .breadcrumbLink {
+    font-size: 0.875rem;
   }
 
   .completionMessage {
@@ -370,6 +379,10 @@
     font-size: 3rem;
   }
 
+  .coinReward {
+    font-size: 1.25rem;
+  }
+
   .completionButtons {
     flex-direction: column;
     gap: 8px;
@@ -378,7 +391,8 @@
   }
 
   .playAgainButton,
-  .continueButton {
+  .continueButton,
+  .themeButton {
     width: 100%;
     min-height: 44px;
   }
