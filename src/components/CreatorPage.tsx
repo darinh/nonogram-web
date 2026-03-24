@@ -1,8 +1,10 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePuzzleProvider } from '../providers/ProviderContext';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { createPuzzleFromImage, createPuzzleFromGrid } from '../engine/pixelizer';
+import { deriveRowClues, deriveColClues } from '../engine/clues';
+import { isLogicSolvable } from '../engine/solver';
 import type { GridSize } from '../engine/types';
 import styles from '../styles/CreatorPage.module.css';
 
@@ -19,8 +21,10 @@ export default function CreatorPage() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [previewGrid, setPreviewGrid] = useState<number[] | null>(null);
   const [manualGrid, setManualGrid] = useState<number[]>(() => new Array(100).fill(0));
+  const [solvability, setSolvability] = useState<'idle' | 'checking' | 'solvable' | 'unsolvable'>('idle');
   const imageRef = useRef<HTMLImageElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const solverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const updatePreview = useCallback((img: HTMLImageElement, sz: GridSize, thresh: number) => {
     const canvas = document.createElement('canvas');
@@ -102,6 +106,28 @@ export default function CreatorPage() {
   };
 
   const activeGrid = tab === 'photo' ? previewGrid : manualGrid;
+
+  // Debounced logic-solvability check
+  useEffect(() => {
+    if (!activeGrid || activeGrid.every(c => c === 0)) {
+      setSolvability('idle');
+      return;
+    }
+
+    if (solverTimerRef.current) clearTimeout(solverTimerRef.current);
+    setSolvability('checking');
+
+    solverTimerRef.current = setTimeout(() => {
+      const rowClues = deriveRowClues(activeGrid, size);
+      const colClues = deriveColClues(activeGrid, size);
+      const result = isLogicSolvable(size, rowClues, colClues);
+      setSolvability(result ? 'solvable' : 'unsolvable');
+    }, 500);
+
+    return () => {
+      if (solverTimerRef.current) clearTimeout(solverTimerRef.current);
+    };
+  }, [activeGrid, size]);
 
   return (
     <div className={styles.page}>
@@ -224,6 +250,23 @@ export default function CreatorPage() {
           ))}
         </div>
       </div>
+
+      {solvability !== 'idle' && (
+        <div className={`${styles.solvabilityBadge} ${
+          solvability === 'solvable' ? styles.solvable :
+          solvability === 'unsolvable' ? styles.unsolvable : ''
+        }`}>
+          {solvability === 'checking' && '⏳ Checking solvability…'}
+          {solvability === 'solvable' && '✅ Logic-solvable'}
+          {solvability === 'unsolvable' && '⚠️ May require guessing'}
+        </div>
+      )}
+
+      {solvability === 'unsolvable' && (
+        <p className={styles.solvabilityWarning}>
+          This puzzle may require guessing. Consider adjusting the design for a pure-logic solution.
+        </p>
+      )}
 
       <button className={styles.createButton} onClick={handleCreate}>
         Create Puzzle

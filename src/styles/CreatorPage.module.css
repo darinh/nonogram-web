@@ -288,6 +288,42 @@
   opacity: 0.85;
 }
 
+/* ── Solvability Badge ───────────────────────────────── */
+
+.solvabilityBadge {
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin: 16px auto;
+  max-width: 320px;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.solvable {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.unsolvable {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.solvabilityWarning {
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #f57f17;
+  margin: 0 auto 8px;
+  max-width: 400px;
+  line-height: 1.4;
+}
+
 /* ── Mobile ──────────────────────────────────────────── */
 
 @media (max-width: 640px) {

@@ -13,6 +13,7 @@ import { dirname, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { deriveRowClues, deriveColClues } from '../src/engine/clues.js';
+import { isLogicSolvable } from '../src/engine/solver.js';
 
 // ── Types that will eventually live in src/engine/types.ts ───────────────────
 // Once ThemeDefinition / Difficulty are added to the engine, import them instead.
@@ -234,11 +235,35 @@ if (isMain) {
   );
 
   const puzzles: PuzzleDefinition[] = [];
+  let passedCount = 0;
+  let failedCount = 0;
+
   for (let i = 1; i <= COUNT; i++) {
-    const useSymmetry = rng() * 100 < SYMMETRY_PCT;
-    const grid = generatePuzzle(SIZE, useSymmetry);
-    puzzles.push(toPuzzleDefinition(grid, SIZE, i, PREFIX));
+    let grid: number[] | null = null;
+    let solvable = false;
+
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const useSymmetry = rng() * 100 < SYMMETRY_PCT;
+      const candidate = generatePuzzle(SIZE, useSymmetry);
+      const rowClues = deriveRowClues(candidate, SIZE);
+      const colClues = deriveColClues(candidate, SIZE);
+      if (isLogicSolvable(SIZE, rowClues, colClues)) {
+        grid = candidate;
+        solvable = true;
+        break;
+      }
+      grid = candidate;
+    }
+
+    if (solvable) {
+      passedCount++;
+    } else {
+      failedCount++;
+    }
+    puzzles.push(toPuzzleDefinition(grid!, SIZE, i, PREFIX));
   }
+
+  console.log(`Logic-solvability: ${passedCount} passed, ${failedCount} failed (out of ${COUNT})`);
 
   const output = formatOutput(puzzles);
   mkdirSync(dirname(OUTPUT), { recursive: true });

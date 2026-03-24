@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext } from '../providers/ProviderContext';
+import { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext, SoundProviderContext } from '../providers/ProviderContext';
+import { WebAudioSoundProvider } from '../providers/sound';
 import { CompositePuzzleProvider } from '../providers/puzzle/CompositePuzzleProvider';
 import { StaticPuzzleProvider } from '../providers/puzzle/StaticPuzzleProvider';
 import { LocalStoragePuzzleProvider } from '../providers/puzzle/LocalStoragePuzzleProvider';
@@ -27,8 +28,10 @@ export default function App() {
   const progressProvider = useMemo(() => new LocalStorageProgressProvider(), []);
   const themeProvider = useMemo(() => new StaticThemeProvider(), []);
   const walletProvider = useMemo(() => new LocalStorageWalletProvider(), []);
+  const soundProvider = useMemo(() => new WebAudioSoundProvider(), []);
 
   return (
+    <SoundProviderContext.Provider value={soundProvider}>
     <PuzzleProviderContext.Provider value={puzzleProvider}>
       <ProgressProviderContext.Provider value={progressProvider}>
         <ThemeProviderContext.Provider value={themeProvider}>
@@ -94,5 +97,6 @@ export default function App() {
         </ThemeProviderContext.Provider>
       </ProgressProviderContext.Provider>
     </PuzzleProviderContext.Provider>
+    </SoundProviderContext.Provider>
   );
 }

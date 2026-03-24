@@ -12,6 +12,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import { deriveRowClues, deriveColClues } from '../src/engine/clues.js';
+import { isLogicSolvable } from '../src/engine/solver.js';
 import { generatePuzzle } from './generate-puzzles.js';
 
 // ── Types that will eventually live in src/engine/types.ts ───────────────────
@@ -143,6 +144,8 @@ function main() {
   const allPuzzles: PuzzleDefinition[] = [];
   const gridEntries: { id: string; difficulty: Difficulty }[] = [];
   let globalIndex = 1;
+  let passedCount = 0;
+  let failedCount = 0;
 
   for (const tier of TIERS) {
     console.log(
@@ -150,16 +153,36 @@ function main() {
     );
     for (let i = 0; i < tier.count; i++) {
       const size = tierSize(tier);
-      const useSymmetry = rng() < 0.3;
-      const solution = generatePuzzle(size, useSymmetry);
+      let solution: number[] | null = null;
+      let solvable = false;
+
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const useSymmetry = rng() < 0.3;
+        const candidate = generatePuzzle(size, useSymmetry);
+        const rowClues = deriveRowClues(candidate, size);
+        const colClues = deriveColClues(candidate, size);
+        if (isLogicSolvable(size, rowClues, colClues)) {
+          solution = candidate;
+          solvable = true;
+          break;
+        }
+        solution = candidate;
+      }
+
+      if (solvable) {
+        passedCount++;
+      } else {
+        failedCount++;
+      }
+
       const id = `${ID}-${String(globalIndex).padStart(3, '0')}`;
       const puzzle: PuzzleDefinition = {
         id,
         title: `${NAME} #${globalIndex}`,
         size,
-        solution,
-        rowClues: deriveRowClues(solution, size),
-        colClues: deriveColClues(solution, size),
+        solution: solution!,
+        rowClues: deriveRowClues(solution!, size),
+        colClues: deriveColClues(solution!, size),
         difficulty: tier.puzzleDifficulty,
         source: 'bundled',
       };
@@ -168,6 +191,8 @@ function main() {
       globalIndex++;
     }
   }
+
+  console.log(`Logic-solvability: ${passedCount} passed, ${failedCount} failed (out of ${allPuzzles.length})`);
 
   const themeGrid = distribute(gridEntries);
 

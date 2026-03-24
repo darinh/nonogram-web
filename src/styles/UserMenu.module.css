@@ -1,0 +1,85 @@
+.wrapper {
+  position: relative;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-pink);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.avatar:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-pink);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 16px;
+  z-index: 100;
+  animation: fadeIn 150ms ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.displayName {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--color-dark);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-light);
+  margin-bottom: 12px;
+  word-break: break-word;
+}
+
+.signOutButton {
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--color-pink);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.signOutButton:hover {
+  background: var(--color-pink-light);
+}
