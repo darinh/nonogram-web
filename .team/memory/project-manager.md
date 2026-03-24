@@ -1,17 +1,14 @@
 # Project Manager Memory
 
 ## Active Context
-- Working on: nonogram puzzle game — **9-feature improvement initiative**
+- Working on: nonogram puzzle game — **9-feature improvement initiative** ✅ COMPLETE
 - Stack: TypeScript 5.9, React 19, Vite 8, Vitest 4, Firebase Hosting
 - Live URL: https://nonogram-game-app.web.app
+- Test count: 328 unit tests (24 files, all passing) + 4 E2E test suites (Playwright)
 - **Previous initiative**: Picture Cross-style themed system — ✅ IMPLEMENTED
-- Test count: 275 (20 test files), all passing. Zero E2E tests.
-- **Current initiative**: 9-feature improvement plan — PLANNED (not yet implemented)
-  - 21 todos across 4 phases, max 11 parallel at Phase 0
-  - Features: E2E tests, login, 5 new themes, sound effects, puzzle quality solver, daily puzzle, streak tracking, tutorial, animations
-  - Specialists: qa-engineer (E2E), ui-engineer (all features)
-  - Plan location: session plan.md
-  - Key architecture decisions: AuthProvider pattern (AD-1), Playwright E2E (AD-2), Web Audio API sounds (AD-3), deterministic daily seed (AD-4), constraint-propagation solver (AD-5), streak in ProgressProvider (AD-6)
+- **Current initiative**: 9-feature improvement plan — ✅ IMPLEMENTED
+  - All 21 todos across 4 phases completed
+  - Delivered: E2E tests (Playwright), login (AuthProvider), 5 themes (Space/Ocean/City/Fantasy/Food), sound effects (Web Audio), solver (constraint propagation), daily puzzle, streak tracking, tutorial/onboarding, CSS animations
 
 ## Learnings
 
@@ -78,3 +75,13 @@
 - **Risks**: Theme content volume (100 puzzles each), solver complexity for 15×15, Web Audio browser differences, Playwright CI flakiness.
 - **Plan location**: Session plan.md
 - **Impact**: Plan only — no implementation yet. 21 todos inserted in SQL with 12 dependency edges.
+- **Outcome**: ALL 21 todos completed in a single session using parallel fleet execution. Tests grew from 275 → 328 (24 unit test files) + 4 E2E test suites. Build passes clean. Key deliverables:
+  - **E2E**: Playwright installed, 4 test suites (smoke, navigation, gameplay, creator), CI pipeline with retries
+  - **Auth**: AuthProvider interface + LocalStorageAuthProvider, LoginPage, UserMenu, wired into App.tsx with /login route
+  - **Themes**: 5 new themes (Space, Ocean, City, Fantasy, Food) × 100 puzzles each, registered in bundledPuzzles + StaticThemeProvider
+  - **Sound**: SoundProvider + WebAudioSoundProvider (fill, cross, undo, fanfare), mute toggle in GamePage
+  - **Solver**: Constraint-propagation line solver, isLogicSolvable validator, integrated into CreatorPage (live badge) + generator scripts
+  - **Daily**: Deterministic daily puzzle generator (date-seeded PRNG), DailyPuzzlePage with countdown, /daily route
+  - **Streak**: StreakData in ProgressProvider, StreakDisplay component, integrated into Stats/Home/DailyPuzzle
+  - **Tutorial**: TutorialOverlay (5-step walkthrough), useTutorial hook, auto-show on first visit, "How to Play" link
+  - **Animations**: CSS transitions on cell fill/strikethrough/confetti, completion overlay entrance animation
