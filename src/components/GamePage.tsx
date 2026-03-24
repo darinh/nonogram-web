@@ -121,14 +121,35 @@ export default function GamePage() {
     rewardedRef.current = false;
   }, [game]);
 
+  const toggleMute = useCallback(() => {
+    const next = !soundProvider.isMuted();
+    soundProvider.setMuted(next);
+    setMuted(next);
+  }, [soundProvider]);
+
+  const paintCellWithSound = useCallback((row: number, col: number, mode: DragMode) => {
+    const painted = game.paintCell(row, col, mode);
+    if (painted && mode === 'fill') {
+      if (toolRef.current === 'fill') soundProvider.playFill();
+      else soundProvider.playCross();
+    }
+    return painted;
+  }, [game.paintCell, soundProvider]);
+
+  const undoWithSound = useCallback(() => {
+    if (game.canUndo) soundProvider.playUndo();
+    game.undo();
+  }, [game, soundProvider]);
+
   // Award coins when puzzle is completed
   useEffect(() => {
     if (game.completed && game.puzzle?.difficulty && !rewardedRef.current) {
       rewardedRef.current = true;
+      soundProvider.playFanfare();
       const reward = calculateReward(game.puzzle.difficulty);
       earn(reward, `Completed: ${game.puzzle.title}`);
     }
-  }, [game.completed, game.puzzle, earn]);
+  }, [game.completed, game.puzzle, earn, soundProvider]);
 
   const handleClueClick = useCallback(
     (axis: 'row' | 'col', index: number) => {
@@ -176,7 +197,7 @@ export default function GamePage() {
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
-        game.undo();
+        undoWithSound();
       } else if (
         ((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) ||
         ((e.ctrlKey || e.metaKey) && e.key === 'y')
@@ -187,10 +208,10 @@ export default function GamePage() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [game]);
+  }, [game, undoWithSound]);
 
   const dragPaint = useDragPaint({
-    onPaintCell: game.paintCell,
+    onPaintCell: paintCellWithSound,
     getDragMode: game.getDragMode,
     gridSize: game.puzzle?.size ?? 0,
   });
@@ -199,9 +220,9 @@ export default function GamePage() {
   const handleActivateCell = useCallback(
     (row: number, col: number) => {
       const mode = game.getDragMode(row, col);
-      if (mode) game.paintCell(row, col, mode);
+      if (mode) paintCellWithSound(row, col, mode);
     },
-    [game],
+    [game, paintCellWithSound],
   );
 
   // Pre-generate confetti particles so they're stable across renders
@@ -268,6 +289,14 @@ export default function GamePage() {
         <div className={styles.headerRight}>
           <CoinDisplay />
           <button
+            className={styles.muteButton}
+            onClick={toggleMute}
+            title={muted ? 'Unmute sounds' : 'Mute sounds'}
+            aria-label={muted ? 'Unmute sounds' : 'Mute sounds'}
+          >
+            {muted ? '🔇' : '🔊'}
+          </button>
+          <button
             className={styles.exportButton}
             onClick={() => downloadPuzzleFile(game.puzzle as PuzzleDefinition)}
             title="Export puzzle"
@@ -282,7 +311,7 @@ export default function GamePage() {
           activeTool={game.tool}
           onToolChange={game.setTool}
           onReset={handleReset}
-          onUndo={game.undo}
+          onUndo={undoWithSound}
           onRedo={game.redo}
           canUndo={game.canUndo}
           canRedo={game.canRedo}
