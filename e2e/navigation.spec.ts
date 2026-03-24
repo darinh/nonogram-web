@@ -33,14 +33,14 @@ test.describe('Navigation', () => {
 
   test('puzzle browser shows puzzle cards', async ({ page }) => {
     await page.goto('/puzzles');
-    await expect(page.locator('text=Heart')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Heart' })).toBeVisible();
   });
 
   test('theme browser shows theme cards', async ({ page }) => {
     await page.goto('/themes');
-    await expect(page.locator('text=Nature')).toBeVisible();
-    await expect(page.locator('text=Space')).toBeVisible();
-    await expect(page.locator('text=Ocean')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Nature' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Space' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Ocean' })).toBeVisible();
   });
 
   test('stats page shows empty state', async ({ page }) => {
@@ -51,6 +51,6 @@ test.describe('Navigation', () => {
 
   test('create page loads', async ({ page }) => {
     await page.goto('/create');
-    await expect(page.locator('text=Create')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Create Puzzle/ })).toBeVisible();
   });
 });

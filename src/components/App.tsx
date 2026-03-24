@@ -1,9 +1,11 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext, SoundProviderContext } from '../providers/ProviderContext';
+import { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext, SoundProviderContext, AuthProviderContext } from '../providers/ProviderContext';
 import { WebAudioSoundProvider } from '../providers/sound';
+import { LocalStorageAuthProvider } from '../providers/auth';
 import { CompositePuzzleProvider } from '../providers/puzzle/CompositePuzzleProvider';
 import { StaticPuzzleProvider } from '../providers/puzzle/StaticPuzzleProvider';
 import { LocalStoragePuzzleProvider } from '../providers/puzzle/LocalStoragePuzzleProvider';
+import { DailyPuzzleProvider } from '../providers/puzzle/DailyPuzzleProvider';
 import { LocalStorageProgressProvider } from '../providers/progress/LocalStorageProgressProvider';
 import { StaticThemeProvider } from '../providers/theme';
 import { LocalStorageWalletProvider } from '../providers/wallet';
@@ -12,25 +14,31 @@ import PuzzleBrowser from './PuzzleBrowser';
 import GamePage from './GamePage';
 import CreatorPage from './CreatorPage';
 import StatsPage from './StatsPage';
+import DailyPuzzlePage from './DailyPuzzlePage';
+import LoginPage from './LoginPage';
+import UserMenu from './UserMenu';
 import ThemeBrowserPage from './ThemeBrowserPage';
 import ThemeGridPage from './ThemeGridPage';
 import { CoinDisplay } from './CoinDisplay';
 import ThemeToggle from './ThemeToggle';
+import { useAuth } from '../hooks/useAuth';
 import styles from '../styles/App.module.css';
 import '../styles/global.css';
 import { useMemo } from 'react';
 
 export default function App() {
   const puzzleProvider = useMemo(
-    () => new CompositePuzzleProvider([new StaticPuzzleProvider(), new LocalStoragePuzzleProvider()]),
+    () => new CompositePuzzleProvider([new StaticPuzzleProvider(), new DailyPuzzleProvider(), new LocalStoragePuzzleProvider()]),
     [],
   );
   const progressProvider = useMemo(() => new LocalStorageProgressProvider(), []);
   const themeProvider = useMemo(() => new StaticThemeProvider(), []);
   const walletProvider = useMemo(() => new LocalStorageWalletProvider(), []);
   const soundProvider = useMemo(() => new WebAudioSoundProvider(), []);
+  const authProvider = useMemo(() => new LocalStorageAuthProvider(), []);
 
   return (
+    <AuthProviderContext.Provider value={authProvider}>
     <SoundProviderContext.Provider value={soundProvider}>
     <PuzzleProviderContext.Provider value={puzzleProvider}>
       <ProgressProviderContext.Provider value={progressProvider}>
@@ -60,6 +68,14 @@ export default function App() {
                       Themes
                     </NavLink>
                     <NavLink
+                      to="/daily"
+                      className={({ isActive }) =>
+                        `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+                      }
+                    >
+                      Daily
+                    </NavLink>
+                    <NavLink
                       to="/create"
                       className={({ isActive }) =>
                         `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
@@ -77,6 +93,7 @@ export default function App() {
                     </NavLink>
                   </div>
                   <CoinDisplay />
+                  <NavAuth />
                   <ThemeToggle />
                 </nav>
                 <main className={styles.content}>
@@ -86,9 +103,11 @@ export default function App() {
                     <Route path="/themes" element={<ThemeBrowserPage />} />
                     <Route path="/themes/:themeId" element={<ThemeGridPage />} />
                     <Route path="/themes/:themeId/:puzzleId" element={<GamePage />} />
+                    <Route path="/daily" element={<DailyPuzzlePage />} />
                     <Route path="/play/:puzzleId" element={<GamePage />} />
                     <Route path="/create" element={<CreatorPage />} />
                     <Route path="/stats" element={<StatsPage />} />
+                    <Route path="/login" element={<LoginPage />} />
                   </Routes>
                 </main>
               </div>
@@ -98,5 +117,12 @@ export default function App() {
       </ProgressProviderContext.Provider>
     </PuzzleProviderContext.Provider>
     </SoundProviderContext.Provider>
+    </AuthProviderContext.Provider>
   );
+}
+
+function NavAuth() {
+  const { user } = useAuth();
+  if (user) return <UserMenu />;
+  return <NavLink to="/login" className={styles.navLink}>Login</NavLink>;
 }

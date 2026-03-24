@@ -1,0 +1,152 @@
+.page {
+  text-align: center;
+  padding: 48px 24px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--color-orange);
+  background: rgba(242, 135, 5, 0.1);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: var(--color-dark);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-dark);
+  opacity: 0.6;
+  margin-bottom: 32px;
+}
+
+/* ── Puzzle Card ─────────────────────────────────────── */
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 32px 24px;
+  margin-bottom: 32px;
+}
+
+.prompt {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--color-dark);
+  margin-bottom: 20px;
+}
+
+.playButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 40px;
+  border-radius: var(--radius-pill);
+  background: var(--color-pink);
+  color: var(--color-white);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.125rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-pink);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.playButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(242, 5, 116, 0.3);
+}
+
+/* ── Completed State ─────────────────────────────────── */
+
+.completedIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-green);
+  color: var(--color-white);
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.completedText {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-green);
+  margin-bottom: 8px;
+}
+
+.comeback {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--color-dark);
+  opacity: 0.6;
+}
+
+/* ── Countdown ───────────────────────────────────────── */
+
+.countdownSection {
+  margin-top: 8px;
+}
+
+.countdownLabel {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+
+.countdown {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 2rem;
+  color: var(--color-blue);
+  letter-spacing: 0.05em;
+}
+
+/* ── Mobile ──────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .page {
+    padding: 32px 16px;
+  }
+
+  .title {
+    font-size: 1.375rem;
+  }
+
+  .countdown {
+    font-size: 1.5rem;
+  }
+
+  .playButton {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+}
