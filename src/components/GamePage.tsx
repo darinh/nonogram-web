@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { usePuzzleProvider, useProgressProvider, useThemeProvider, useSoundProvider } from '../providers/ProviderContext';
+import { usePuzzleProvider, useProgressProvider, useThemeProvider, useSoundProvider } from '../providers/useProviders';
 import { useNonogramGame } from '../hooks/useNonogramGame';
 import { useWallet } from '../hooks/useWallet';
 import { useTutorial } from '../hooks/useTutorial';
@@ -127,14 +127,15 @@ export default function GamePage() {
     setMuted(next);
   }, [soundProvider]);
 
+  const gamePaintCell = game.paintCell;
   const paintCellWithSound = useCallback((row: number, col: number, mode: DragMode) => {
-    const painted = game.paintCell(row, col, mode);
+    const painted = gamePaintCell(row, col, mode);
     if (painted && mode === 'fill') {
       if (toolRef.current === 'fill') soundProvider.playFill();
       else soundProvider.playCross();
     }
     return painted;
-  }, [game.paintCell, soundProvider]);
+  }, [gamePaintCell, soundProvider]);
 
   const undoWithSound = useCallback(() => {
     if (game.canUndo) soundProvider.playUndo();

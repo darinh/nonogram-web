@@ -3,7 +3,7 @@ import { usePuzzles } from '../hooks/usePuzzles';
 import { useProgress } from '../hooks/useProgress';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { downloadPuzzleFile, importPuzzle, readPuzzleFile } from '../engine/serialization';
-import { usePuzzleProvider } from '../providers/ProviderContext';
+import { usePuzzleProvider } from '../providers/useProviders';
 import PuzzleCard from './PuzzleCard';
 import styles from '../styles/PuzzleBrowser.module.css';
 import type { GridSize } from '../engine/types';

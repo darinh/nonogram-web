@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { WalletState } from '../engine/types';
-import { useWalletProvider } from '../providers/ProviderContext';
+import { useWalletProvider } from '../providers/useProviders';
 import { earnCoins, spendCoins, createEmptyWallet } from '../engine/coins';
 
 export function useWallet() {

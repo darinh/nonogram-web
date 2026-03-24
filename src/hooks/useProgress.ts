@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { PuzzleProgress } from '../engine/types';
-import { useProgressProvider } from '../providers/ProviderContext';
+import { useProgressProvider } from '../providers/useProviders';
 
 export function useProgress(puzzleId?: string) {
   const provider = useProgressProvider();

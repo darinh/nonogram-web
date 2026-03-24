@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useProgressProvider } from '../providers/ProviderContext';
+import { useProgressProvider } from '../providers/useProviders';
 import type { StreakData } from '../providers/progress/ProgressProvider';
 
 export function useStreak() {

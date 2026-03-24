@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useWallet } from '../hooks/useWallet';
 import styles from '../styles/CoinDisplay.module.css';
 
@@ -16,15 +16,13 @@ function formatCoins(n: number): string {
  */
 export function CoinDisplay() {
   const { wallet, loading } = useWallet();
-  const prevCoinsRef = useRef(wallet.coins);
+  const [prevCoins, setPrevCoins] = useState(wallet.coins);
   const [animating, setAnimating] = useState(false);
 
-  useEffect(() => {
-    if (wallet.coins !== prevCoinsRef.current) {
-      prevCoinsRef.current = wallet.coins;
-      setAnimating(true);
-    }
-  }, [wallet.coins]);
+  if (wallet.coins !== prevCoins) {
+    setPrevCoins(wallet.coins);
+    setAnimating(true);
+  }
 
   if (loading) return null;
 

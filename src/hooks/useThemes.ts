@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ThemeDefinition, ThemeProgress } from '../engine/types';
-import { useThemeProvider } from '../providers/ProviderContext';
-import { useProgressProvider } from '../providers/ProviderContext';
+import { useThemeProvider } from '../providers/useProviders';
+import { useProgressProvider } from '../providers/useProviders';
 
 export function useThemes() {
   const themeProvider = useThemeProvider();
@@ -22,8 +22,15 @@ export function useThemes() {
   }, [themeProvider, progressProvider]);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    Promise.all([
+      themeProvider.getAllThemes(),
+      progressProvider.getAllThemeProgress(),
+    ]).then(([allThemes, allProgress]) => {
+      setThemes(allThemes);
+      setThemeProgress(new Map(allProgress.map(p => [p.themeId, p])));
+      setLoading(false);
+    });
+  }, [themeProvider, progressProvider]);
 
   return { themes, themeProgress, loading, refresh };
 }

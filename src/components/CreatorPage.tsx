@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePuzzleProvider } from '../providers/ProviderContext';
+import { usePuzzleProvider } from '../providers/useProviders';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { createPuzzleFromImage, createPuzzleFromGrid } from '../engine/pixelizer';
 import { deriveRowClues, deriveColClues } from '../engine/clues';
@@ -24,7 +24,6 @@ export default function CreatorPage() {
   const [solvability, setSolvability] = useState<'idle' | 'checking' | 'solvable' | 'unsolvable'>('idle');
   const imageRef = useRef<HTMLImageElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const solverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const updatePreview = useCallback((img: HTMLImageElement, sz: GridSize, thresh: number) => {
     const canvas = document.createElement('canvas');
@@ -106,28 +105,31 @@ export default function CreatorPage() {
   };
 
   const activeGrid = tab === 'photo' ? previewGrid : manualGrid;
+  const isGridEmpty = !activeGrid || activeGrid.every(c => c === 0);
 
-  // Debounced logic-solvability check
+  // Synchronous state adjustment on dependency change (React-recommended pattern)
+  const [prevActiveGrid, setPrevActiveGrid] = useState<number[] | null>(null);
+  const [prevSolverSize, setPrevSolverSize] = useState(size);
+
+  if (activeGrid !== prevActiveGrid || size !== prevSolverSize) {
+    setPrevActiveGrid(activeGrid);
+    setPrevSolverSize(size);
+    setSolvability(isGridEmpty ? 'idle' : 'checking');
+  }
+
+  // Debounced logic-solvability check (async callback in setTimeout is fine)
   useEffect(() => {
-    if (!activeGrid || activeGrid.every(c => c === 0)) {
-      setSolvability('idle');
-      return;
-    }
+    if (isGridEmpty) return;
 
-    if (solverTimerRef.current) clearTimeout(solverTimerRef.current);
-    setSolvability('checking');
-
-    solverTimerRef.current = setTimeout(() => {
-      const rowClues = deriveRowClues(activeGrid, size);
-      const colClues = deriveColClues(activeGrid, size);
+    const timerId = setTimeout(() => {
+      const rowClues = deriveRowClues(activeGrid!, size);
+      const colClues = deriveColClues(activeGrid!, size);
       const result = isLogicSolvable(size, rowClues, colClues);
       setSolvability(result ? 'solvable' : 'unsolvable');
     }, 500);
 
-    return () => {
-      if (solverTimerRef.current) clearTimeout(solverTimerRef.current);
-    };
-  }, [activeGrid, size]);
+    return () => clearTimeout(timerId);
+  }, [activeGrid, size, isGridEmpty]);
 
   return (
     <div className={styles.page}>

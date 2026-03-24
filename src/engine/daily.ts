@@ -84,6 +84,6 @@ export function generateDailyPuzzle(dateString: string): PuzzleDefinition {
 }
 
 function formatDate(dateString: string): string {
-  const date = new Date(dateString + 'T12:00:00');
-  return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const date = new Date(dateString + 'T12:00:00Z');
+  return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
 }

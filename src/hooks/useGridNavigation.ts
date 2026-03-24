@@ -13,7 +13,7 @@ export interface UseGridNavigationReturn {
   setFocusedCell: (cell: { row: number; col: number } | null) => void;
   handleCellKeyDown: (e: React.KeyboardEvent) => void;
   getCellTabIndex: (row: number, col: number) => number;
-  gridRef: React.RefObject<HTMLDivElement | null>;
+  setGridElement: (el: HTMLDivElement | null) => void;
 }
 
 /**
@@ -31,12 +31,18 @@ export function useGridNavigation({
   const [focusedCell, setFocusedCell] = useState<{ row: number; col: number } | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
 
+  const setGridElement = useCallback((el: HTMLDivElement | null) => {
+    gridRef.current = el;
+  }, []);
+
   // Keep a ref to the latest onActivateCell to avoid stale closures
   const onActivateCellRef = useRef(onActivateCell);
-  onActivateCellRef.current = onActivateCell;
-
   const onToolChangeRef = useRef(onToolChange);
-  onToolChangeRef.current = onToolChange;
+
+  useEffect(() => {
+    onActivateCellRef.current = onActivateCell;
+    onToolChangeRef.current = onToolChange;
+  }, [onActivateCell, onToolChange]);
 
   // When focusedCell changes, programmatically move DOM focus
   useEffect(() => {
@@ -130,6 +136,6 @@ export function useGridNavigation({
     setFocusedCell,
     handleCellKeyDown,
     getCellTabIndex,
-    gridRef,
+    setGridElement,
   };
 }

@@ -1,4 +1,4 @@
-import { useSoundProvider } from '../providers/ProviderContext';
+import { useSoundProvider } from '../providers/useProviders';
 
 export function useSound() {
   const soundProvider = useSoundProvider();

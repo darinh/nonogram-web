@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuthProvider } from '../providers/ProviderContext';
+import { useAuthProvider } from '../providers/useProviders';
 import type { User } from '../engine/auth-types';
 
 export function useAuth() {

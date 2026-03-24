@@ -67,7 +67,7 @@ export default function NonogramGrid({
     focusedCell,
     handleCellKeyDown,
     getCellTabIndex,
-    gridRef,
+    setGridElement,
   } = useGridNavigation({
     size,
     onActivateCell,
@@ -116,9 +116,9 @@ export default function NonogramGrid({
   return (
     <div
       ref={(el) => {
-        // Merge refs: containerRef for pointer capture, gridRef for keyboard focus management
+        // Merge refs: containerRef for pointer capture, setGridElement for keyboard focus management
         (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-        (gridRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+        setGridElement(el);
       }}
       className={`${styles.container} ${completed ? styles.completed : ''}`}
       role="grid"

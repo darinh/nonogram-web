@@ -16,20 +16,24 @@ function formatCountdown(ms: number): string {
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-function msUntilMidnight(): number {
+function msUntilUTCMidnight(): number {
   const now = new Date();
-  const tomorrow = new Date(now);
-  tomorrow.setHours(24, 0, 0, 0);
-  return tomorrow.getTime() - now.getTime();
+  const tomorrow = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + 1,
+  );
+  return tomorrow - now.getTime();
 }
 
 function formatDisplayDate(dateString: string): string {
-  const date = new Date(dateString + 'T12:00:00');
+  const date = new Date(dateString + 'T12:00:00Z');
   return date.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
+    timeZone: 'UTC',
   });
 }
 
@@ -40,10 +44,10 @@ export default function DailyPuzzlePage() {
   const todayDate = getTodayDateString();
   const { progress } = useProgress(todayId);
   const { streak, recordCompletion } = useStreak();
-  const [countdown, setCountdown] = useState(msUntilMidnight());
+  const [countdown, setCountdown] = useState(msUntilUTCMidnight());
 
   useEffect(() => {
-    const id = setInterval(() => setCountdown(msUntilMidnight()), 1000);
+    const id = setInterval(() => setCountdown(msUntilUTCMidnight()), 1000);
     return () => clearInterval(id);
   }, []);
 

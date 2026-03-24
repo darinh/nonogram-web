@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { PuzzleDefinition } from '../engine/types';
-import { usePuzzleProvider } from '../providers/ProviderContext';
+import { usePuzzleProvider } from '../providers/useProviders';
 
 export function usePuzzles() {
   const provider = usePuzzleProvider();
@@ -15,8 +15,11 @@ export function usePuzzles() {
   }, [provider]);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    provider.getAllPuzzles().then(all => {
+      setPuzzles(all);
+      setLoading(false);
+    });
+  }, [provider]);
 
   return { puzzles, loading, refresh };
 }
