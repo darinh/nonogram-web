@@ -1,0 +1,156 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.powerUpButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-light);
+  background: var(--color-white);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-dark);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.powerUpButton:hover:not(:disabled) {
+  border-color: var(--color-blue, #0597F2);
+  color: var(--color-blue, #0597F2);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.powerUpButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ── Used state ──────────────────────────────────────── */
+
+.used {
+  background: #F0FDF4;
+  border-color: #22C55E;
+  color: #16A34A;
+}
+
+.used:disabled {
+  opacity: 0.7;
+}
+
+/* ── Sub-elements ────────────────────────────────────── */
+
+.icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.cost {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* ── Inline confirmation ─────────────────────────────── */
+
+.confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-blue, #0597F2);
+  background: var(--color-blue-light, #E8F4FD);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--color-dark);
+  animation: fadeIn var(--transition) ease;
+}
+
+.confirmYes {
+  padding: 4px 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--color-pink, #F20574);
+  color: var(--color-white, #fff);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.confirmYes:hover {
+  background: #d00466;
+  transform: translateY(-1px);
+}
+
+.confirmNo {
+  padding: 4px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-light, #E6E6E6);
+  background: var(--color-white, #fff);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-dark);
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.confirmNo:hover {
+  border-color: var(--color-dark);
+  transform: translateY(-1px);
+}
+
+/* ── Animation ───────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Responsive: stack on small screens ──────────────── */
+
+@media (max-width: 640px) {
+  .toolbar {
+    flex-direction: column;
+  }
+
+  .powerUpButton {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    min-height: 44px;
+  }
+
+  .confirm {
+    font-size: 0.75rem;
+    min-height: 44px;
+  }
+
+  .icon {
+    font-size: 0.85rem;
+  }
+}
