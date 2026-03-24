@@ -1,21 +1,26 @@
-# Dev-Team Project Configuration
-
 project:
-  name: "nonogram"
-  description: "Web-based nonogram puzzle game with React/TypeScript, Mahoako-inspired theme"
-  stack: ["TypeScript", "React", "Vite", "Vitest", "Firebase Hosting"]
-
+  name: nonogram
+  description: Web-based nonogram puzzle game with React/TypeScript, Mahoako-inspired
+    theme
+  stack:
+  - TypeScript
+  - React
+  - Vite
+  - Vitest
+  - Firebase Hosting
 upstream:
-  mode: "manual"
-  repo: "darinh/dev-team"
+  mode: manual
+  repo: darinh/dev-team
   auto_pr: false
   auto_issue: false
   require_proof: true
-
 probation:
   required_tasks: 3
   require_tech_lead_review: true
-
 retrospective:
   failure_threshold: 3
   trigger_on_repeat: true
+framework:
+  version: 2.1.0
+  installed_at: '2026-03-21'
+  last_upgraded: '2026-03-24'
