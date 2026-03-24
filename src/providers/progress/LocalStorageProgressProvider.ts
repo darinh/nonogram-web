@@ -1,8 +1,10 @@
 import type { PuzzleProgress, ThemeProgress } from '../../engine/types';
 import type { ProgressProvider } from './ProgressProvider';
+import type { StreakData } from './ProgressProvider';
 
 const STORAGE_KEY = 'nonogram-progress';
 const THEME_STORAGE_KEY = 'nonogram-theme-progress';
+const STREAK_STORAGE_KEY = 'nonogram_streak';
 
 export class LocalStorageProgressProvider implements ProgressProvider {
   private getAll(): Record<string, PuzzleProgress> {
@@ -64,4 +66,42 @@ export class LocalStorageProgressProvider implements ProgressProvider {
   async getAllThemeProgress(): Promise<ThemeProgress[]> {
     return Object.values(this.getAllThemes());
   }
+
+  private getStreakData(): StreakData {
+    try {
+      const data = localStorage.getItem(STREAK_STORAGE_KEY);
+      if (data) return JSON.parse(data);
+    } catch { /* ignore */ }
+    return { current: 0, longest: 0, lastDate: '' };
+  }
+
+  private setStreakData(data: StreakData): void {
+    localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(data));
+  }
+
+  async getStreak(): Promise<StreakData> {
+    return this.getStreakData();
+  }
+
+  async recordDailyCompletion(date: string): Promise<void> {
+    const streak = this.getStreakData();
+
+    if (streak.lastDate === date) return;
+
+    if (streak.lastDate === getYesterday(date)) {
+      streak.current += 1;
+    } else {
+      streak.current = 1;
+    }
+
+    streak.longest = Math.max(streak.longest, streak.current);
+    streak.lastDate = date;
+    this.setStreakData(streak);
+  }
+}
+
+function getYesterday(dateStr: string): string {
+  const date = new Date(dateStr + 'T12:00:00');
+  date.setDate(date.getDate() - 1);
+  return date.toISOString().slice(0, 10);
 }

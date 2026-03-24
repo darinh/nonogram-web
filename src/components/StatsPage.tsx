@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePuzzles } from '../hooks/usePuzzles';
 import { useProgress } from '../hooks/useProgress';
+import { useStreak } from '../hooks/useStreak';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { formatTime, formatDuration, formatRelativeDate } from '../utils/formatTime';
 import type { PuzzleDefinition, PuzzleProgress, GridSize, Difficulty } from '../engine/types';
@@ -29,13 +30,14 @@ export default function StatsPage() {
 
   const { puzzles, loading: puzzlesLoading } = usePuzzles();
   const { allProgress, loading: progressLoading } = useProgress();
+  const { streak, loading: streakLoading } = useStreak();
   const navigate = useNavigate();
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [sortField, setSortField] = useState<SortField>('lastPlayed');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
 
-  const loading = puzzlesLoading || progressLoading;
+  const loading = puzzlesLoading || progressLoading || streakLoading;
 
   /* ── Derived data ───────────────────────────────────── */
 
@@ -241,6 +243,16 @@ export default function StatsPage() {
           <div className={styles.cardValue}>{formatTime(bestTime)}</div>
           <div className={styles.cardLabel}>Best Time</div>
         </div>
+        {streak.current > 0 && (
+          <div className={styles.card} role="listitem">
+            <div className={styles.cardIcon} aria-hidden="true">🔥</div>
+            <div className={styles.cardValue}>{streak.current}</div>
+            <div className={styles.cardLabel}>Day Streak</div>
+            {streak.longest > streak.current && (
+              <div className={styles.cardLabel}>Best: {streak.longest}</div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Completion by Size */}

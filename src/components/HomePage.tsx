@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { usePuzzles } from '../hooks/usePuzzles';
 import { useProgress } from '../hooks/useProgress';
+import { useStreak } from '../hooks/useStreak';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useTutorial } from '../hooks/useTutorial';
+import StreakDisplay from './StreakDisplay';
 import styles from '../styles/HomePage.module.css';
 
 export default function HomePage() {
@@ -10,6 +12,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { puzzles } = usePuzzles();
   const { allProgress } = useProgress();
+  const { streak } = useStreak();
   const { resetTutorial } = useTutorial();
 
   const inProgressPuzzles = allProgress
@@ -24,6 +27,12 @@ export default function HomePage() {
     <div className={styles.hero}>
       <h1 className={styles.title}>Nonogram</h1>
       <p className={styles.subtitle}>Logic puzzles, one cell at a time ★</p>
+
+      {streak.current > 0 && (
+        <div style={{ marginTop: '12px' }}>
+          <StreakDisplay current={streak.current} longest={streak.longest} />
+        </div>
+      )}
 
       <div className={styles.nav}>
         <button className={styles.actionButton} onClick={() => navigate('/puzzles')}>

@@ -66,6 +66,8 @@ function makeProgressProvider(progress: PuzzleProgress[]): ProgressProvider {
     getThemeProgress: vi.fn().mockResolvedValue(null),
     saveThemeProgress: vi.fn(),
     getAllThemeProgress: vi.fn().mockResolvedValue([]),
+    getStreak: vi.fn().mockResolvedValue({ current: 0, longest: 0, lastDate: '' }),
+    recordDailyCompletion: vi.fn(),
   };
 }
 

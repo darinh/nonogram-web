@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProgress } from '../hooks/useProgress';
+import { useStreak } from '../hooks/useStreak';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { getTodayDateString } from '../engine/daily';
+import StreakDisplay from './StreakDisplay';
 import styles from '../styles/DailyPuzzlePage.module.css';
 
 function formatCountdown(ms: number): string {
@@ -35,7 +37,9 @@ export default function DailyPuzzlePage() {
   usePageTitle('Daily Puzzle — Nonogram');
   const navigate = useNavigate();
   const todayId = `daily-${getTodayDateString()}`;
+  const todayDate = getTodayDateString();
   const { progress } = useProgress(todayId);
+  const { streak, recordCompletion } = useStreak();
   const [countdown, setCountdown] = useState(msUntilMidnight());
 
   useEffect(() => {
@@ -44,6 +48,13 @@ export default function DailyPuzzlePage() {
   }, []);
 
   const completed = progress?.completed ?? false;
+
+  // Record daily completion when puzzle is completed
+  useEffect(() => {
+    if (completed) {
+      recordCompletion(todayDate);
+    }
+  }, [completed, todayDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={styles.page}>
@@ -56,6 +67,11 @@ export default function DailyPuzzlePage() {
           <>
             <div className={styles.completedIcon}>✓</div>
             <p className={styles.completedText}>You solved today's puzzle!</p>
+            {streak.current > 0 && (
+              <div style={{ margin: '12px 0' }}>
+                <StreakDisplay current={streak.current} longest={streak.longest} />
+              </div>
+            )}
             <p className={styles.comeback}>Come back tomorrow for a new puzzle.</p>
           </>
         ) : (
