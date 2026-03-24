@@ -82,6 +82,7 @@ export default function App() {
                     <Route path="/puzzles" element={<PuzzleBrowser />} />
                     <Route path="/themes" element={<ThemeBrowserPage />} />
                     <Route path="/themes/:themeId" element={<ThemeGridPage />} />
+                    <Route path="/themes/:themeId/:puzzleId" element={<GamePage />} />
                     <Route path="/play/:puzzleId" element={<GamePage />} />
                     <Route path="/create" element={<CreatorPage />} />
                     <Route path="/stats" element={<StatsPage />} />

@@ -17,6 +17,14 @@
   margin-bottom: 24px;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .backButton {
   display: inline-flex;
   align-items: center;
@@ -48,6 +56,32 @@
   font-size: 1.25rem;
   color: var(--color-dark);
   flex: 1;
+  min-width: 0;
+}
+
+/* ── Breadcrumb ─────────────────────────────────────── */
+
+.breadcrumb {
+  display: inline;
+  font-weight: 400;
+  color: var(--color-muted, #999);
+}
+
+.breadcrumbLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: inherit;
+  color: var(--color-blue);
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.breadcrumbLink:hover {
+  color: var(--color-pink);
+  text-decoration: underline;
 }
 
 .exportButton {
@@ -190,6 +224,18 @@
   background: #74BF04;
 }
 
+/* ── Coin Reward ─────────────────────────────────────── */
+
+.coinReward {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: #d4a017;
+  margin: 8px 0 4px;
+  animation: popIn 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms forwards;
+  opacity: 0;
+}
+
 /* ── Completion Buttons ──────────────────────────────── */
 
 .completionButtons {
@@ -238,6 +284,26 @@
 .continueButton:hover {
   border-color: var(--color-blue);
   color: var(--color-blue);
+  transform: translateY(-2px);
+}
+
+.themeButton {
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-green);
+  background: #74BF04;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.themeButton:hover {
+  background: #5fa003;
   transform: translateY(-2px);
 }
 

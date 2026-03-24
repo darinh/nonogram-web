@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { usePuzzleProvider, useProgressProvider } from '../providers/ProviderContext';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { usePuzzleProvider, useProgressProvider, useThemeProvider } from '../providers/ProviderContext';
 import { useNonogramGame } from '../hooks/useNonogramGame';
 import { useWallet } from '../hooks/useWallet';
 import { useDragPaint } from '../hooks/useDragPaint';
@@ -13,6 +13,7 @@ import NonogramGrid from './NonogramGrid';
 import Toolbar from './Toolbar';
 import HintPrompt from './HintPrompt';
 import PowerUpToolbar from './PowerUpToolbar';
+import { CoinDisplay } from './CoinDisplay';
 import styles from '../styles/GamePage.module.css';
 import type { PuzzleDefinition } from '../engine/types';
 
@@ -51,6 +52,11 @@ export default function GamePage() {
   const [bombUsed, setBombUsed] = useState(false);
   const rewardedRef = useRef(false);
 
+  const [searchParams] = useSearchParams();
+  const themeId = searchParams.get('theme');
+  const themeProvider = useThemeProvider();
+  const [themeName, setThemeName] = useState<string | null>(null);
+
   const onSaveProgress = useCallback(
     (progress: import('../engine/types').PuzzleProgress) => {
       progressProvider.saveProgress(progress);
@@ -74,11 +80,24 @@ export default function GamePage() {
       game.loadPuzzle(puzzle, progress);
       setElapsedTime(progress?.elapsedTime ?? 0);
       rewardedRef.current = progress?.completed ?? false;
+      setEdgeRevealUsed(false);
+      setBombUsed(false);
       setLoading(false);
     }
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [puzzleId]);
+
+  // Load theme name when in theme context
+  useEffect(() => {
+    if (!themeId) {
+      setThemeName(null);
+      return;
+    }
+    themeProvider.getThemeById(themeId).then(theme => {
+      setThemeName(theme?.title ?? null);
+    });
+  }, [themeId, themeProvider]);
 
   // Timer: tick every second while puzzle is active
   useEffect(() => {
@@ -199,27 +218,56 @@ export default function GamePage() {
     ? `${styles.difficultyBadge} ${styles[`badge${difficulty.charAt(0).toUpperCase()}${difficulty.slice(1)}`]}`
     : undefined;
 
+  const coinReward = difficulty ? calculateReward(difficulty) : 0;
+  const backUrl = themeId ? `/themes/${themeId}` : '/puzzles';
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <button className={styles.backButton} onClick={() => navigate('/puzzles')}>
-          ← Back
+        <button className={styles.backButton} onClick={() => navigate(backUrl)}>
+          ← {themeId ? 'Theme' : 'Back'}
         </button>
-        <h1 className={styles.puzzleTitle}>
-          {game.puzzle.title}
-          {difficulty && (
-            <span className={badgeClass}>
-              {difficulty} · {game.puzzle.size}×{game.puzzle.size}
+
+        {themeName ? (
+          <h1 className={styles.puzzleTitle}>
+            <span className={styles.breadcrumb}>
+              <button
+                className={styles.breadcrumbLink}
+                onClick={() => navigate(backUrl)}
+                type="button"
+              >
+                {themeName}
+              </button>
+              <span aria-hidden="true"> › </span>
             </span>
-          )}
-        </h1>
-        <button
-          className={styles.exportButton}
-          onClick={() => downloadPuzzleFile(game.puzzle as PuzzleDefinition)}
-          title="Export puzzle"
-        >
-          ↗ Export
-        </button>
+            {game.puzzle.title}
+            {difficulty && (
+              <span className={badgeClass}>
+                {difficulty} · {game.puzzle.size}×{game.puzzle.size}
+              </span>
+            )}
+          </h1>
+        ) : (
+          <h1 className={styles.puzzleTitle}>
+            {game.puzzle.title}
+            {difficulty && (
+              <span className={badgeClass}>
+                {difficulty} · {game.puzzle.size}×{game.puzzle.size}
+              </span>
+            )}
+          </h1>
+        )}
+
+        <div className={styles.headerRight}>
+          <CoinDisplay />
+          <button
+            className={styles.exportButton}
+            onClick={() => downloadPuzzleFile(game.puzzle as PuzzleDefinition)}
+            title="Export puzzle"
+          >
+            ↗ Export
+          </button>
+        </div>
       </div>
 
       <div className={styles.gameArea}>
@@ -294,10 +342,23 @@ export default function GamePage() {
             <span className={styles.checkMark}>✓</span>
             <h2>Puzzle Complete!</h2>
             <p>Solved "{game.puzzle.title}" in {formatTime(elapsedTime)}!</p>
+            {coinReward > 0 && (
+              <p className={styles.coinReward} aria-label={`Earned ${coinReward} coins`}>
+                +{coinReward} <span aria-hidden="true">🪙</span>
+              </p>
+            )}
             <div className={styles.completionButtons}>
               <button className={styles.playAgainButton} onClick={handleReset}>
                 Play Again
               </button>
+              {themeId && (
+                <button
+                  className={styles.themeButton}
+                  onClick={() => navigate(`/themes/${themeId}`)}
+                >
+                  Back to Theme
+                </button>
+              )}
               <button className={styles.continueButton} onClick={() => navigate('/puzzles')}>
                 More Puzzles
               </button>

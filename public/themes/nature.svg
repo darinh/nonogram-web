@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Nature theme pixel art background -->
+  <!-- Sky -->
+  <rect width="100" height="50" fill="#87CEEB"/>
+  <!-- Ground -->
+  <rect y="50" width="100" height="50" fill="#228B22"/>
+  <!-- Sun -->
+  <rect x="75" y="5" width="10" height="10" fill="#FFD700"/>
+  <rect x="70" y="10" width="5" height="5" fill="#FFD700"/>
+  <rect x="85" y="10" width="5" height="5" fill="#FFD700"/>
+  <rect x="75" y="15" width="10" height="5" fill="#FFD700"/>
+  <!-- Tree trunk -->
+  <rect x="20" y="35" width="10" height="20" fill="#8B4513"/>
+  <!-- Tree foliage -->
+  <rect x="10" y="20" width="30" height="15" fill="#006400"/>
+  <rect x="15" y="15" width="20" height="10" fill="#006400"/>
+  <rect x="20" y="10" width="10" height="5" fill="#006400"/>
+  <!-- Flowers -->
+  <rect x="55" y="55" width="5" height="5" fill="#FF69B4"/>
+  <rect x="65" y="60" width="5" height="5" fill="#FF4500"/>
+  <rect x="45" y="65" width="5" height="5" fill="#FFD700"/>
+  <rect x="80" y="58" width="5" height="5" fill="#FF69B4"/>
+  <!-- Grass detail -->
+  <rect x="5" y="50" width="5" height="5" fill="#32CD32"/>
+  <rect x="35" y="50" width="5" height="5" fill="#32CD32"/>
+  <rect x="60" y="50" width="5" height="5" fill="#32CD32"/>
+  <rect x="90" y="50" width="5" height="5" fill="#32CD32"/>
+</svg>

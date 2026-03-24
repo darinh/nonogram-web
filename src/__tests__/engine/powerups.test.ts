@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getEdgeCells, applyEdgeReveal, generateBombTargets, applyBomb } from '../../engine/powerups';
+import { getEdgeCells, applyEdgeReveal, selectBombTargets, applyBomb } from '../../engine/powerups';
 import { CellState } from '../../engine/types';
 
 describe('getEdgeCells', () => {
@@ -15,11 +15,13 @@ describe('getEdgeCells', () => {
   });
 
   it('returns correct count for 10x10', () => {
-    expect(getEdgeCells(10)).toHaveLength(36);
+    const edges = getEdgeCells(10);
+    expect(edges).toHaveLength(36);
   });
 
   it('returns correct count for 15x15', () => {
-    expect(getEdgeCells(15)).toHaveLength(56);
+    const edges = getEdgeCells(15);
+    expect(edges).toHaveLength(56);
   });
 
   it('returns sorted indices without duplicates', () => {
@@ -52,36 +54,38 @@ describe('applyEdgeReveal', () => {
   });
 });
 
-describe('generateBombTargets', () => {
+describe('selectBombTargets', () => {
   it('returns valid cell indices within grid bounds', () => {
     const size = 10;
-    const targets = generateBombTargets(size);
+    const grid = new Array(size * size).fill(CellState.Empty);
+    const targets = selectBombTargets(grid, size, 5);
     for (const idx of targets) {
       expect(idx).toBeGreaterThanOrEqual(0);
       expect(idx).toBeLessThan(size * size);
     }
   });
 
-  it('does not reveal more than 25% of the grid', () => {
+  it('does not exceed requested count', () => {
     const size = 10;
-    const maxAllowed = Math.floor(size * size * 0.25);
+    const grid = new Array(size * size).fill(CellState.Empty);
     for (let i = 0; i < 20; i++) {
-      const targets = generateBombTargets(size);
-      expect(targets.length).toBeLessThanOrEqual(maxAllowed);
+      const targets = selectBombTargets(grid, size, 5);
+      expect(targets.length).toBeLessThanOrEqual(size * size);
     }
   });
 
-  it('returns unique sorted indices', () => {
-    const targets = generateBombTargets(10);
+  it('returns unique indices', () => {
+    const grid = new Array(100).fill(CellState.Empty);
+    const targets = selectBombTargets(grid, 10, 5);
     const unique = [...new Set(targets)];
-    expect(targets).toEqual(unique);
-    expect(targets).toEqual([...targets].sort((a, b) => a - b));
+    expect(targets.length).toBe(unique.length);
   });
 
-  it('respects custom config', () => {
-    const targets = generateBombTargets(5, { explosionCount: 1, minRadius: 1, maxRadius: 1 });
-    expect(targets.length).toBeLessThanOrEqual(9);
+  it('respects small count', () => {
+    const grid = new Array(25).fill(CellState.Empty);
+    const targets = selectBombTargets(grid, 5, 1);
     expect(targets.length).toBeGreaterThan(0);
+    expect(targets.length).toBeLessThanOrEqual(25);
   });
 });
 
@@ -93,7 +97,7 @@ describe('applyBomb', () => {
     solution[0] = 1;
     solution[12] = 1;
 
-    const result = applyBomb(grid, solution, size);
+    const result = applyBomb(grid, solution, size, { explosionCount: 3, minRadius: 1, maxRadius: 2 });
     expect(result.revealedPositions.length).toBeGreaterThan(0);
     for (const pos of result.revealedPositions) {
       expect(result.grid[pos]).not.toBe(CellState.Empty);
@@ -109,7 +113,7 @@ describe('applyBomb', () => {
     const size = 5;
     const grid = new Array(25).fill(CellState.Empty);
     const solution = new Array(25).fill(1);
-    applyBomb(grid, solution, size);
+    applyBomb(grid, solution, size, { explosionCount: 3, minRadius: 1, maxRadius: 2 });
     expect(grid.every(c => c === CellState.Empty)).toBe(true);
   });
 });

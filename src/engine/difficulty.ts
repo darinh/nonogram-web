@@ -1,15 +1,23 @@
-import type { Difficulty, GridSize } from './types';
-import { DIFFICULTY_COLORS } from './constants';
+import { Difficulty } from './types';
+import type { GridSize } from './types';
 
-const DIFFICULTY_LABELS: Record<Difficulty, string> = {
+const COLORS: Record<Difficulty, string> = {
+  blue: '#3B82F6',
+  green: '#22C55E',
+  yellow: '#EAB308',
+  orange: '#F97316',
+  red: '#EF4444',
+};
+
+const LABELS: Record<Difficulty, string> = {
   blue: 'Easiest',
   green: 'Easy',
   yellow: 'Normal',
   orange: 'Difficult',
-  red: 'Very Hard',
+  red: 'Expert',
 };
 
-const DIFFICULTY_ORDER: Record<Difficulty, number> = {
+const ORDER: Record<Difficulty, number> = {
   blue: 0,
   green: 1,
   yellow: 2,
@@ -17,7 +25,7 @@ const DIFFICULTY_ORDER: Record<Difficulty, number> = {
   red: 4,
 };
 
-const DIFFICULTY_GRID_SIZES: Record<Difficulty, GridSize> = {
+const GRID_SIZES: Record<Difficulty, GridSize> = {
   blue: 5,
   green: 5,
   yellow: 10,
@@ -25,18 +33,41 @@ const DIFFICULTY_GRID_SIZES: Record<Difficulty, GridSize> = {
   red: 15,
 };
 
-export function getDifficultyColor(difficulty: Difficulty): string {
-  return DIFFICULTY_COLORS[difficulty];
+const LEGACY_MAP: Record<string, Difficulty> = {
+  easy: Difficulty.Blue,
+  medium: Difficulty.Yellow,
+  hard: Difficulty.Red,
+};
+
+export function getDifficultyColor(d: Difficulty): string {
+  return COLORS[d];
 }
 
-export function getDifficultyLabel(difficulty: Difficulty): string {
-  return DIFFICULTY_LABELS[difficulty];
+export function getDifficultyLabel(d: Difficulty): string {
+  return LABELS[d];
 }
 
-export function getDifficultyOrder(difficulty: Difficulty): number {
-  return DIFFICULTY_ORDER[difficulty];
+export function getDifficultyOrder(d: Difficulty): number {
+  return ORDER[d];
 }
 
 export function suggestGridSize(difficulty: Difficulty): GridSize {
-  return DIFFICULTY_GRID_SIZES[difficulty];
+  return GRID_SIZES[difficulty];
+}
+
+export function suggestDifficulty(size: GridSize, filledRatio: number): Difficulty {
+  switch (size) {
+    case 5:
+      return filledRatio < 0.4 ? Difficulty.Blue : Difficulty.Green;
+    case 10:
+      if (filledRatio < 0.3) return Difficulty.Green;
+      if (filledRatio < 0.5) return Difficulty.Yellow;
+      return Difficulty.Orange;
+    case 15:
+      return filledRatio < 0.4 ? Difficulty.Orange : Difficulty.Red;
+  }
+}
+
+export function migrateLegacyDifficulty(old: string): Difficulty {
+  return LEGACY_MAP[old.toLowerCase()] ?? Difficulty.Yellow;
 }

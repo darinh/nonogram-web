@@ -28,4 +28,4 @@ export {
 export { calculateReward, earnCoins, spendCoins, createEmptyWallet } from './coins';
 export { getDifficultyColor, getDifficultyLabel, getDifficultyOrder, suggestGridSize } from './difficulty';
 export { applyRowHint, applyColHint, getHintCost } from './hints';
-export { getEdgeCells, applyEdgeReveal, generateBombTargets, applyBomb } from './powerups';
+export { getEdgeCells, applyEdgeReveal, selectBombTargets, applyBomb } from './powerups';

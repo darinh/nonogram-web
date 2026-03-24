@@ -12,11 +12,11 @@ const ALL_DIFFICULTIES: Difficulty[] = ['blue', 'green', 'yellow', 'orange', 're
 describe('getDifficultyColor', () => {
   it('returns a hex color for each difficulty', () => {
     const expected: Record<Difficulty, string> = {
-      blue: '#0597F2',
-      green: '#74BF04',
-      yellow: '#BFA004',
-      orange: '#F28705',
-      red: '#F20574',
+      blue: '#3B82F6',
+      green: '#22C55E',
+      yellow: '#EAB308',
+      orange: '#F97316',
+      red: '#EF4444',
     };
     for (const d of ALL_DIFFICULTIES) {
       expect(getDifficultyColor(d)).toBe(expected[d]);
@@ -30,7 +30,7 @@ describe('getDifficultyLabel', () => {
     expect(getDifficultyLabel('green')).toBe('Easy');
     expect(getDifficultyLabel('yellow')).toBe('Normal');
     expect(getDifficultyLabel('orange')).toBe('Difficult');
-    expect(getDifficultyLabel('red')).toBe('Very Hard');
+    expect(getDifficultyLabel('red')).toBe('Expert');
   });
 });
 
