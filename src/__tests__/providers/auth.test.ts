@@ -53,6 +53,31 @@ describe('LocalStorageAuthProvider', () => {
     await expect(provider.login('unknown', 'pass')).rejects.toThrow('User not found');
   });
 
+  it('login throws with wrong password', async () => {
+    const provider = new LocalStorageAuthProvider();
+    await provider.register('alice', 'password123');
+    await provider.logout();
+    await expect(provider.login('alice', 'wrongpass')).rejects.toThrow('Invalid password');
+  });
+
+  it('login succeeds with correct password', async () => {
+    const provider = new LocalStorageAuthProvider();
+    await provider.register('alice', 'password123');
+    await provider.logout();
+    const user = await provider.login('alice', 'password123');
+    expect(user.username).toBe('alice');
+  });
+
+  it('returned user does not contain passwordHash', async () => {
+    const provider = new LocalStorageAuthProvider();
+    const registered = await provider.register('alice', 'password123');
+    expect((registered as unknown as Record<string, unknown>)['passwordHash']).toBeUndefined();
+
+    await provider.logout();
+    const loggedIn = await provider.login('alice', 'password123');
+    expect((loggedIn as unknown as Record<string, unknown>)['passwordHash']).toBeUndefined();
+  });
+
   it('getCurrentUser returns user after login', async () => {
     const provider = new LocalStorageAuthProvider();
     await provider.register('alice', 'password123');

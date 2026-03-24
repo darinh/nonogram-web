@@ -8,7 +8,11 @@ export function useTutorial() {
   );
 
   const markTutorialSeen = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, 'true');
+    try {
+      localStorage.setItem(STORAGE_KEY, 'true');
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
     setTutorialSeen(true);
   }, []);
 

@@ -13,7 +13,15 @@ function simpleHash(str: string): string {
   return Math.abs(hash).toString(36);
 }
 
-type UserRegistry = Record<string, User>;
+interface StoredUser extends User {
+  passwordHash: string;
+}
+
+type UserRegistry = Record<string, StoredUser>;
+
+function toPublicUser({ id, username, displayName }: StoredUser): User {
+  return { id, username, displayName };
+}
 
 export class LocalStorageAuthProvider implements AuthProvider {
   private listeners: Array<(user: User | null) => void> = [];
@@ -45,39 +53,57 @@ export class LocalStorageAuthProvider implements AuthProvider {
   }
 
   private saveRegistry(registry: UserRegistry): void {
-    localStorage.setItem(REGISTRY_KEY, JSON.stringify(registry));
+    try {
+      localStorage.setItem(REGISTRY_KEY, JSON.stringify(registry));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
   }
 
-  async register(username: string, _password: string, displayName?: string): Promise<User> {
+  async register(username: string, password: string, displayName?: string): Promise<User> {
     const registry = this.getRegistry();
     if (registry[username]) {
       throw new Error('Username already taken');
     }
 
-    const user: User = {
+    const stored: StoredUser = {
       id: simpleHash(username),
       username,
       displayName: displayName || username,
+      passwordHash: simpleHash(password),
     };
 
-    registry[username] = user;
+    registry[username] = stored;
     this.saveRegistry(registry);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    const user = toPublicUser(stored);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
     this.notifyListeners(user);
     return user;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async login(username: string, _password: string): Promise<User> {
+  async login(username: string, password: string): Promise<User> {
     const registry = this.getRegistry();
     const existing = registry[username];
     if (!existing) {
       throw new Error('User not found');
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
-    this.notifyListeners(existing);
-    return existing;
+    if (existing.passwordHash !== simpleHash(password)) {
+      throw new Error('Invalid password');
+    }
+
+    const user = toPublicUser(existing);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
+    this.notifyListeners(user);
+    return user;
   }
 
   async logout(): Promise<void> {

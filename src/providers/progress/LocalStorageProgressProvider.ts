@@ -17,7 +17,11 @@ export class LocalStorageProgressProvider implements ProgressProvider {
   }
 
   private setAll(data: Record<string, PuzzleProgress>): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
   }
 
   async getProgress(puzzleId: string): Promise<PuzzleProgress | null> {
@@ -50,7 +54,11 @@ export class LocalStorageProgressProvider implements ProgressProvider {
   }
 
   private setAllThemes(data: Record<string, ThemeProgress>): void {
-    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(data));
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
   }
 
   async getThemeProgress(themeId: string): Promise<ThemeProgress | null> {
@@ -76,7 +84,11 @@ export class LocalStorageProgressProvider implements ProgressProvider {
   }
 
   private setStreakData(data: StreakData): void {
-    localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(data));
+    try {
+      localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
   }
 
   async getStreak(): Promise<StreakData> {

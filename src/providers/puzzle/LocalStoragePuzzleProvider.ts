@@ -14,7 +14,11 @@ export class LocalStoragePuzzleProvider implements PuzzleProvider {
   }
 
   private setPuzzles(puzzles: PuzzleDefinition[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(puzzles));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(puzzles));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
   }
 
   async getAllPuzzles(): Promise<PuzzleDefinition[]> {

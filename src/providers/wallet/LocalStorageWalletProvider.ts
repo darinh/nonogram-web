@@ -15,6 +15,10 @@ export class LocalStorageWalletProvider implements WalletProvider {
   }
 
   async saveWallet(wallet: WalletState): Promise<void> {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(wallet));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(wallet));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
   }
 }
