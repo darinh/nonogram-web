@@ -9,6 +9,8 @@ import { rocket } from './15x15/rocket';
 import { flower } from './15x15/flower';
 import { gamepad } from './15x15/gamepad';
 
+import { themePuzzles } from '../themes/theme-puzzles';
+
 export const bundledPuzzles: PuzzleDefinition[] = [
   heart,
   star,
@@ -19,4 +21,5 @@ export const bundledPuzzles: PuzzleDefinition[] = [
   rocket,
   flower,
   gamepad,
+  ...themePuzzles,
 ];

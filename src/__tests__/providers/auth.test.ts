@@ -1,0 +1,82 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { LocalStorageAuthProvider } from '../../providers/auth/LocalStorageAuthProvider';
+
+const mockStorage: Record<string, string> = {};
+
+beforeEach(() => {
+  Object.keys(mockStorage).forEach(k => delete mockStorage[k]);
+  vi.stubGlobal('localStorage', {
+    getItem: (key: string) => mockStorage[key] ?? null,
+    setItem: (key: string, value: string) => { mockStorage[key] = value; },
+    removeItem: (key: string) => { delete mockStorage[key]; },
+    clear: () => { Object.keys(mockStorage).forEach(k => delete mockStorage[k]); },
+  });
+});
+
+describe('LocalStorageAuthProvider', () => {
+  it('returns null for getCurrentUser initially', () => {
+    const provider = new LocalStorageAuthProvider();
+    expect(provider.getCurrentUser()).toBeNull();
+  });
+
+  it('login stores user and returns it', async () => {
+    const provider = new LocalStorageAuthProvider();
+    const user = await provider.login('alice', 'password123');
+    expect(user.username).toBe('alice');
+    expect(user.displayName).toBe('alice');
+    expect(user.id).toBeTruthy();
+  });
+
+  it('getCurrentUser returns user after login', async () => {
+    const provider = new LocalStorageAuthProvider();
+    await provider.login('alice', 'password123');
+    const user = provider.getCurrentUser();
+    expect(user).not.toBeNull();
+    expect(user!.username).toBe('alice');
+  });
+
+  it('logout clears user', async () => {
+    const provider = new LocalStorageAuthProvider();
+    await provider.login('alice', 'password123');
+    await provider.logout();
+    expect(provider.getCurrentUser()).toBeNull();
+  });
+
+  it('onAuthChange fires on login', async () => {
+    const provider = new LocalStorageAuthProvider();
+    const callback = vi.fn();
+    provider.onAuthChange(callback);
+
+    await provider.login('alice', 'password123');
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(callback).toHaveBeenCalledWith(expect.objectContaining({ username: 'alice' }));
+  });
+
+  it('onAuthChange fires on logout', async () => {
+    const provider = new LocalStorageAuthProvider();
+    const callback = vi.fn();
+    await provider.login('alice', 'password123');
+
+    provider.onAuthChange(callback);
+    await provider.logout();
+    expect(callback).toHaveBeenCalledWith(null);
+  });
+
+  it('unsubscribe stops notifications', async () => {
+    const provider = new LocalStorageAuthProvider();
+    const callback = vi.fn();
+    const unsubscribe = provider.onAuthChange(callback);
+
+    unsubscribe();
+    await provider.login('alice', 'password123');
+    expect(callback).not.toHaveBeenCalled();
+  });
+
+  it('login with same username returns consistent id', async () => {
+    const provider = new LocalStorageAuthProvider();
+    const user1 = await provider.login('bob', 'pass1');
+    await provider.logout();
+    const user2 = await provider.login('bob', 'pass2');
+    expect(user1.id).toBe(user2.id);
+  });
+});

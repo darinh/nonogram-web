@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePuzzles } from '../hooks/usePuzzles';
 import { useProgress } from '../hooks/useProgress';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useTutorial } from '../hooks/useTutorial';
 import styles from '../styles/HomePage.module.css';
 
 export default function HomePage() {
@@ -9,6 +10,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { puzzles } = usePuzzles();
   const { allProgress } = useProgress();
+  const { resetTutorial } = useTutorial();
 
   const inProgressPuzzles = allProgress
     .filter(p => !p.completed)
@@ -34,6 +36,20 @@ export default function HomePage() {
           Create Puzzle
         </button>
       </div>
+
+      <button
+        className={styles.howToPlay}
+        onClick={() => {
+          resetTutorial();
+          if (puzzles.length > 0) {
+            navigate(`/play/${puzzles[0].id}`);
+          } else {
+            navigate('/puzzles');
+          }
+        }}
+      >
+        ❓ How to Play
+      </button>
 
       {inProgressPuzzles.length > 0 && (
         <section className={styles.continueSection}>

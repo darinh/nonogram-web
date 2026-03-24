@@ -21,6 +21,7 @@ import {
   EDGE_REVEAL_COST,
   BOMB_COST,
 } from '../../engine';
+import type { BombConfig } from '../../engine';
 
 // ─── Coin + Reward Flow ────────────────────────────────────────────────────────
 
@@ -250,7 +251,7 @@ describe('Power-up flow: edge reveal + bomb', () => {
     const size = 10;
     const grid = new Array(100).fill(CellState.Empty);
     const solution = new Array(100).fill(1);
-    const config: { explosionCount: number; minRadius: number; maxRadius: number } = { explosionCount: 3, minRadius: 1, maxRadius: 2 };
+    const config: BombConfig = { explosionCount: 3, minRadius: 1, maxRadius: 2 };
 
     const result = applyBomb(grid, solution, size, config);
 

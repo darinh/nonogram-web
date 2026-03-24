@@ -1,0 +1,197 @@
+/* ── Overlay ─────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  animation: fadeIn 300ms ease forwards;
+  padding: 24px;
+}
+
+/* ── Card ────────────────────────────────────────────── */
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 40px 32px 32px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  animation: popIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ── Step Content ────────────────────────────────────── */
+
+.emoji {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.stepTitle {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: var(--color-pink);
+  margin-bottom: 8px;
+}
+
+.stepBody {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-dark);
+  opacity: 0.8;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* ── Step Dots ───────────────────────────────────────── */
+
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-light);
+  transition: background var(--transition), transform var(--transition);
+}
+
+.dotActive {
+  background: var(--color-pink);
+  transform: scale(1.2);
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.nextButton {
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--color-pink);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-white);
+  cursor: pointer;
+  box-shadow: var(--shadow-pink);
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.nextButton:hover {
+  background: #d1046a;
+  transform: translateY(-2px);
+}
+
+.backButton {
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-light);
+  background: var(--color-white);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-dark);
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.backButton:hover {
+  border-color: var(--color-blue);
+  color: var(--color-blue);
+  transform: translateY(-2px);
+}
+
+.skipButton {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+
+.skipButton:hover {
+  opacity: 0.8;
+}
+
+/* ── Animations ──────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .overlay {
+    padding: 16px;
+  }
+
+  .card {
+    padding: 32px 20px 24px;
+  }
+
+  .emoji {
+    font-size: 2rem;
+  }
+
+  .stepTitle {
+    font-size: 1.25rem;
+  }
+
+  .stepBody {
+    font-size: 0.9375rem;
+  }
+
+  .buttons {
+    flex-wrap: wrap;
+  }
+
+  .nextButton,
+  .backButton {
+    padding: 12px 24px;
+    font-size: 0.9375rem;
+    min-height: 44px;
+  }
+}

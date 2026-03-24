@@ -41,6 +41,32 @@
   flex-wrap: wrap;
 }
 
+/* ── How to Play ──────────────────────────────────────── */
+
+.howToPlay {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--color-blue);
+  cursor: pointer;
+  transition:
+    color var(--transition),
+    transform var(--transition);
+}
+
+.howToPlay:hover {
+  color: var(--color-pink);
+  transform: translateY(-1px);
+}
+
 /* ── Continue Section ────────────────────────────────── */
 
 .continueSection {

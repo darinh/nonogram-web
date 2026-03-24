@@ -3,11 +3,15 @@ import type { PuzzleProvider } from './puzzle/PuzzleProvider';
 import type { ProgressProvider } from './progress/ProgressProvider';
 import type { ThemeProvider } from './theme/ThemeProvider';
 import type { WalletProvider } from './wallet/WalletProvider';
+import type { AuthProvider } from './auth/AuthProvider';
+import type { SoundProvider } from './sound/SoundProvider';
 
 const PuzzleProviderContext = createContext<PuzzleProvider | null>(null);
 const ProgressProviderContext = createContext<ProgressProvider | null>(null);
 const ThemeProviderContext = createContext<ThemeProvider | null>(null);
 const WalletProviderContext = createContext<WalletProvider | null>(null);
+const AuthProviderContext = createContext<AuthProvider | null>(null);
+const SoundProviderContext = createContext<SoundProvider | null>(null);
 
 export function usePuzzleProvider(): PuzzleProvider {
   const ctx = useContext(PuzzleProviderContext);
@@ -33,4 +37,16 @@ export function useWalletProvider(): WalletProvider {
   return ctx;
 }
 
-export { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext };
+export function useAuthProvider(): AuthProvider {
+  const ctx = useContext(AuthProviderContext);
+  if (!ctx) throw new Error('AuthProvider not found in context');
+  return ctx;
+}
+
+export function useSoundProvider(): SoundProvider {
+  const ctx = useContext(SoundProviderContext);
+  if (!ctx) throw new Error('SoundProvider not found in context');
+  return ctx;
+}
+
+export { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext, AuthProviderContext, SoundProviderContext };

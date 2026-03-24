@@ -1,0 +1,8 @@
+import type { User } from '../../engine/auth-types';
+
+export interface AuthProvider {
+  login(username: string, password: string): Promise<User>;
+  logout(): Promise<void>;
+  getCurrentUser(): User | null;
+  onAuthChange(callback: (user: User | null) => void): () => void;
+}

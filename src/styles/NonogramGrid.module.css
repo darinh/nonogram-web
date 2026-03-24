@@ -37,6 +37,9 @@
   line-height: 1;
   min-width: 14px;
   text-align: center;
+  transition:
+    opacity 200ms ease,
+    color 200ms ease;
 }
 
 /* ── Cells ───────────────────────────────────────────── */
@@ -57,7 +60,9 @@
   touch-action: none;
   -webkit-touch-callout: none;
   transition:
-    background var(--transition),
+    transform 100ms ease,
+    background-color 150ms ease,
+    box-shadow 100ms ease,
     border-color var(--transition);
 }
 
@@ -73,6 +78,7 @@
 .filled {
   background: var(--color-dark);
   border-color: var(--color-light);
+  animation: cellPop 150ms ease;
 }
 
 .filled:hover {
@@ -92,6 +98,7 @@
   stroke: var(--color-pink);
   stroke-width: 2.5px;
   stroke-linecap: round;
+  animation: xFadeIn 100ms ease;
 }
 
 /* ── Thick Borders (every 5 cells) ───────────────────── */
@@ -196,4 +203,17 @@
   .colClueCell {
     padding: 1px 0;
   }
+}
+
+/* ── Animations ──────────────────────────────────────── */
+
+@keyframes cellPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes xFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

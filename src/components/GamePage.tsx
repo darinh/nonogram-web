@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { usePuzzleProvider, useProgressProvider, useThemeProvider } from '../providers/ProviderContext';
 import { useNonogramGame } from '../hooks/useNonogramGame';
 import { useWallet } from '../hooks/useWallet';
+import { useTutorial } from '../hooks/useTutorial';
 import { useDragPaint } from '../hooks/useDragPaint';
 import { downloadPuzzleFile } from '../engine/serialization';
 import { getHintCost } from '../engine/hints';
@@ -13,6 +14,7 @@ import NonogramGrid from './NonogramGrid';
 import Toolbar from './Toolbar';
 import HintPrompt from './HintPrompt';
 import PowerUpToolbar from './PowerUpToolbar';
+import TutorialOverlay from './TutorialOverlay';
 import { CoinDisplay } from './CoinDisplay';
 import styles from '../styles/GamePage.module.css';
 import type { PuzzleDefinition } from '../engine/types';
@@ -67,6 +69,7 @@ export default function GamePage() {
   const gameOptions = useMemo(() => ({ onSaveProgress }), [onSaveProgress]);
   const game = useNonogramGame(gameOptions);
   const { wallet, earn, spend } = useWallet();
+  const { tutorialSeen, markTutorialSeen } = useTutorial();
 
   useEffect(() => {
     async function load() {
@@ -323,6 +326,10 @@ export default function GamePage() {
           onConfirm={handleHintConfirm}
           onCancel={handleHintCancel}
         />
+      )}
+
+      {!tutorialSeen && !loading && (
+        <TutorialOverlay onComplete={markTutorialSeen} />
       )}
 
       {game.completed && (

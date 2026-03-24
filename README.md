@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# Nonogram
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web-based nonogram (picross) puzzle game built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Prerequisites
+- Node.js 20+
+- npm
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Setup
+```bash
+git clone <repo-url>
+cd nonogram
+bash scripts/setup.sh
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The setup script installs npm dependencies and Playwright browsers (requires sudo for system libraries).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Development
+```bash
+npm run dev        # Start dev server at http://localhost:5173
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Testing
+```bash
+npm test           # Unit tests (Vitest, 275+ tests)
+npm run test:e2e   # E2E tests (Playwright, requires build first)
+npm run build && npm run test:e2e  # Build then E2E
+```
+
+### Building
+```bash
+npm run build      # Production build to dist/
+npm run preview    # Preview production build locally
+```
+
+## Features
+
+- 🧩 9 bundled puzzles + themed puzzle packs (100 puzzles per theme)
+- ✏️ Fill and X tools with click-drag painting
+- ↩️ Undo/redo with keyboard shortcuts (Ctrl+Z / Ctrl+Shift+Z)
+- ⏱️ Timer display
+- 🪙 Coin economy with hints and power-ups
+- 🎨 Puzzle creator (photo pixelizer + manual editor)
+- 📤 Import/export puzzles as JSON
+- 🌙 Dark mode
+- ⌨️ Keyboard navigation
+- 📱 Mobile touch support
+- 📊 Statistics page
+- 🔄 PWA with offline support
+
+## Tech Stack
+
+- **React 19** + **TypeScript 5.9**
+- **Vite 8** (build)
+- **Vitest** (unit tests) + **Playwright** (E2E tests)
+- **CSS Modules** with Mahoako-inspired theme
+
+## Project Structure
+
+```
+src/
+├── engine/        # Pure TS logic (types, clues, validation, coins, hints, powerups)
+├── providers/     # Abstraction layers (puzzle, progress, theme, wallet, auth)
+├── hooks/         # React hooks (game state, drag paint, wallet, themes)
+├── components/    # React components (pages, grid, toolbar, cards)
+├── data/          # Bundled puzzle and theme data
+├── styles/        # CSS Modules
+└── __tests__/     # Unit tests
+e2e/               # Playwright E2E tests
+scripts/           # Setup and puzzle generation scripts
 ```
