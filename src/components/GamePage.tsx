@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { usePuzzleProvider, useProgressProvider, useThemeProvider } from '../providers/ProviderContext';
+import { usePuzzleProvider, useProgressProvider, useThemeProvider, useSoundProvider } from '../providers/ProviderContext';
 import { useNonogramGame } from '../hooks/useNonogramGame';
 import { useWallet } from '../hooks/useWallet';
 import { useTutorial } from '../hooks/useTutorial';
@@ -17,7 +17,7 @@ import PowerUpToolbar from './PowerUpToolbar';
 import TutorialOverlay from './TutorialOverlay';
 import { CoinDisplay } from './CoinDisplay';
 import styles from '../styles/GamePage.module.css';
-import type { PuzzleDefinition } from '../engine/types';
+import type { PuzzleDefinition, DragMode } from '../engine/types';
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -70,6 +70,10 @@ export default function GamePage() {
   const game = useNonogramGame(gameOptions);
   const { wallet, earn, spend } = useWallet();
   const { tutorialSeen, markTutorialSeen } = useTutorial();
+  const soundProvider = useSoundProvider();
+  const [muted, setMuted] = useState(() => soundProvider.isMuted());
+  const toolRef = useRef(game.tool);
+  toolRef.current = game.tool;
 
   useEffect(() => {
     async function load() {
