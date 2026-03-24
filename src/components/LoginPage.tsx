@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { usePageTitle } from '../hooks/usePageTitle';
 import styles from '../styles/LoginPage.module.css';
@@ -9,7 +9,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { login, loading } = useAuth();
   const [username, setUsername] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
@@ -20,10 +20,14 @@ export default function LoginPage() {
     if (!trimmedUsername) return;
 
     try {
-      await login(trimmedUsername, '');
+      await login(trimmedUsername, password);
       navigate('/');
-    } catch {
-      setError('Sign in failed. Please try again.');
+    } catch (err) {
+      if (err instanceof Error && err.message === 'User not found') {
+        setError('User not found. Please check your username or register.');
+      } else {
+        setError('Sign in failed. Please try again.');
+      }
     }
   };
 
@@ -31,7 +35,7 @@ export default function LoginPage() {
     <div className={styles.container}>
       <div className={styles.card}>
         <h1 className={styles.title}>Sign In</h1>
-        <p className={styles.subtitle}>Pick a username to get started</p>
+        <p className={styles.subtitle}>Welcome back to Nonogram</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.fieldGroup}>
@@ -44,7 +48,7 @@ export default function LoginPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter a username"
+              placeholder="Enter your username"
               required
               autoFocus
               autoComplete="username"
@@ -52,17 +56,18 @@ export default function LoginPage() {
           </div>
 
           <div className={styles.fieldGroup}>
-            <label className={styles.label} htmlFor="displayName">
-              Display Name <span style={{ opacity: 0.5 }}>(optional)</span>
+            <label className={styles.label} htmlFor="password">
+              Password
             </label>
             <input
-              id="displayName"
+              id="password"
               className={styles.input}
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder={username || 'Defaults to username'}
-              autoComplete="name"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+              autoComplete="current-password"
             />
           </div>
 
@@ -71,11 +76,18 @@ export default function LoginPage() {
           <button
             type="submit"
             className={styles.submitButton}
-            disabled={loading || !username.trim()}
+            disabled={loading || !username.trim() || !password}
           >
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
+
+        <p className={styles.switchLink}>
+          Don&apos;t have an account?{' '}
+          <Link to="/register" className={styles.link}>
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

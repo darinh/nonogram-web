@@ -20,9 +20,18 @@ export function useAuth() {
     }
   };
 
+  const register = async (username: string, password: string, displayName?: string) => {
+    setLoading(true);
+    try {
+      await authProvider.register(username, password, displayName);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async () => {
     await authProvider.logout();
   };
 
-  return { user, loading, login, logout };
+  return { user, loading, login, register, logout };
 }

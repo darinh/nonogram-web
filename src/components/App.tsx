@@ -16,6 +16,7 @@ import CreatorPage from './CreatorPage';
 import StatsPage from './StatsPage';
 import DailyPuzzlePage from './DailyPuzzlePage';
 import LoginPage from './LoginPage';
+import RegisterPage from './RegisterPage';
 import UserMenu from './UserMenu';
 import ThemeBrowserPage from './ThemeBrowserPage';
 import ThemeGridPage from './ThemeGridPage';
@@ -108,6 +109,7 @@ export default function App() {
                     <Route path="/create" element={<CreatorPage />} />
                     <Route path="/stats" element={<StatsPage />} />
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                   </Routes>
                 </main>
               </div>

@@ -19,16 +19,44 @@ describe('LocalStorageAuthProvider', () => {
     expect(provider.getCurrentUser()).toBeNull();
   });
 
-  it('login stores user and returns it', async () => {
+  it('register creates user and sets as current', async () => {
     const provider = new LocalStorageAuthProvider();
-    const user = await provider.login('alice', 'password123');
+    const user = await provider.register('alice', 'password123');
     expect(user.username).toBe('alice');
     expect(user.displayName).toBe('alice');
     expect(user.id).toBeTruthy();
+    expect(provider.getCurrentUser()?.username).toBe('alice');
+  });
+
+  it('register with displayName stores it', async () => {
+    const provider = new LocalStorageAuthProvider();
+    const user = await provider.register('alice', 'pass', 'Alice W');
+    expect(user.displayName).toBe('Alice W');
+  });
+
+  it('register throws if username already taken', async () => {
+    const provider = new LocalStorageAuthProvider();
+    await provider.register('alice', 'password123');
+    await expect(provider.register('alice', 'other')).rejects.toThrow('Username already taken');
+  });
+
+  it('login returns user after registration', async () => {
+    const provider = new LocalStorageAuthProvider();
+    await provider.register('alice', 'password123');
+    await provider.logout();
+    const user = await provider.login('alice', 'password123');
+    expect(user.username).toBe('alice');
+  });
+
+  it('login throws if user not found', async () => {
+    const provider = new LocalStorageAuthProvider();
+    await expect(provider.login('unknown', 'pass')).rejects.toThrow('User not found');
   });
 
   it('getCurrentUser returns user after login', async () => {
     const provider = new LocalStorageAuthProvider();
+    await provider.register('alice', 'password123');
+    await provider.logout();
     await provider.login('alice', 'password123');
     const user = provider.getCurrentUser();
     expect(user).not.toBeNull();
@@ -37,25 +65,37 @@ describe('LocalStorageAuthProvider', () => {
 
   it('logout clears user', async () => {
     const provider = new LocalStorageAuthProvider();
-    await provider.login('alice', 'password123');
+    await provider.register('alice', 'password123');
     await provider.logout();
     expect(provider.getCurrentUser()).toBeNull();
   });
 
-  it('onAuthChange fires on login', async () => {
+  it('onAuthChange fires on register', async () => {
     const provider = new LocalStorageAuthProvider();
     const callback = vi.fn();
     provider.onAuthChange(callback);
 
-    await provider.login('alice', 'password123');
+    await provider.register('alice', 'password123');
     expect(callback).toHaveBeenCalledTimes(1);
+    expect(callback).toHaveBeenCalledWith(expect.objectContaining({ username: 'alice' }));
+  });
+
+  it('onAuthChange fires on login', async () => {
+    const provider = new LocalStorageAuthProvider();
+    await provider.register('alice', 'password123');
+
+    const callback = vi.fn();
+    provider.onAuthChange(callback);
+
+    await provider.logout();
+    await provider.login('alice', 'password123');
     expect(callback).toHaveBeenCalledWith(expect.objectContaining({ username: 'alice' }));
   });
 
   it('onAuthChange fires on logout', async () => {
     const provider = new LocalStorageAuthProvider();
     const callback = vi.fn();
-    await provider.login('alice', 'password123');
+    await provider.register('alice', 'password123');
 
     provider.onAuthChange(callback);
     await provider.logout();
@@ -68,15 +108,15 @@ describe('LocalStorageAuthProvider', () => {
     const unsubscribe = provider.onAuthChange(callback);
 
     unsubscribe();
-    await provider.login('alice', 'password123');
+    await provider.register('alice', 'password123');
     expect(callback).not.toHaveBeenCalled();
   });
 
   it('login with same username returns consistent id', async () => {
     const provider = new LocalStorageAuthProvider();
-    const user1 = await provider.login('bob', 'pass1');
+    const user1 = await provider.register('bob', 'pass1');
     await provider.logout();
-    const user2 = await provider.login('bob', 'pass2');
+    const user2 = await provider.login('bob', 'pass1');
     expect(user1.id).toBe(user2.id);
   });
 });
