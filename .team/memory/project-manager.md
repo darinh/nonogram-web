@@ -1,11 +1,17 @@
 # Project Manager Memory
 
 ## Active Context
-- Working on: nonogram puzzle game — **themed puzzle system** (major feature)
+- Working on: nonogram puzzle game — **9-feature improvement initiative**
 - Stack: TypeScript 5.9, React 19, Vite 8, Vitest 4, Firebase Hosting
 - Live URL: https://nonogram-game-app.web.app
-- 89 tests, all passing
-- **Current initiative**: Picture Cross-style themed system with coin economy, hints, power-ups
+- **Previous initiative**: Picture Cross-style themed system — ✅ IMPLEMENTED
+- Test count: 275 (20 test files), all passing. Zero E2E tests.
+- **Current initiative**: 9-feature improvement plan — PLANNED (not yet implemented)
+  - 21 todos across 4 phases, max 11 parallel at Phase 0
+  - Features: E2E tests, login, 5 new themes, sound effects, puzzle quality solver, daily puzzle, streak tracking, tutorial, animations
+  - Specialists: qa-engineer (E2E), ui-engineer (all features)
+  - Plan location: session plan.md
+  - Key architecture decisions: AuthProvider pattern (AD-1), Playwright E2E (AD-2), Web Audio API sounds (AD-3), deterministic daily seed (AD-4), constraint-propagation solver (AD-5), streak in ProgressProvider (AD-6)
 
 ## Learnings
 
@@ -55,3 +61,20 @@
 - **Risks**: 100 puzzles per theme content volume (mitigated by generator script), pixel art sourcing, coin economy balance
 - **Plan location**: Session plan at /home/darin/.copilot/session-state/85678f73-54cc-4eb6-b2cf-9f4c6f73c5d2/plan.md
 - **Impact**: This is the largest feature addition to date. The layered decomposition ensures engine logic is pure TS (testable without React), providers follow existing patterns, and UI components are self-contained.
+- **Outcome**: ALL 30 themed system items + 7 independent improvements completed. 42 total todos done. Tests grew from 89 → 275 (20 files). Build passes clean. Key deliverables:
+  - Engine: difficulty.ts, coins.ts, hints.ts, powerups.ts + constants.ts (all pure TS with tests)
+  - Providers: ThemeProvider, WalletProvider, extended ProgressProvider
+  - Hooks: useThemes, useWallet, useGridNavigation
+  - UI: ThemeBrowserPage, ThemeGridPage, CoinDisplay, HintPrompt, PowerUpToolbar, StatsPage, DifficultyBadge (5-color)
+  - Theme content: Nature theme (100 puzzles), pixel art background (SVG)
+  - Infrastructure: CI/CD (GitHub Actions), PWA manifest + service worker, dark mode, responsive breakpoints, keyboard nav, clue satisfaction feedback
+  - Integration: Routes wired, navigation updated, GamePage fully integrated with hints/powerups/coins
+
+### 2025-07-21 — 9-Feature Improvement Plan
+- **What**: Created comprehensive plan for 9 new features decomposed into 21 work items across 4 phases. Priority order: E2E tests (Playwright), login (AuthProvider pattern), 5 new themes (Space/Ocean/City/Fantasy/Food), sound effects (Web Audio API), puzzle quality (constraint-propagation solver), daily puzzle (deterministic seed), streak tracking, tutorial/onboarding, animations (CSS transitions).
+- **Architecture Decisions**: AuthProvider follows existing provider pattern (AD-1). Playwright for E2E with Vite preview server (AD-2). Web Audio API for synthesized sound effects (AD-3). Daily puzzle uses date-based deterministic seed (AD-4). Logic solver via constraint propagation (AD-5). Streak data extends ProgressProvider (AD-6).
+- **Parallelism**: 11 items immediately startable in Phase 0. Max parallelism across phases: 11→6→3→1. Critical path: solver-engine → daily-puzzle → streak-tracking (3 sequential items).
+- **Specialists**: qa-engineer handles all E2E work (5 todos). ui-engineer handles all feature implementation (16 todos).
+- **Risks**: Theme content volume (100 puzzles each), solver complexity for 15×15, Web Audio browser differences, Playwright CI flakiness.
+- **Plan location**: Session plan.md
+- **Impact**: Plan only — no implementation yet. 21 todos inserted in SQL with 12 dependency edges.
