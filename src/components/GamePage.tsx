@@ -163,6 +163,7 @@ export default function GamePage() {
           onCellMouseEnter={dragPaint.handleCellMouseEnter}
           onMouseUp={dragPaint.handleMouseUp}
           onActivateCell={handleActivateCell}
+          onToolChange={game.setTool}
         />
       </div>
 

@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
 import { CellState } from '../engine/types';
+import type { Tool } from '../engine/types';
 import { isLineSatisfied, getRowLine, getColLine } from '../engine/validation';
 import { useGridNavigation } from '../hooks/useGridNavigation';
 import styles from '../styles/NonogramGrid.module.css';
@@ -15,6 +16,10 @@ interface NonogramGridProps {
   onMouseUp: () => void;
   /** Called when a cell is activated via keyboard (Enter/Space). */
   onActivateCell: (row: number, col: number) => void;
+  /** Called when the user presses 'f' or 'x' to switch tools. */
+  onToolChange?: (tool: Tool) => void;
+  /** Called when a clue cell is clicked (for hint prompts). */
+  onClueClick?: (axis: 'row' | 'col', index: number) => void;
 }
 
 function getCellCoords(el: Element | null): { row: number; col: number } | null {
@@ -49,6 +54,8 @@ export default function NonogramGrid({
   onCellMouseEnter,
   onMouseUp,
   onActivateCell,
+  onToolChange,
+  onClueClick,
 }: NonogramGridProps) {
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,12 +64,14 @@ export default function NonogramGrid({
   const maxColClueLen = Math.max(...colClues.map(c => c.length));
 
   const {
+    focusedCell,
     handleCellKeyDown,
     getCellTabIndex,
     gridRef,
   } = useGridNavigation({
     size,
     onActivateCell,
+    onToolChange,
     enabled: !completed,
   });
 
@@ -133,11 +142,12 @@ export default function NonogramGrid({
         return paddedClue.map((n, clueRow) => (
           <div
             key={`cc-${colIdx}-${clueRow}`}
-            className={`${styles.colClueCell} ${!completed && hoveredCell?.col === colIdx ? styles.highlightedClue : ''} ${satisfiedCols.has(colIdx) ? styles.satisfied : ''}`}
+            className={`${styles.colClueCell} ${!completed && hoveredCell?.col === colIdx ? styles.highlightedClue : ''} ${satisfiedCols.has(colIdx) ? styles.satisfied : ''} ${onClueClick && !completed ? styles.clickableClue : ''}`}
             style={{
               gridColumn: maxRowClueLen + 1 + colIdx,
               gridRow: clueRow + 1,
             }}
+            onClick={onClueClick && !completed ? () => onClueClick('col', colIdx) : undefined}
           >
             {n !== null && <span className={styles.clueNumber}>{n}</span>}
           </div>
@@ -154,11 +164,12 @@ export default function NonogramGrid({
         return paddedClue.map((n, clueCol) => (
           <div
             key={`rc-${rowIdx}-${clueCol}`}
-            className={`${styles.rowClueCell} ${!completed && hoveredCell?.row === rowIdx ? styles.highlightedClue : ''} ${satisfiedRows.has(rowIdx) ? styles.satisfied : ''}`}
+            className={`${styles.rowClueCell} ${!completed && hoveredCell?.row === rowIdx ? styles.highlightedClue : ''} ${satisfiedRows.has(rowIdx) ? styles.satisfied : ''} ${onClueClick && !completed ? styles.clickableClue : ''}`}
             style={{
               gridColumn: clueCol + 1,
               gridRow: maxColClueLen + 1 + rowIdx,
             }}
+            onClick={onClueClick && !completed ? () => onClueClick('row', rowIdx) : undefined}
           >
             {n !== null && <span className={styles.clueNumber}>{n}</span>}
           </div>
@@ -175,6 +186,8 @@ export default function NonogramGrid({
           const isHighlighted = !completed && hoveredCell !== null &&
             (hoveredCell.row === row || hoveredCell.col === col) &&
             !(hoveredCell.row === row && hoveredCell.col === col);
+          const isFocused = !completed && focusedCell !== null &&
+            focusedCell.row === row && focusedCell.col === col;
 
           return (
             <div
@@ -189,7 +202,7 @@ export default function NonogramGrid({
                 isThickRight ? styles.thickRight : ''
               } ${isThickBottom ? styles.thickBottom : ''} ${
                 isHighlighted ? styles.highlighted : ''
-              }`}
+              } ${isFocused ? styles.focused : ''}`}
               style={{
                 gridColumn: maxRowClueLen + 1 + col,
                 gridRow: maxColClueLen + 1 + row,

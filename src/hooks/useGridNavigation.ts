@@ -1,8 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import type { Tool } from '../engine/types';
 
 export interface UseGridNavigationOptions {
   size: number;
   onActivateCell: (row: number, col: number) => void;
+  onToolChange?: (tool: Tool) => void;
   enabled?: boolean;
 }
 
@@ -23,6 +25,7 @@ export interface UseGridNavigationReturn {
 export function useGridNavigation({
   size,
   onActivateCell,
+  onToolChange,
   enabled = true,
 }: UseGridNavigationOptions): UseGridNavigationReturn {
   const [focusedCell, setFocusedCell] = useState<{ row: number; col: number } | null>(null);
@@ -31,6 +34,9 @@ export function useGridNavigation({
   // Keep a ref to the latest onActivateCell to avoid stale closures
   const onActivateCellRef = useRef(onActivateCell);
   onActivateCellRef.current = onActivateCell;
+
+  const onToolChangeRef = useRef(onToolChange);
+  onToolChangeRef.current = onToolChange;
 
   // When focusedCell changes, programmatically move DOM focus
   useEffect(() => {
@@ -84,6 +90,16 @@ export function useGridNavigation({
           if (focusedCell) {
             onActivateCellRef.current(focusedCell.row, focusedCell.col);
           }
+          e.preventDefault();
+          return;
+        case 'x':
+        case 'X':
+          onToolChangeRef.current?.('cross');
+          e.preventDefault();
+          return;
+        case 'f':
+        case 'F':
+          onToolChangeRef.current?.('fill');
           e.preventDefault();
           return;
         default:
