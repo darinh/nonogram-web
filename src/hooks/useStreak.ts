@@ -10,14 +10,21 @@ export function useStreak() {
   useEffect(() => {
     progressProvider.getStreak().then(data => {
       setStreak(data);
+    }).catch(() => {
+      // Silently fall back to defaults on error
+    }).finally(() => {
       setLoading(false);
     });
   }, [progressProvider]);
 
   const recordCompletion = async (date: string) => {
-    await progressProvider.recordDailyCompletion(date);
-    const updated = await progressProvider.getStreak();
-    setStreak(updated);
+    try {
+      await progressProvider.recordDailyCompletion(date);
+      const updated = await progressProvider.getStreak();
+      setStreak(updated);
+    } catch {
+      // Silently ignore — streak display is non-critical
+    }
   };
 
   return { streak, loading, recordCompletion };

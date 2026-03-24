@@ -67,6 +67,7 @@ export class LocalStorageAuthProvider implements AuthProvider {
     return user;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async login(username: string, _password: string): Promise<User> {
     const registry = this.getRegistry();
     const existing = registry[username];
