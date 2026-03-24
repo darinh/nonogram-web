@@ -1,0 +1,228 @@
+/* ── Theme Grid Page ─────────────────────────────────── */
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-light);
+  background: var(--color-white);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--color-dark);
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.backButton:hover {
+  border-color: var(--color-pink);
+  color: var(--color-pink);
+  transform: translateY(-1px);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-dark);
+  flex: 1;
+}
+
+.progressCounter {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--color-pink);
+  background: var(--color-pink-light);
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Loading / Error ────────────────────────────────── */
+
+.loadingState,
+.emptyState {
+  text-align: center;
+  padding: 64px 24px;
+  color: var(--color-dark);
+  opacity: 0.5;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* ── Grid Container ─────────────────────────────────── */
+
+.gridWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.gridBackground {
+  position: absolute;
+  inset: 0;
+  background-size: 100% 100%;
+  background-position: center;
+  image-rendering: pixelated;
+}
+
+.gridBackgroundPlaceholder {
+  composes: gridBackground;
+  background: linear-gradient(135deg, var(--color-pink-light), var(--color-blue-light));
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Grid Cells ─────────────────────────────────────── */
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.5px solid rgba(62, 58, 57, 0.12);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    opacity var(--transition),
+    transform var(--transition);
+  position: relative;
+}
+
+.cell:hover {
+  background: rgba(242, 5, 116, 0.12);
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+/* Empty cell — no puzzle at this position */
+.cellEmpty {
+  composes: cell;
+  cursor: default;
+  background: rgba(62, 58, 57, 0.04);
+}
+
+.cellEmpty:hover {
+  background: rgba(62, 58, 57, 0.04);
+  transform: none;
+}
+
+/* Locked cell overlay */
+.cellLocked {
+  opacity: 0.7;
+}
+
+/* Completed cell — semi-transparent to reveal background */
+.cellCompleted {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Difficulty Dots ────────────────────────────────── */
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dotBlue {
+  background: var(--color-blue);
+}
+
+.dotGreen {
+  background: var(--color-green);
+}
+
+.dotYellow {
+  background: var(--color-yellow);
+}
+
+.dotOrange {
+  background: var(--color-orange);
+}
+
+.dotRed {
+  background: var(--color-pink);
+}
+
+/* ── Checkmark ──────────────────────────────────────── */
+
+.checkmark {
+  font-size: 1rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+}
+
+/* ── Mobile ──────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .page {
+    padding: 12px;
+  }
+
+  .header {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .backButton {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    min-height: 44px;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .gridWrapper {
+    max-width: 100%;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .checkmark {
+    font-size: 0.75rem;
+  }
+}

@@ -11,6 +11,9 @@ import PuzzleBrowser from './PuzzleBrowser';
 import GamePage from './GamePage';
 import CreatorPage from './CreatorPage';
 import StatsPage from './StatsPage';
+import ThemeBrowserPage from './ThemeBrowserPage';
+import ThemeGridPage from './ThemeGridPage';
+import { CoinDisplay } from './CoinDisplay';
 import ThemeToggle from './ThemeToggle';
 import styles from '../styles/App.module.css';
 import '../styles/global.css';
@@ -46,6 +49,14 @@ export default function App() {
                       Puzzles
                     </NavLink>
                     <NavLink
+                      to="/themes"
+                      className={({ isActive }) =>
+                        `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+                      }
+                    >
+                      Themes
+                    </NavLink>
+                    <NavLink
                       to="/create"
                       className={({ isActive }) =>
                         `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
@@ -62,12 +73,15 @@ export default function App() {
                       📊 Stats
                     </NavLink>
                   </div>
+                  <CoinDisplay />
                   <ThemeToggle />
                 </nav>
                 <main className={styles.content}>
                   <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/puzzles" element={<PuzzleBrowser />} />
+                    <Route path="/themes" element={<ThemeBrowserPage />} />
+                    <Route path="/themes/:themeId" element={<ThemeGridPage />} />
                     <Route path="/play/:puzzleId" element={<GamePage />} />
                     <Route path="/create" element={<CreatorPage />} />
                     <Route path="/stats" element={<StatsPage />} />

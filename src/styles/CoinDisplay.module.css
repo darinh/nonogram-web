@@ -1,0 +1,32 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #FFF7ED, #FEF3C7);
+  border: 2px solid #F59E0B;
+  font-family: 'Lato', sans-serif;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: #92400E;
+  user-select: none;
+}
+
+.icon {
+  font-size: 1.1em;
+}
+
+.amount {
+  min-width: 2ch;
+}
+
+.animate {
+  animation: coinPulse 0.3s ease-out;
+}
+
+@keyframes coinPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
