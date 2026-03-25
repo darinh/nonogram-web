@@ -2,7 +2,7 @@ import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { usePuzzleProvider, useProgressProvider, useThemeProvider, useSoundProvider } from '../providers/useProviders';
 import { useNonogramGame } from '../hooks/useNonogramGame';
-import { useWallet } from '../hooks/useWallet';
+import { useSharedWallet } from '../providers/wallet/WalletContext';
 import { useTutorial } from '../hooks/useTutorial';
 import { useDragPaint } from '../hooks/useDragPaint';
 import { downloadPuzzleFile } from '../engine/serialization';
@@ -68,7 +68,7 @@ export default function GamePage() {
 
   const gameOptions = useMemo(() => ({ onSaveProgress }), [onSaveProgress]);
   const game = useNonogramGame(gameOptions);
-  const { wallet, earn, spend } = useWallet();
+  const { wallet, earn, spend } = useSharedWallet();
   const { tutorialSeen, markTutorialSeen } = useTutorial();
   const soundProvider = useSoundProvider();
   const [muted, setMuted] = useState(() => soundProvider.isMuted());
@@ -128,14 +128,22 @@ export default function GamePage() {
   }, [soundProvider]);
 
   const gamePaintCell = game.paintCell;
-  const paintCellWithSound = useCallback((row: number, col: number, mode: DragMode) => {
+  const isDraggingRef = useRef(false);
+
+  // Only play sound on the first cell of a drag to avoid lag during fast painting
+  const paintCellDrag = useCallback((row: number, col: number, mode: DragMode) => {
     const painted = gamePaintCell(row, col, mode);
-    if (painted && mode === 'fill') {
+    if (painted && mode === 'fill' && !isDraggingRef.current) {
       if (toolRef.current === 'fill') soundProvider.playFill();
       else soundProvider.playCross();
+      isDraggingRef.current = true;
     }
     return painted;
   }, [gamePaintCell, soundProvider]);
+
+  const handleDragEnd = useCallback(() => {
+    isDraggingRef.current = false;
+  }, []);
 
   const undoWithSound = useCallback(() => {
     if (game.canUndo) soundProvider.playUndo();
@@ -212,8 +220,9 @@ export default function GamePage() {
   }, [game, undoWithSound]);
 
   const dragPaint = useDragPaint({
-    onPaintCell: paintCellWithSound,
+    onPaintCell: paintCellDrag,
     getDragMode: game.getDragMode,
+    onDragEnd: handleDragEnd,
     gridSize: game.puzzle?.size ?? 0,
   });
 
@@ -221,9 +230,15 @@ export default function GamePage() {
   const handleActivateCell = useCallback(
     (row: number, col: number) => {
       const mode = game.getDragMode(row, col);
-      if (mode) paintCellWithSound(row, col, mode);
+      if (mode) {
+        const painted = gamePaintCell(row, col, mode);
+        if (painted && mode === 'fill') {
+          if (toolRef.current === 'fill') soundProvider.playFill();
+          else soundProvider.playCross();
+        }
+      }
     },
-    [game, paintCellWithSound],
+    [game, gamePaintCell, soundProvider],
   );
 
   // Pre-generate confetti particles so they're stable across renders

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useWallet } from '../hooks/useWallet';
+import { useSharedWallet } from '../providers/wallet/WalletContext';
 import styles from '../styles/CoinDisplay.module.css';
 
 /** Format coin counts for compact display: 150 → "150", 1200 → "1.2k", 10000 → "10k" */
@@ -15,7 +15,7 @@ function formatCoins(n: number): string {
  * Pulses briefly when the coin count changes.
  */
 export function CoinDisplay() {
-  const { wallet, loading } = useWallet();
+  const { wallet, loading } = useSharedWallet();
   const [prevCoins, setPrevCoins] = useState(wallet.coins);
   const [animating, setAnimating] = useState(false);
 

@@ -23,6 +23,7 @@ import ThemeGridPage from './ThemeGridPage';
 import { CoinDisplay } from './CoinDisplay';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '../hooks/useAuth';
+import { WalletStateProvider } from '../providers/wallet/WalletContext';
 import styles from '../styles/App.module.css';
 import '../styles/global.css';
 import { useMemo } from 'react';
@@ -45,6 +46,7 @@ export default function App() {
       <ProgressProviderContext.Provider value={progressProvider}>
         <ThemeProviderContext.Provider value={themeProvider}>
           <WalletProviderContext.Provider value={walletProvider}>
+          <WalletStateProvider>
             <BrowserRouter>
               <div className={styles.app}>
                 <nav className={styles.nav}>
@@ -114,6 +116,7 @@ export default function App() {
                 </main>
               </div>
             </BrowserRouter>
+          </WalletStateProvider>
           </WalletProviderContext.Provider>
         </ThemeProviderContext.Provider>
       </ProgressProviderContext.Provider>
