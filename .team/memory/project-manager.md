@@ -1,14 +1,19 @@
 # Project Manager Memory
 
 ## Active Context
-- Working on: nonogram puzzle game — **9-feature improvement initiative** ✅ COMPLETE
+- Working on: nonogram puzzle game — **Firebase + Legal + Polish initiative** 🔄 PLANNED
 - Stack: TypeScript 5.9, React 19, Vite 8, Vitest 4, Firebase Hosting
 - Live URL: https://nonogram-game-app.web.app
-- Test count: 328 unit tests (24 files, all passing) + 4 E2E test suites (Playwright)
-- **Previous initiative**: Picture Cross-style themed system — ✅ IMPLEMENTED
-- **Current initiative**: 9-feature improvement plan — ✅ IMPLEMENTED
-  - All 21 todos across 4 phases completed
-  - Delivered: E2E tests (Playwright), login (AuthProvider), 5 themes (Space/Ocean/City/Fantasy/Food), sound effects (Web Audio), solver (constraint propagation), daily puzzle, streak tracking, tutorial/onboarding, CSS animations
+- Test count: 336 unit tests (24 files, all passing) + 4 E2E test suites (Playwright)
+- **Previous initiative**: 9-feature improvement plan — ✅ IMPLEMENTED (21 todos)
+- **Current initiative**: Firebase + Legal + Polish — 🔄 PLANNED (11 todos)
+  - 7 workstreams: README update, CI/CD deploy, Google Auth, Firestore providers, DB migration, legal pages, legal agent template
+  - Plan at: session plan.md
+  - Key decisions: Firebase JS SDK for Auth+Firestore, provider pattern, env-based provider switching
+  - Agent assignments: ui-engineer (8), qa-engineer (1), hiring-manager (1), legal-analyst (1, must be created first)
+  - Max parallelism: 4 items in Phase 0, 3 in Phase 1
+  - Critical path: firebase-sdk-setup → firebase-auth-provider → firestore-app-wiring
+  - Blocker: legal-agent-template must be created by hiring-manager before legal-pages can start
 
 ## Learnings
 
