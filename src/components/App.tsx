@@ -18,6 +18,8 @@ import StatsPage from './StatsPage';
 import DailyPuzzlePage from './DailyPuzzlePage';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
+import PrivacyPolicyPage from './PrivacyPolicyPage';
+import TermsPage from './TermsPage';
 import UserMenu from './UserMenu';
 import ThemeBrowserPage from './ThemeBrowserPage';
 import ThemeGridPage from './ThemeGridPage';
@@ -108,6 +110,8 @@ export default function App() {
                   <Route path="/stats" element={<StatsPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
                 </Routes>
               </main>
             </div>
