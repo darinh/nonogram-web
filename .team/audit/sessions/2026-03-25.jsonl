@@ -1,0 +1,1 @@
+{"id": "evt_93205cab", "ts": "2026-03-25T00:21:17Z", "type": "task_created", "task_id": "task_fix_themes", "agent": "dev-team", "assigned_to": "ui-engineer", "title": "Fix theme system: missing puzzles, wrong bg path, wrong route", "risk_level": "yellow", "customer_intent": "Themes not working properly - review and fix"}
