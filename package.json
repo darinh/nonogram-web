@@ -15,7 +15,10 @@
     "test:coverage": "vitest run --coverage",
     "deploy": "npm run build && firebase deploy --only hosting",
     "generate:puzzles": "npx tsx scripts/generate-puzzles.ts",
-    "generate:theme": "npx tsx scripts/generate-theme.ts"
+    "generate:theme": "npx tsx scripts/generate-theme.ts",
+    "firebase:setup": "npx tsx scripts/firebase/setup.ts",
+    "firebase:seed": "npx tsx scripts/firebase/seed-puzzles.ts && npx tsx scripts/firebase/seed-themes.ts",
+    "firebase:migrate": "npx tsx scripts/firebase/migrate.ts"
   },
   "dependencies": {
     "firebase": "^12.11.0",
