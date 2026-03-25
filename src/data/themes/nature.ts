@@ -4,7 +4,7 @@ export const natureTheme: ThemeDefinition = {
   id: 'nature',
   title: 'Nature',
   description: 'A collection of nature-themed nonogram puzzles across all difficulty tiers',
-  backgroundImage: 'themes/nature-bg.png',
+  backgroundImage: '/themes/nature.svg',
   gridLayout: [
     { position: 0, puzzleId: 'nature-yellow-019', difficulty: 'yellow' },
     { position: 1, puzzleId: 'nature-yellow-003', difficulty: 'yellow' },

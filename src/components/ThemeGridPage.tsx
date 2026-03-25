@@ -92,11 +92,11 @@ export default function ThemeGridPage() {
               <div
                 key={i}
                 className={`${styles.cell} ${isCompleted ? styles.cellCompleted : styles.cellLocked}`}
-                onClick={() => navigate(`/play/${cell.puzzleId}`)}
+                onClick={() => navigate(`/themes/${themeId}/${cell.puzzleId}`)}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') navigate(`/play/${cell.puzzleId}`);
+                  if (e.key === 'Enter' || e.key === ' ') navigate(`/themes/${themeId}/${cell.puzzleId}`);
                 }}
               >
                 {isCompleted ? (

@@ -4,6 +4,7 @@ import { oceanPuzzles } from './ocean-puzzles';
 import { cityPuzzles } from './city-puzzles';
 import { fantasyPuzzles } from './fantasy-puzzles';
 import { foodPuzzles } from './food-puzzles';
+import { naturePuzzles } from './nature-puzzles';
 
 export const themePuzzles: PuzzleDefinition[] = [
   ...spacePuzzles,
@@ -11,4 +12,5 @@ export const themePuzzles: PuzzleDefinition[] = [
   ...cityPuzzles,
   ...fantasyPuzzles,
   ...foodPuzzles,
+  ...naturePuzzles,
 ];
