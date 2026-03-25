@@ -1,21 +1,36 @@
 # Project Manager Memory
 
 ## Active Context
-- Working on: nonogram puzzle game — **Firebase + Legal + Polish initiative** 🔄 PLANNED
-- Stack: TypeScript 5.9, React 19, Vite 8, Vitest 4, Firebase Hosting
+- Working on: nonogram puzzle game — **Firebase + Legal + Polish initiative** ✅ IMPLEMENTED
+- Stack: TypeScript 5.9, React 19, Vite 8, Vitest 4, Firebase Hosting + Firestore + Auth
 - Live URL: https://nonogram-game-app.web.app
 - Test count: 336 unit tests (24 files, all passing) + 4 E2E test suites (Playwright)
 - **Previous initiative**: 9-feature improvement plan — ✅ IMPLEMENTED (21 todos)
-- **Current initiative**: Firebase + Legal + Polish — 🔄 PLANNED (11 todos)
-  - 7 workstreams: README update, CI/CD deploy, Google Auth, Firestore providers, DB migration, legal pages, legal agent template
-  - Plan at: session plan.md
-  - Key decisions: Firebase JS SDK for Auth+Firestore, provider pattern, env-based provider switching
-  - Agent assignments: ui-engineer (8), qa-engineer (1), hiring-manager (1), legal-analyst (1, must be created first)
-  - Max parallelism: 4 items in Phase 0, 3 in Phase 1
+- **Current initiative**: Firebase + Legal + Polish — ✅ IMPLEMENTED (11 todos)
+  - 7 workstreams completed: README, CI/CD deploy, Google Auth, Firestore providers, DB migration, legal pages, legal agent template
+  - Branch: feat/firebase-integration
+  - Key deliverables:
+    - Firebase SDK installed, src/firebase.ts config module
+    - FirebaseAuthProvider with Google sign-in (popup), email/password
+    - FirestoreProgressProvider, FirestoreWalletProvider
+    - AuthSwitchedProviders in App.tsx (Firestore when authenticated, localStorage when anonymous)
+    - CI/CD deploy.yml (Firebase Hosting on master push)
+    - Firestore security rules (user-scoped access)
+    - DB migration scripts (setup, seed, migrate)
+    - Legal pages (/privacy, /terms) with footer links
+    - Legal analyst agent template in dev-team plugin repo
+    - README updated (336+ tests, all features documented)
   - Critical path: firebase-sdk-setup → firebase-auth-provider → firestore-app-wiring
   - Blocker: legal-agent-template must be created by hiring-manager before legal-pages can start
 
 ## Learnings
+
+### 2025-07-19 — Firebase + Legal + Polish Initiative
+- **What**: Decomposed 7 user requests into 11 parallelizable todos. Executed in 4 phases with fleet parallelism. Sub-agents created branches and committed independently, requiring post-hoc consolidation (cherry-picks, conflict resolution).
+- **Key Architecture Decisions**: FirebaseAuthProvider wraps Firebase Auth with Google popup sign-in. AuthSwitchedProviders component dynamically selects Firestore vs localStorage providers based on auth state. Provider pattern made this seamless — same interfaces, different backends.
+- **Evidence**: Branch feat/firebase-integration, 336 tests pass, build clean.
+- **Impact**: Sub-agents operating in parallel on the same repo can create branch conflicts. Future multi-agent work should either: (a) have agents work on non-overlapping files with no git operations, or (b) have a single coordinating agent handle all git operations after sub-agents finish.
+- **Sub-agent reliability**: Multiple sub-agents reported creating files but actually failed (file creation tools sometimes fail silently in concurrent sessions). Always verify sub-agent output by checking file existence before proceeding to dependent phases.
 
 ### 2025-07-18 — Play Again Feature
 - **What**: Added "Play Again" button to completion overlay. The `resetGrid()` in `useNonogramGame.ts` already handled clearing the grid, resetting `completed` state, and saving progress — only UI changes were needed in `GamePage.tsx` and `GamePage.module.css`.
