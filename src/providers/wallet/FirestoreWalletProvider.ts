@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db as _db } from '../../firebase';
+const db = _db!;
 import type { WalletState } from '../../engine/types';
 import type { WalletProvider } from './WalletProvider';
 import { createEmptyWallet } from '../../engine/coins';

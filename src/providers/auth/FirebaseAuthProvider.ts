@@ -8,7 +8,8 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { auth as _auth } from '../../firebase';
+const auth = _auth!;
 import type { User } from '../../engine/auth-types';
 import type { AuthProvider } from './AuthProvider';
 

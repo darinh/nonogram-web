@@ -6,7 +6,8 @@ import {
   collection,
   getDocs,
 } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db as _db } from '../../firebase';
+const db = _db!;
 import type { ProgressProvider, StreakData } from './ProgressProvider';
 import type { PuzzleProgress, ThemeProgress } from '../../engine/types';
 
