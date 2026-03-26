@@ -28,7 +28,7 @@ import ThemeToggle from './ThemeToggle';
 import { WalletStateProvider } from '../providers/wallet/WalletContext';
 import styles from '../styles/App.module.css';
 import '../styles/global.css';
-import { useMemo, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 export default function App() {
   const puzzleProvider = useMemo(
@@ -47,56 +47,7 @@ export default function App() {
         <AuthSwitchedProviders>
           <BrowserRouter>
             <div className={styles.app}>
-              <nav className={styles.nav}>
-                <NavLink to="/" className={styles.logo}>
-                  Nonogram
-                </NavLink>
-                <div className={styles.navLinks}>
-                  <NavLink
-                    to="/puzzles"
-                    className={({ isActive }) =>
-                      `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-                    }
-                  >
-                    Puzzles
-                  </NavLink>
-                  <NavLink
-                    to="/themes"
-                    className={({ isActive }) =>
-                      `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-                    }
-                  >
-                    Themes
-                  </NavLink>
-                  <NavLink
-                    to="/daily"
-                    className={({ isActive }) =>
-                      `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-                    }
-                  >
-                    Daily
-                  </NavLink>
-                  <NavLink
-                    to="/create"
-                    className={({ isActive }) =>
-                      `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-                    }
-                  >
-                    Create
-                  </NavLink>
-                  <NavLink
-                    to="/stats"
-                    className={({ isActive }) =>
-                      `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-                    }
-                  >
-                    📊 Stats
-                  </NavLink>
-                </div>
-                <CoinDisplay />
-                <NavAuth />
-                <ThemeToggle />
-              </nav>
+              <SiteNav />
               <main className={styles.content}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
@@ -124,10 +75,67 @@ export default function App() {
   );
 }
 
-function NavAuth() {
+function SiteNav() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = useCallback(() => setMenuOpen((prev) => !prev), []);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeMenu(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [menuOpen, closeMenu]);
+
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`;
+
+  return (
+    <nav className={styles.nav}>
+      <NavLink to="/" className={styles.logo} onClick={closeMenu}>
+        <span className={styles.logoDot} />
+        Nonogram
+      </NavLink>
+
+      <div className={`${styles.navLinks} ${menuOpen ? styles.navLinksOpen : ''}`}>
+        <NavLink to="/puzzles" className={linkClass} onClick={closeMenu}>Puzzles</NavLink>
+        <NavLink to="/themes" className={linkClass} onClick={closeMenu}>Themes</NavLink>
+        <NavLink to="/daily" className={linkClass} onClick={closeMenu}>Daily</NavLink>
+        <NavLink to="/create" className={linkClass} onClick={closeMenu}>Create</NavLink>
+        <NavLink to="/stats" className={linkClass} onClick={closeMenu}>Stats</NavLink>
+      </div>
+
+      <div className={styles.navRight}>
+        <CoinDisplay />
+        <NavAuth closeMenu={closeMenu} />
+        <ThemeToggle />
+      </div>
+
+      <button
+        className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ''}`}
+        onClick={toggleMenu}
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
+      >
+        <span className={styles.hamburgerBar} />
+        <span className={styles.hamburgerBar} />
+        <span className={styles.hamburgerBar} />
+      </button>
+
+      <div
+        className={`${styles.mobileOverlay} ${menuOpen ? styles.mobileOverlayVisible : ''}`}
+        onClick={closeMenu}
+        role="presentation"
+      />
+    </nav>
+  );
+}
+
+function NavAuth({ closeMenu }: { closeMenu: () => void }) {
   const { user } = useAuth();
   if (user) return <UserMenu />;
-  return <NavLink to="/login" className={styles.navLink}>Login</NavLink>;
+  return <NavLink to="/login" className={styles.navLink} onClick={closeMenu}>Login</NavLink>;
 }
 
 /** Switches progress and wallet providers based on auth state. */
