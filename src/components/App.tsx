@@ -1,16 +1,15 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext, SoundProviderContext, AuthProviderContext } from '../providers/ProviderContext';
 import { WebAudioSoundProvider } from '../providers/sound';
-import { FirebaseAuthProvider } from '../providers/auth';
+import { useAuth } from '../hooks/useAuth';
 import { CompositePuzzleProvider } from '../providers/puzzle/CompositePuzzleProvider';
 import { StaticPuzzleProvider } from '../providers/puzzle/StaticPuzzleProvider';
 import { LocalStoragePuzzleProvider } from '../providers/puzzle/LocalStoragePuzzleProvider';
 import { DailyPuzzleProvider } from '../providers/puzzle/DailyPuzzleProvider';
 import { LocalStorageProgressProvider } from '../providers/progress/LocalStorageProgressProvider';
-import { FirestoreProgressProvider } from '../providers/progress/FirestoreProgressProvider';
 import { StaticThemeProvider } from '../providers/theme';
 import { LocalStorageWalletProvider } from '../providers/wallet';
-import { FirestoreWalletProvider } from '../providers/wallet/FirestoreWalletProvider';
+import { LocalStorageAuthProvider } from '../providers/auth/LocalStorageAuthProvider';
 import HomePage from './HomePage';
 import PuzzleBrowser from './PuzzleBrowser';
 import GamePage from './GamePage';
@@ -24,7 +23,6 @@ import ThemeBrowserPage from './ThemeBrowserPage';
 import ThemeGridPage from './ThemeGridPage';
 import { CoinDisplay } from './CoinDisplay';
 import ThemeToggle from './ThemeToggle';
-import { useAuth } from '../hooks/useAuth';
 import { WalletStateProvider } from '../providers/wallet/WalletContext';
 import styles from '../styles/App.module.css';
 import '../styles/global.css';
@@ -37,7 +35,7 @@ export default function App() {
   );
   const themeProvider = useMemo(() => new StaticThemeProvider(), []);
   const soundProvider = useMemo(() => new WebAudioSoundProvider(), []);
-  const authProvider = useMemo(() => new FirebaseAuthProvider(), []);
+  const authProvider = useMemo(() => new LocalStorageAuthProvider(), []);
 
   return (
     <AuthProviderContext.Provider value={authProvider}>
@@ -130,16 +128,17 @@ function NavAuth() {
 
 /** Switches progress and wallet providers based on auth state. */
 function AuthSwitchedProviders({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  // Firebase providers disabled — using localStorage only
+  // When Firebase is configured, swap to FirestoreProgressProvider/FirestoreWalletProvider here
 
   const progressProvider = useMemo(
-    () => user ? new FirestoreProgressProvider(user.id) : new LocalStorageProgressProvider(),
-    [user],
+    () => new LocalStorageProgressProvider(),
+    [],
   );
 
   const walletProvider = useMemo(
-    () => user ? new FirestoreWalletProvider(user.id) : new LocalStorageWalletProvider(),
-    [user],
+    () => new LocalStorageWalletProvider(),
+    [],
   );
 
   return (
