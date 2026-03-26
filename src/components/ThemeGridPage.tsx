@@ -55,6 +55,7 @@ export default function ThemeGridPage() {
   }
 
   const totalPuzzles = theme.gridLayout.length || TOTAL_CELLS;
+  const isThemeComplete = completedCount >= totalPuzzles;
 
   return (
     <div className={styles.page}>
@@ -71,7 +72,7 @@ export default function ThemeGridPage() {
       <div className={styles.gridWrapper}>
         {theme.backgroundImage ? (
           <div
-            className={styles.gridBackground}
+            className={`${styles.gridBackground} ${!isThemeComplete ? styles.previewHidden : ''}`}
             style={{ backgroundImage: `url(${theme.backgroundImage})` }}
           />
         ) : (

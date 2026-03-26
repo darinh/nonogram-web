@@ -52,6 +52,7 @@ export default function GamePage() {
   const [hintPrompt, setHintPrompt] = useState<{ axis: 'row' | 'col'; index: number } | null>(null);
   const [edgeRevealUsed, setEdgeRevealUsed] = useState(false);
   const [bombUsed, setBombUsed] = useState(false);
+  const [wasCompleted, setWasCompleted] = useState(false);
   const rewardedRef = useRef(false);
 
   const [searchParams] = useSearchParams();
@@ -87,6 +88,7 @@ export default function GamePage() {
       game.loadPuzzle(puzzle, progress);
       setElapsedTime(progress?.elapsedTime ?? 0);
       rewardedRef.current = progress?.completed ?? false;
+      setWasCompleted(progress?.completed ?? false);
       setEdgeRevealUsed(false);
       setBombUsed(false);
       setLoading(false);
@@ -118,6 +120,7 @@ export default function GamePage() {
     setElapsedTime(0);
     setEdgeRevealUsed(false);
     setBombUsed(false);
+    setWasCompleted(false);
     rewardedRef.current = false;
   }, [game]);
 
@@ -258,6 +261,8 @@ export default function GamePage() {
   }
 
   const difficulty = game.puzzle.difficulty;
+  const showRealTitle = game.completed || wasCompleted;
+  const displayTitle = showRealTitle ? game.puzzle.title : 'Mystery Puzzle';
   const badgeClass = difficulty
     ? `${styles.difficultyBadge} ${styles[`badge${difficulty.charAt(0).toUpperCase()}${difficulty.slice(1)}`]}`
     : undefined;
@@ -284,7 +289,7 @@ export default function GamePage() {
               </button>
               <span aria-hidden="true"> › </span>
             </span>
-            {game.puzzle.title}
+            {displayTitle}
             {difficulty && (
               <span className={badgeClass}>
                 {difficulty} · {game.puzzle.size}×{game.puzzle.size}
@@ -293,7 +298,7 @@ export default function GamePage() {
           </h1>
         ) : (
           <h1 className={styles.puzzleTitle}>
-            {game.puzzle.title}
+            {displayTitle}
             {difficulty && (
               <span className={badgeClass}>
                 {difficulty} · {game.puzzle.size}×{game.puzzle.size}

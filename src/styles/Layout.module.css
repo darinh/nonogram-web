@@ -1,0 +1,141 @@
+/* ── SectionTitle ─────────────────────────────────────── */
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #000;
+  color: var(--text-light);
+  display: inline-block;
+  padding: 0.45em 1.2em 0.45em 0.9em;
+  border-left: 4px solid var(--pink);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 2.5rem;
+}
+
+/* ── PageSection ──────────────────────────────────────── */
+
+.sectionDark {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  padding: 5rem 0 6rem;
+}
+
+.sectionLight {
+  background: var(--bg-card);
+  color: var(--text-dark);
+  padding: 5rem 0 6rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── Footer ───────────────────────────────────────────── */
+
+.footer {
+  background: #000;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+  border-top: 2px solid rgba(228, 12, 110, 0.2);
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem 1.5rem;
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+}
+
+.footerLink {
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: color var(--transition);
+}
+
+.footerLink:hover {
+  color: var(--pink);
+}
+
+.footerSocial {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.footerSocialLink {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color var(--transition);
+}
+
+.footerSocialLink:hover {
+  color: var(--pink);
+}
+
+.footerCopy {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── ContentWrapper ───────────────────────────────────── */
+
+.contentWrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── Grid Background Utility ─────────────────────────── */
+
+:global(.grid-bg) {
+  position: relative;
+}
+
+:global(.grid-bg)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(228, 12, 110, 0.06) 39px,
+      rgba(228, 12, 110, 0.06) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      rgba(228, 12, 110, 0.06) 39px,
+      rgba(228, 12, 110, 0.06) 40px
+    );
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .footerGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sectionDark,
+  .sectionLight {
+    padding: 3rem 0 4rem;
+  }
+}

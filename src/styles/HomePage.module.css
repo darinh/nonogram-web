@@ -1,193 +1,467 @@
+/* ══════════════════════════════════════════════════════
+   HomePage — Redesigned
+   Uses design tokens from design-system.css and
+   keyframes from animations.css.
+   ══════════════════════════════════════════════════════ */
+
+/* ── Hero ───────────────────────────────────────────── */
+
 .hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 64px 24px 48px;
+  background: var(--bg-dark);
+  overflow: hidden;
+  padding: calc(var(--nav-height) + 2rem) 1.5rem 4rem;
 }
 
-.title {
+.heroContent {
+  position: relative;
+  z-index: 2;
+}
+
+.heroTitle {
   font-family: var(--font-heading);
   font-weight: 900;
-  font-size: 3rem;
-  color: var(--color-pink);
-  text-shadow: 0 2px 12px rgba(242, 5, 116, 0.15);
-  margin-bottom: 12px;
-  line-height: 1.2;
+  font-size: clamp(3.5rem, 12vw, 9rem);
+  line-height: 0.95;
+  color: var(--text-light);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 40px rgba(228, 12, 110, 0.5),
+    0 0 80px rgba(228, 12, 110, 0.25),
+    4px 4px 0 rgba(228, 12, 110, 0.35);
+  margin-bottom: 0.2em;
+  animation: titleGlow 3s ease-in-out infinite;
 }
 
-.subtitle {
+.heroSubtitle {
   font-family: var(--font-body);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
   font-weight: 400;
-  font-size: 1.125rem;
-  color: var(--color-dark);
-  opacity: 0.7;
-  max-width: 480px;
-  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.1em;
 }
 
-/* ── Featured Section ────────────────────────────────── */
+/* ── 5×5 heart grid ─────────────────────────────────── */
 
-.featuredSection {
-  max-width: 480px;
-  margin: 32px auto;
-}
-
-/* ── Navigation Actions ──────────────────────────────── */
-
-.nav {
+.heroGridWrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-top: 32px;
-  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
 }
 
-/* ── How to Play ──────────────────────────────────────── */
-
-.howToPlay {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 16px;
-  padding: 8px 20px;
-  border-radius: var(--radius-pill);
-  border: none;
-  background: transparent;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.875rem;
-  color: var(--color-blue);
-  cursor: pointer;
-  transition:
-    color var(--transition),
-    transform var(--transition);
+.heroGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  width: clamp(120px, 18vw, 180px);
+  aspect-ratio: 1;
 }
 
-.howToPlay:hover {
-  color: var(--color-pink);
-  transform: translateY(-1px);
+.cell {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.4s;
 }
 
-/* ── Continue Section ────────────────────────────────── */
-
-.continueSection {
-  max-width: 720px;
-  margin: 48px auto 0;
+.filledPink {
+  background: var(--pink);
+  border-color: var(--pink);
+  box-shadow: 0 0 8px rgba(228, 12, 110, 0.4);
 }
 
-.continueSection h2 {
+.filledCyan {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 8px rgba(3, 187, 237, 0.4);
+}
+
+.filledGreen {
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 0 8px rgba(124, 220, 72, 0.4);
+}
+
+/* ── CTA button ─────────────────────────────────────── */
+
+.ctaButton {
+  display: inline-block;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--color-dark);
-  margin-bottom: 16px;
-}
-
-/* ── Action Buttons ──────────────────────────────────── */
-
-.actionButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 32px;
-  border-radius: var(--radius-pill);
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 1rem;
+  border: 2px solid var(--pink);
+  border-radius: 2em;
+  padding: 0.75em 2.4em;
+  font-size: 1.15rem;
+  color: var(--text-light);
+  background: var(--pink);
   cursor: pointer;
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition),
-    background var(--transition);
-}
-
-.actionButton:hover {
-  transform: translateY(-2px);
-}
-
-.actionButtonPrimary {
-  composes: actionButton;
-  background: var(--color-pink);
-  color: var(--color-white);
-  border: none;
-  box-shadow: var(--shadow-pink);
-}
-
-.actionButtonPrimary:hover {
-  box-shadow: 0 6px 24px rgba(242, 5, 116, 0.3);
-}
-
-.actionButtonSecondary {
-  composes: actionButton;
-  background: var(--color-white);
-  color: var(--color-blue);
-  border: 2px solid var(--color-blue);
-}
-
-.actionButtonSecondary:hover {
-  background: var(--color-blue-light);
-  box-shadow: var(--shadow-sm);
-}
-
-/* ── Footer ──────────────────────────────────────────── */
-
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 48px;
-  padding-top: 24px;
-  border-top: 1px solid var(--color-light);
-}
-
-.footerLink {
-  font-family: var(--font-body);
-  font-size: 0.8125rem;
-  font-weight: 400;
-  color: var(--color-dark);
-  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: all 0.25s;
+  animation: pulseGlow 2.5s ease-in-out infinite;
   text-decoration: none;
-  transition: opacity var(--transition), color var(--transition);
 }
 
-.footerLink:hover {
-  opacity: 1;
-  color: var(--color-pink);
+.ctaButton:hover {
+  background: #c70a5d;
+  border-color: #c70a5d;
+  color: var(--text-light);
 }
 
-.footerDot {
-  font-size: 0.75rem;
-  color: var(--color-dark);
-  opacity: 0.3;
+/* ── Floating decorative squares ────────────────────── */
+
+.floater {
+  position: absolute;
+  border-radius: 4px;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* ── Mobile ──────────────────────────────────────────── */
+.floater1 {
+  width: 60px;
+  height: 60px;
+  background: var(--pink);
+  top: 15%;
+  left: 8%;
+  animation: drift-1 8s ease-in-out infinite;
+}
 
-@media (max-width: 640px) {
-  .hero {
-    padding: 32px 16px 24px;
+.floater2 {
+  width: 40px;
+  height: 40px;
+  background: var(--cyan);
+  top: 25%;
+  right: 12%;
+  animation: drift-2 10s ease-in-out infinite;
+}
+
+.floater3 {
+  width: 80px;
+  height: 80px;
+  background: var(--green);
+  bottom: 20%;
+  left: 5%;
+  animation: drift-3 12s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+.floater4 {
+  width: 30px;
+  height: 30px;
+  background: var(--purple);
+  bottom: 30%;
+  right: 8%;
+  animation: drift-1 9s ease-in-out infinite 1s;
+}
+
+.floater5 {
+  width: 50px;
+  height: 50px;
+  background: var(--gold);
+  top: 60%;
+  left: 15%;
+  animation: drift-2 11s ease-in-out infinite 0.5s;
+}
+
+.floater6 {
+  width: 35px;
+  height: 35px;
+  background: var(--teal);
+  top: 12%;
+  right: 25%;
+  animation: drift-3 7s ease-in-out infinite 2s;
+}
+
+.floater7 {
+  width: 24px;
+  height: 24px;
+  background: var(--orange);
+  bottom: 15%;
+  right: 20%;
+  animation: drift-1 13s ease-in-out infinite 1.5s;
+}
+
+/* ── Feature cards ──────────────────────────────────── */
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.featureCard {
+  background: var(--bg-card);
+  border: 2px solid var(--pink);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.5rem;
+  filter: drop-shadow(4px 4px 0 var(--pink));
+  transition: transform 0.25s, filter 0.25s;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
+  filter: drop-shadow(6px 8px 0 var(--pink));
+}
+
+.featureIcon {
+  font-size: 2.8rem;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.featureCard h3 {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.featureCard p {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.55;
+}
+
+/* ── How It Works ───────────────────────────────────── */
+
+.steps {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.step {
+  text-align: center;
+  max-width: 280px;
+  flex: 1 1 220px;
+  position: relative;
+}
+
+.stepNumber {
+  width: 72px;
+  height: 72px;
+  border: 3px solid var(--pink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: var(--pink);
+  margin: 0 auto 1.2rem;
+  background: rgba(228, 12, 110, 0.08);
+}
+
+.step h3 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.6rem;
+  color: var(--text-light);
+}
+
+.step p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.55;
+}
+
+.stepConnector {
+  flex: 0 0 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 34px;
+}
+
+.stepConnector::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 0;
+  border-top: 2px dashed var(--pink);
+  opacity: 0.5;
+}
+
+/* ── Gallery ────────────────────────────────────────── */
+
+.galleryScroll {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding: 1rem 0.5rem 2rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pink) transparent;
+}
+
+.galleryScroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.galleryScroll::-webkit-scrollbar-thumb {
+  background: var(--pink);
+  border-radius: 3px;
+}
+
+.galleryCard {
+  flex: 0 0 220px;
+  scroll-snap-align: start;
+  background: var(--bg-card);
+  border: 2px solid var(--pink);
+  border-radius: var(--radius-md);
+  padding: 1.2rem;
+  filter: drop-shadow(4px 4px 0 var(--pink));
+  transition: transform 0.25s;
+}
+
+.galleryCard:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+
+.miniGrid {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 0.9rem;
+  border-radius: 4px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.miniCell {
+  border-radius: 1px;
+  aspect-ratio: 1;
+}
+
+.galleryCard h4 {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+}
+
+.galleryMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.galleryStars {
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.gallerySize {
+  font-size: 0.7rem;
+  background: #000;
+  color: var(--text-light);
+  padding: 0.2em 0.6em;
+  border-radius: 2em;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+/* ── Bottom CTA ─────────────────────────────────────── */
+
+.ctaSection {
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaSection h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+.ctaDeco {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  width: 100px;
+  height: 100px;
+  opacity: 0.08;
+}
+
+.ctaDecoCell {
+  background: var(--pink);
+  border-radius: 2px;
+}
+
+.ctaDecoLeft {
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%) rotate(-12deg);
+}
+
+.ctaDecoRight {
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%) rotate(12deg);
+}
+
+.ctaCenter {
+  text-align: center;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .featuresGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .title {
-    font-size: 2rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-  }
-
-  .actionButton {
-    padding: 12px 24px;
-    font-size: 0.875rem;
-    min-height: 44px;
-    width: 100%;
-    justify-content: center;
-  }
-
-  .nav {
+@media (max-width: 700px) {
+  .steps {
     flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    padding: 0 16px;
+    align-items: center;
+  }
+
+  .stepConnector {
+    padding-top: 0;
+    transform: rotate(90deg);
+  }
+
+  .stepConnector::before {
+    width: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ctaDeco {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroTitle {
+    letter-spacing: 0.02em;
   }
 }

@@ -1,0 +1,106 @@
+/*
+ * Shared Animations — Nonogram World Redesign
+ * Reusable keyframes and utility classes for the redesigned UI.
+ * Uses design tokens from design-system.css.
+ */
+
+/* ── Decorative floating elements ────────────────────── */
+
+@keyframes drift-1 {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(20px, -30px) rotate(15deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes drift-2 {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(-25px, 20px) rotate(-12deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes drift-3 {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(15px, 25px) rotate(20deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ── Entrance animations ─────────────────────────────── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Glow effects ────────────────────────────────────── */
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(228, 12, 110, 0.45); }
+  50%      { box-shadow: 0 0 0 12px rgba(228, 12, 110, 0); }
+}
+
+@keyframes titleGlow {
+  0%, 100% {
+    text-shadow:
+      0 0 40px rgba(228, 12, 110, 0.5),
+      0 0 80px rgba(228, 12, 110, 0.25);
+  }
+  50% {
+    text-shadow:
+      0 0 60px rgba(228, 12, 110, 0.7),
+      0 0 120px rgba(228, 12, 110, 0.35);
+  }
+}
+
+/* ── Gradient border rotation for featured cards ─────── */
+
+@keyframes borderShift {
+  0%   { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
+}
+
+/* ── Progress bar fill ───────────────────────────────── */
+
+@keyframes xpFill {
+  from { width: 0; }
+  to   { width: var(--fill-to, 100%); }
+}
+
+/* ── Scroll-reveal utility ───────────────────────────── */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Reduced-motion override ─────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

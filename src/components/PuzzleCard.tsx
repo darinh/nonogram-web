@@ -9,13 +9,15 @@ interface PuzzleCardProps {
 }
 
 export default function PuzzleCard({ puzzle, progress, onClick, onExport }: PuzzleCardProps) {
-  const statusLabel = progress?.completed
+  const isCompleted = progress?.completed ?? false;
+
+  const statusLabel = isCompleted
     ? '✓ Completed'
     : progress
       ? '◐ In Progress'
       : 'Not Started';
 
-  const statusClass = progress?.completed
+  const statusClass = isCompleted
     ? styles.completed
     : progress
       ? styles.inProgress
@@ -25,13 +27,15 @@ export default function PuzzleCard({ puzzle, progress, onClick, onExport }: Puzz
     ? styles[puzzle.difficulty]
     : undefined;
 
+  const displayTitle = isCompleted ? puzzle.title : 'Mystery Puzzle';
+
   return (
     <div className={`${styles.card} ${difficultyClass}`} onClick={onClick}>
       <div className={styles.header}>
-        <h3 className={styles.title}>{puzzle.title}</h3>
+        <h3 className={styles.title}>{displayTitle}</h3>
         <span className={styles.size}>{puzzle.size}×{puzzle.size}</span>
       </div>
-      {puzzle.description && (
+      {isCompleted && puzzle.description && (
         <p className={styles.description}>{puzzle.description}</p>
       )}
       <div className={styles.footer}>
