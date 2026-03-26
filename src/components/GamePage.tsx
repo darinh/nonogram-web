@@ -2,7 +2,7 @@ import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { usePuzzleProvider, useProgressProvider, useThemeProvider, useSoundProvider } from '../providers/useProviders';
 import { useNonogramGame } from '../hooks/useNonogramGame';
-import { useSharedWallet } from '../providers/wallet/WalletContext';
+import { useSharedWallet } from '../hooks/useSharedWallet';
 import { useTutorial } from '../hooks/useTutorial';
 import { useDragPaint } from '../hooks/useDragPaint';
 import { downloadPuzzleFile } from '../engine/serialization';

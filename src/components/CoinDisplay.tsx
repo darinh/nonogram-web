@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSharedWallet } from '../providers/wallet/WalletContext';
+import { useSharedWallet } from '../hooks/useSharedWallet';
 import styles from '../styles/CoinDisplay.module.css';
 
 /** Format coin counts for compact display: 150 → "150", 1200 → "1.2k", 10000 → "10k" */

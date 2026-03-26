@@ -1,16 +1,8 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { WalletState } from '../../engine/types';
 import { earnCoins, spendCoins, createEmptyWallet } from '../../engine/coins';
 import { useWalletProvider } from '../useProviders';
-
-interface WalletContextValue {
-  wallet: WalletState;
-  earn: (amount: number, reason: string) => Promise<void>;
-  spend: (amount: number, reason: string) => Promise<boolean>;
-  loading: boolean;
-}
-
-const WalletStateContext = createContext<WalletContextValue | null>(null);
+import { WalletContext } from './walletContextDef';
 
 export function WalletStateProvider({ children }: { children: ReactNode }) {
   const provider = useWalletProvider();
@@ -29,7 +21,7 @@ export function WalletStateProvider({ children }: { children: ReactNode }) {
 
   const earn = useCallback(
     async (amount: number, reason: string) => {
-      setWallet(prev => {
+      setWallet((prev: WalletState) => {
         const updated = earnCoins(prev, amount, reason);
         provider.saveWallet(updated);
         return updated;
@@ -41,7 +33,7 @@ export function WalletStateProvider({ children }: { children: ReactNode }) {
   const spend = useCallback(
     async (amount: number, reason: string): Promise<boolean> => {
       let success = false;
-      setWallet(prev => {
+      setWallet((prev: WalletState) => {
         const updated = spendCoins(prev, amount, reason);
         if (!updated) return prev;
         success = true;
@@ -54,14 +46,8 @@ export function WalletStateProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <WalletStateContext.Provider value={{ wallet, earn, spend, loading }}>
+    <WalletContext.Provider value={{ wallet, earn, spend, loading }}>
       {children}
-    </WalletStateContext.Provider>
+    </WalletContext.Provider>
   );
-}
-
-export function useSharedWallet(): WalletContextValue {
-  const ctx = useContext(WalletStateContext);
-  if (!ctx) throw new Error('WalletStateProvider not found in component tree');
-  return ctx;
 }
