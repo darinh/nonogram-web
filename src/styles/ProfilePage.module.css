@@ -1,0 +1,313 @@
+/* ═══════════════════════════════════════════════════════
+   ProfilePage — Player profile with stats, achievements
+   Uses design tokens from design-system.css
+   ═══════════════════════════════════════════════════════ */
+
+.page { background: var(--bg-card, #fff); color: var(--text-dark, #1a1a1a); min-height: 100vh; }
+.section { padding: 5rem 2rem; }
+.sectionDark { background: var(--bg-dark, #0a0a0a); color: var(--text-light, #fff); }
+.sectionLight { background: var(--bg-card, #fff); color: var(--text-dark, #1a1a1a); }
+.container { max-width: 1100px; margin: 0 auto; }
+
+.sectionTitleBar {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--text-light, #fff);
+  background: #000;
+  display: inline-block;
+  padding: 0.4em 1.2em 0.4em 1em;
+  border-left: 6px solid var(--pink, #e40c6e);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hero {
+  padding-top: calc(var(--nav-height, 60px) + 4rem);
+  padding-bottom: 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(228, 12, 110, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(228, 12, 110, 0.08) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 6rem);
+  letter-spacing: 0.08em;
+  text-shadow: 3px 3px 0 var(--pink, #e40c6e), 6px 6px 0 rgba(228, 12, 110, 0.3);
+  position: relative;
+  line-height: 1.1;
+  color: var(--text-light, #fff);
+}
+
+.playerCardWrap {
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem 4rem;
+  margin-top: -1rem;
+}
+
+.playerCard {
+  background: var(--bg-card, #fff);
+  border: 2px solid var(--pink, #e40c6e);
+  border-radius: var(--radius-lg, 16px);
+  filter: drop-shadow(6px 6px 0 var(--pink, #e40c6e));
+  padding: 2.5rem 3rem;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+  color: var(--text-dark, #1a1a1a);
+}
+
+.playerAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink, #e40c6e), var(--purple, #9748c5));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.2rem;
+  box-shadow: 0 4px 20px rgba(228, 12, 110, 0.3);
+}
+
+.playerAvatar span {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 2.5rem;
+  color: var(--text-light, #fff);
+  letter-spacing: 0.05em;
+}
+
+.playerUsername {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.playerRank {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold, #ffc600), #e6b200);
+  color: #000;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.85rem;
+  padding: 0.3em 1.2em;
+  border-radius: 2em;
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+}
+
+.playerLevel {
+  margin: 1rem 0 0.3rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #444;
+}
+
+.xpBar {
+  width: 100%;
+  height: 14px;
+  background: #eee;
+  border-radius: 7px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.xpBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink, #e40c6e), #f06);
+  border-radius: 7px;
+  animation: xpFillAnim 1.2s ease-out;
+}
+
+@keyframes xpFillAnim { from { width: 0; } }
+
+.xpBarLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted, #888);
+  display: flex;
+  justify-content: space-between;
+  margin-top: -0.3rem;
+}
+
+.playerMeta {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.playerMetaStreak {
+  display: inline-block;
+  border: 2px solid var(--orange, #ef780f);
+  border-radius: 2em;
+  padding: 0.2em 1em;
+  font-weight: 700;
+  color: var(--orange, #ef780f);
+  font-size: 0.85rem;
+}
+
+.statsGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+.statCard {
+  background: var(--bg-card, #fff);
+  border: 2px solid var(--pink, #e40c6e);
+  border-radius: var(--radius-md, 12px);
+  filter: drop-shadow(4px 4px 0 var(--pink, #e40c6e));
+  padding: 1.8rem 1.2rem;
+  text-align: center;
+}
+
+.statNumber {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1.1;
+  margin-bottom: 0.3rem;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: var(--text-muted, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.statPink { color: var(--pink, #e40c6e); }
+.statGreen { color: var(--green, #7cdc48); }
+.statOrange { color: var(--orange, #ef780f); }
+.statCyan { color: var(--cyan, #03bbed); }
+.statPurple { color: var(--purple, #9748c5); }
+.statGold { color: var(--gold, #ffc600); }
+
+.achievementsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+
+.achievement {
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(228, 12, 110, 0.3);
+  border-radius: 14px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.achievement:hover { transform: translateY(-4px); }
+
+.achievementUnlocked {
+  border-color: var(--pink, #e40c6e);
+  box-shadow: 0 0 20px rgba(228, 12, 110, 0.15);
+}
+
+.achievementUnlocked:hover { box-shadow: 0 0 30px rgba(228, 12, 110, 0.3); }
+
+.achievementLocked { opacity: 0.45; border-color: rgba(255, 255, 255, 0.15); }
+.achievementLocked .achIcon { filter: grayscale(1); }
+
+.achIcon { font-size: 2.2rem; display: block; margin-bottom: 0.6rem; }
+
+.achName {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: var(--text-light, #fff);
+  margin-bottom: 0.3rem;
+}
+
+.achDesc { font-size: 0.78rem; color: rgba(255, 255, 255, 0.55); line-height: 1.4; }
+
+.activityList { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  background: var(--bg-card, #fff);
+  border: 1px solid #f0f0f0;
+  border-left: 4px solid var(--pink, #e40c6e);
+  border-radius: var(--radius-sm, 8px);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.activityItem:hover { transform: translateX(4px); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); }
+
+.activityTime {
+  font-size: 0.78rem;
+  color: var(--text-muted, #888);
+  white-space: nowrap;
+  min-width: 85px;
+  padding-top: 2px;
+  font-weight: 700;
+}
+
+.activityText { font-size: 0.95rem; line-height: 1.5; }
+.activityText strong { font-weight: 700; }
+
+.emptyState { text-align: center; padding: 64px 24px; }
+.emptyIcon { font-size: 3rem; margin-bottom: 12px; }
+.emptyTitle { font-family: var(--font-heading); font-weight: 700; font-size: 1.25rem; margin-bottom: 8px; }
+.emptyText { font-size: 0.95rem; opacity: 0.6; max-width: 360px; margin: 0 auto 24px; }
+
+.emptyAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--radius-pill, 24px);
+  background: var(--pink, #e40c6e);
+  color: var(--text-light, #fff);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.emptyAction:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(228, 12, 110, 0.3); }
+
+.loading {
+  text-align: center;
+  padding: 64px 24px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  opacity: 0.5;
+}
+
+@media (max-width: 900px) { .achievementsGrid { grid-template-columns: repeat(3, 1fr); } }
+
+@media (max-width: 768px) {
+  .statsGrid { grid-template-columns: repeat(2, 1fr); }
+  .section { padding: 3rem 1.5rem; }
+  .playerCard { padding: 2rem 1.5rem; }
+}
+
+@media (max-width: 600px) {
+  .achievementsGrid { grid-template-columns: repeat(2, 1fr); }
+  .statsGrid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .statCard { padding: 1.4rem 1rem; }
+  .statNumber { font-size: 1.5rem; }
+}
+
+@media (max-width: 480px) { .playerCardWrap { padding: 0 1rem 3rem; } }
+
+@media (prefers-reduced-motion: reduce) { .xpBarFill { animation: none; } }

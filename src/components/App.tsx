@@ -15,6 +15,8 @@ import PuzzleBrowser from './PuzzleBrowser';
 import GamePage from './GamePage';
 import CreatorPage from './CreatorPage';
 import StatsPage from './StatsPage';
+import ProfilePage from './ProfilePage';
+import HowToPlayPage from './HowToPlayPage';
 import DailyPuzzlePage from './DailyPuzzlePage';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
@@ -60,6 +62,8 @@ export default function App() {
                   <Route path="/play/:puzzleId" element={<GamePage />} />
                   <Route path="/create" element={<CreatorPage />} />
                   <Route path="/stats" element={<StatsPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/howtoplay" element={<HowToPlayPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />
