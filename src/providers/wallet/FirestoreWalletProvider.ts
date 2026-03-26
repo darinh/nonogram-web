@@ -1,9 +1,9 @@
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db as _db } from '../../firebase';
 const db = _db!;
-import type { WalletState } from '../../engine/types';
+import type { DualWalletState } from '../../engine/types';
 import type { WalletProvider } from './WalletProvider';
-import { createEmptyWallet } from '../../engine/coins';
+import { createEmptyDualWallet } from '../../engine/economy';
 
 export class FirestoreWalletProvider implements WalletProvider {
   readonly uid: string;
@@ -12,16 +12,16 @@ export class FirestoreWalletProvider implements WalletProvider {
     this.uid = uid;
   }
 
-  async getWallet(): Promise<WalletState> {
+  async getWallet(): Promise<DualWalletState> {
     const ref = doc(db, 'users', this.uid, 'data', 'wallet');
     const snap = await getDoc(ref);
     if (snap.exists()) {
-      return snap.data() as WalletState;
+      return snap.data() as DualWalletState;
     }
-    return createEmptyWallet();
+    return createEmptyDualWallet();
   }
 
-  async saveWallet(wallet: WalletState): Promise<void> {
+  async saveWallet(wallet: DualWalletState): Promise<void> {
     const ref = doc(db, 'users', this.uid, 'data', 'wallet');
     await setDoc(ref, wallet);
   }
