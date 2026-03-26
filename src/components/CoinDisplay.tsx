@@ -2,64 +2,63 @@ import { useState } from 'react';
 import { useSharedWallet } from '../hooks/useSharedWallet';
 import styles from '../styles/CoinDisplay.module.css';
 
-/** Format currency counts for compact display */
-function formatAmount(n: number): string {
+/** Format counts for compact display: 150 -> "150", 1200 -> "1.2k", 10000 -> "10k" */
+function formatCount(n: number): string {
   if (n < 1000) return n.toString();
   if (n < 10000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
   return Math.floor(n / 1000) + 'k';
 }
 
 /**
- * Compact pill showing the player's current token and coin balances.
- * Intended for the app header — always visible.
- * Pulses briefly when a balance changes.
+ * Dual-currency display showing both tokens and coins.
+ * Pill-shaped badges in the app header with animated pulse on changes.
  */
 export function CoinDisplay() {
   const { wallet, loading } = useSharedWallet();
-  const [prevCoins, setPrevCoins] = useState(wallet.coins);
   const [prevTokens, setPrevTokens] = useState(wallet.tokens);
-  const [animatingCoins, setAnimatingCoins] = useState(false);
-  const [animatingTokens, setAnimatingTokens] = useState(false);
-
-  if (wallet.coins !== prevCoins) {
-    setPrevCoins(wallet.coins);
-    setAnimatingCoins(true);
-  }
+  const [prevCoins, setPrevCoins] = useState(wallet.coins);
+  const [tokenAnimating, setTokenAnimating] = useState(false);
+  const [coinAnimating, setCoinAnimating] = useState(false);
 
   if (wallet.tokens !== prevTokens) {
     setPrevTokens(wallet.tokens);
-    setAnimatingTokens(true);
+    setTokenAnimating(true);
+  }
+
+  if (wallet.coins !== prevCoins) {
+    setPrevCoins(wallet.coins);
+    setCoinAnimating(true);
   }
 
   if (loading) return null;
 
-  const coinClass = animatingCoins
-    ? `${styles.container} ${styles.animate}`
-    : styles.container;
+  const tokenClass = tokenAnimating
+    ? `${styles.pill} ${styles.tokenPill} ${styles.animate}`
+    : `${styles.pill} ${styles.tokenPill}`;
 
-  const tokenClass = animatingTokens
-    ? `${styles.container} ${styles.animate}`
-    : styles.container;
+  const coinClass = coinAnimating
+    ? `${styles.pill} ${styles.coinPill} ${styles.animate}`
+    : `${styles.pill} ${styles.coinPill}`;
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.container}>
       <div
         className={tokenClass}
         role="status"
         aria-label={`${wallet.tokens} tokens`}
-        onAnimationEnd={() => setAnimatingTokens(false)}
+        onAnimationEnd={() => setTokenAnimating(false)}
       >
-        <span className={styles.icon} aria-hidden="true">🎟️</span>
-        <span className={styles.amount}>{formatAmount(wallet.tokens)}</span>
+        <span className={styles.icon} aria-hidden="true">{"🎟️"}</span>
+        <span className={styles.amount}>{formatCount(wallet.tokens)}</span>
       </div>
       <div
         className={coinClass}
         role="status"
         aria-label={`${wallet.coins} coins`}
-        onAnimationEnd={() => setAnimatingCoins(false)}
+        onAnimationEnd={() => setCoinAnimating(false)}
       >
-        <span className={styles.icon} aria-hidden="true">🪙</span>
-        <span className={styles.amount}>{formatAmount(wallet.coins)}</span>
+        <span className={styles.icon} aria-hidden="true">{"🪙"}</span>
+        <span className={styles.amount}>{formatCount(wallet.coins)}</span>
       </div>
     </div>
   );
