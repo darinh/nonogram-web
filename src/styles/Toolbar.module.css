@@ -145,7 +145,7 @@
 
 /* ── Mobile ──────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .toolbar {
     flex-wrap: wrap;
     gap: 8px;

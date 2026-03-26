@@ -47,8 +47,8 @@
 .cell {
   min-width: 30px;
   min-height: 30px;
-  max-width: 40px;
-  max-height: 40px;
+  max-width: 42px;
+  max-height: 42px;
   width: 100%;
   aspect-ratio: 1;
   background: var(--color-white);
@@ -170,29 +170,45 @@
   background-color: rgba(5, 151, 242, 0.15);
 }
 
-/* ── Tablet ──────────────────────────────────────────── */
+/* ── Desktop (≤1024px) ───────────────────────────────── */
 
 @media (max-width: 1024px) {
   .cell {
-    min-width: 26px;
-    min-height: 26px;
-    max-width: 34px;
-    max-height: 34px;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: 38px;
+    max-height: 38px;
   }
 }
 
-/* ── Mobile ──────────────────────────────────────────── */
+/* ── Tablet (≤768px) ────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .cell {
-    min-width: 22px;
-    min-height: 22px;
-    max-width: 28px;
-    max-height: 28px;
+    min-width: 26px;
+    min-height: 26px;
+    max-width: 36px;
+    max-height: 36px;
   }
 
   .clueNumber {
-    font-size: 0.65rem;
+    font-size: 0.72rem;
+    min-width: 12px;
+  }
+}
+
+/* ── Mobile (≤600px) ─────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .cell {
+    min-width: 22px;
+    min-height: 22px;
+    max-width: 30px;
+    max-height: 30px;
+  }
+
+  .clueNumber {
+    font-size: 0.6rem;
     min-width: 10px;
   }
 

@@ -202,7 +202,7 @@
 
 /* ── Mobile ──────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .page {
     padding: 12px;
   }
@@ -234,4 +234,6 @@
   .checkmark {
     font-size: 0.75rem;
   }
+
+  .cell:hover { transform: none; }
 }

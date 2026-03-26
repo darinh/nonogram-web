@@ -343,7 +343,7 @@
 
 .ctaButton:hover { background: #c00a5c; transform: translateY(-2px); }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .stepContent { grid-template-columns: 60px 1fr; }
   .stepContent .stepVisual { grid-column: 1 / -1; justify-self: center; }
 }

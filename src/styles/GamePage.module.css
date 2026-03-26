@@ -278,6 +278,54 @@
   animation: popIn 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms forwards; opacity: 0;
 }
 
+.tokenReward {
+  font-family: var(--font-heading); font-weight: 900; font-size: 1.1rem;
+  color: #f8b4d9; margin: 0.25rem 0;
+  animation: popIn 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 400ms forwards; opacity: 0;
+}
+
+/* ── Insufficient Funds Gate ──────────────────────── */
+
+.insufficientOverlay {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 60vh; padding: 2rem;
+}
+
+.insufficientCard {
+  text-align: center; background: var(--bg-card, #1e1e2e);
+  border: 2px solid var(--border, #333); border-radius: 1.5rem;
+  padding: 2.5rem 2rem; max-width: 400px;
+  animation: modalPop 300ms ease-out forwards;
+}
+
+.insufficientIcon { font-size: 3rem; margin-bottom: 0.75rem; }
+
+.insufficientTitle {
+  font-family: var(--font-heading); font-weight: 900; font-size: 1.5rem;
+  color: var(--text, #fff); margin: 0 0 0.75rem;
+}
+
+.insufficientText {
+  color: var(--text-muted, #aaa); font-size: 0.95rem; line-height: 1.5; margin: 0 0 1rem;
+}
+
+.insufficientBalance {
+  font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem;
+  color: var(--text, #fff); margin: 0 0 1.5rem;
+}
+
+.insufficientButton {
+  padding: 0.6em 1.8em; border: 2px solid var(--pink, #e40c6e); border-radius: 2em;
+  background: var(--pink, #e40c6e); color: var(--text-light, #fff);
+  font-family: var(--font-heading); font-weight: 900; font-size: 0.85rem;
+  cursor: pointer; text-transform: uppercase; letter-spacing: 0.04em;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.insufficientButton:hover {
+  background: transparent; color: var(--pink, #e40c6e); transform: scale(1.03);
+}
+
 .completionButtons { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; }
 
 .nextPuzzleButton {
@@ -329,13 +377,14 @@
 @keyframes modalPop { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
 @keyframes confettiFall { 0% { opacity: 1; transform: translateY(-100vh) rotate(0deg); } 100% { opacity: 0; transform: translateY(100vh) rotate(720deg); } }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .gameMain { flex-direction: column; align-items: center; padding: 1rem; }
   .puzzleArea { flex-direction: column; align-items: center; }
-  .toolPalette { flex-direction: row; justify-content: center; }
+  .toolPalette { flex-direction: row; justify-content: center; flex-wrap: wrap; }
   .toolDivider { width: 1px; height: 32px; margin: 0 0.1rem; }
   .sidebar { width: 100%; max-width: 460px; }
   .sidebarCard { filter: drop-shadow(3px 3px 0 var(--pink, #e40c6e)); }
+  .completionCard { max-width: 340px; }
 }
 
 @media (max-width: 600px) {
@@ -347,4 +396,5 @@
   .completionButtons { flex-direction: column; gap: 8px; width: 100%; }
   .nextPuzzleButton, .playAgainButton, .themeButton { width: 100%; min-height: 44px; }
   .toolBtn { width: 44px; height: 44px; }
+  .completionCard { max-width: 100%; }
 }

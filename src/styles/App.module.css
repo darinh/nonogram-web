@@ -168,6 +168,10 @@
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
   }
 
   .navLinks {
@@ -183,6 +187,8 @@
     transition: transform 0.35s ease;
     padding: 1rem 0;
     z-index: 999;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .navLinksOpen {
@@ -191,7 +197,9 @@
 
   .navLink {
     padding: 1em 2rem;
-    display: block;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
     width: 100%;
     font-size: 1rem;
   }
@@ -220,4 +228,9 @@
   .navRight {
     gap: 0.5rem;
   }
+}
+
+@media (max-width: 600px) {
+  .nav { padding: 0 1rem; }
+  .logo { font-size: 1.1rem; }
 }

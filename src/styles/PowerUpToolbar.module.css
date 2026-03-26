@@ -134,7 +134,7 @@
 
 /* ── Responsive: stack on small screens ──────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .toolbar {
     flex-direction: column;
   }
@@ -153,4 +153,6 @@
   .icon {
     font-size: 0.85rem;
   }
+
+  .confirmYes, .confirmNo { min-height: 44px; padding: 8px 14px; }
 }

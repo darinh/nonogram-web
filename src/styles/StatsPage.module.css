@@ -410,9 +410,11 @@
     padding: 8px;
     font-size: 0.75rem;
   }
+
+  .detailsToggle { min-height: 44px; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .overviewGrid {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
@@ -443,4 +445,6 @@
   .barCount {
     min-width: auto;
   }
+
+  .emptyAction { min-height: 44px; }
 }

@@ -133,3 +133,9 @@
   opacity: 0.6;
   pointer-events: none;
 }
+
+@media (max-width: 600px) {
+  .card { padding: 16px; }
+  .card:hover { transform: none; }
+  .exportButton { min-height: 44px; padding: 6px 14px; }
+}

@@ -186,7 +186,7 @@
 
 /* ── Mobile ──────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .page {
     padding: 16px 12px;
   }
@@ -210,4 +210,6 @@
   .cardPreview {
     height: 100px;
   }
+
+  .card:hover { transform: none; }
 }

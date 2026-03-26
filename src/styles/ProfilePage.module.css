@@ -293,7 +293,7 @@
   opacity: 0.5;
 }
 
-@media (max-width: 900px) { .achievementsGrid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) { .achievementsGrid { grid-template-columns: repeat(3, 1fr); } }
 
 @media (max-width: 768px) {
   .statsGrid { grid-template-columns: repeat(2, 1fr); }
@@ -308,6 +308,6 @@
   .statNumber { font-size: 1.5rem; }
 }
 
-@media (max-width: 480px) { .playerCardWrap { padding: 0 1rem 3rem; } }
+@media (max-width: 600px) { .playerCardWrap { padding: 0 1rem 3rem; } }
 
 @media (prefers-reduced-motion: reduce) { .xpBarFill { animation: none; } }

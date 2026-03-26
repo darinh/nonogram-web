@@ -324,9 +324,17 @@
   line-height: 1.4;
 }
 
+/* ── Tablet ──────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .page { padding: 24px 16px; }
+  .manualCell { width: 28px; height: 28px; }
+  .manualCellFilled { width: 28px; height: 28px; }
+}
+
 /* ── Mobile ──────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .page {
     padding: 16px 12px;
   }
@@ -365,9 +373,13 @@
   .tab {
     padding: 10px 12px;
     font-size: 0.85rem;
+    min-height: 44px;
   }
 
   .uploadArea {
     padding: 32px 16px;
   }
+
+  .thresholdSlider::-webkit-slider-thumb { width: 28px; height: 28px; }
+  .thresholdSlider::-moz-range-thumb { width: 28px; height: 28px; }
 }

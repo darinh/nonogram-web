@@ -131,7 +131,7 @@
 
 /* ── Mobile ──────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .page {
     padding: 32px 16px;
   }
@@ -149,4 +149,6 @@
     justify-content: center;
     min-height: 44px;
   }
+
+  .card { padding: 24px 16px; }
 }

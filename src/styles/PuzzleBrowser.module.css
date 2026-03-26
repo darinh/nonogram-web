@@ -89,13 +89,19 @@
 
 @media (max-width: 1024px) {
   .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 /* ── Mobile ──────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .page {
     padding: 16px 12px;
   }

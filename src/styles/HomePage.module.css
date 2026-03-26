@@ -161,9 +161,18 @@
   opacity: 0.3;
 }
 
+/* ── Tablet ──────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .hero { padding: 40px 20px 32px; }
+  .title { font-size: 2.25rem; }
+  .nav { flex-direction: column; gap: 10px; width: 100%; padding: 0 16px; }
+  .actionButton { width: 100%; justify-content: center; }
+}
+
 /* ── Mobile ──────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .hero {
     padding: 32px 16px 24px;
   }
@@ -190,4 +199,7 @@
     width: 100%;
     padding: 0 16px;
   }
+
+  .howToPlay { min-height: 44px; }
+  .footer { flex-wrap: wrap; gap: 4px 8px; }
 }

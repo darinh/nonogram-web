@@ -83,3 +83,8 @@
 .signOutButton:hover {
   background: var(--color-pink-light);
 }
+
+@media (max-width: 600px) {
+  .avatar { width: 44px; height: 44px; }
+  .signOutButton { min-height: 44px; display: flex; align-items: center; }
+}
