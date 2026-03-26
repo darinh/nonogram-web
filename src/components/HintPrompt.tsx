@@ -27,6 +27,8 @@ interface HintPromptProps {
 /**
  * Modal dialog offering to reveal a row/column hint for coins.
  *
+ * Uses coins from the dual wallet system (🪙).
+ *
  * Handles three states:
  * - **Purchasable**: user can afford → Buy Hint enabled
  * - **Too expensive**: user can't afford → Buy Hint disabled, warning shown

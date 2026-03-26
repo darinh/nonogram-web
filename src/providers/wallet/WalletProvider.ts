@@ -1,6 +1,6 @@
-import type { WalletState } from '../../engine/types';
+import type { DualWalletState } from '../../engine/types';
 
 export interface WalletProvider {
-  getWallet(): Promise<WalletState>;
-  saveWallet(wallet: WalletState): Promise<void>;
+  getWallet(): Promise<DualWalletState>;
+  saveWallet(wallet: DualWalletState): Promise<void>;
 }

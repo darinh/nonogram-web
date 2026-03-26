@@ -1,10 +1,12 @@
 import { createContext } from 'react';
-import type { WalletState } from '../../engine/types';
+import type { DualWalletState } from '../../engine/types';
 
 export interface WalletContextValue {
-  wallet: WalletState;
-  earn: (amount: number, reason: string) => Promise<void>;
-  spend: (amount: number, reason: string) => Promise<boolean>;
+  wallet: DualWalletState;
+  earnTokens: (amount: number, reason: string) => Promise<void>;
+  spendTokens: (amount: number, reason: string) => Promise<boolean>;
+  earnCoins: (amount: number, reason: string) => Promise<void>;
+  spendCoins: (amount: number, reason: string) => Promise<boolean>;
   loading: boolean;
 }
 

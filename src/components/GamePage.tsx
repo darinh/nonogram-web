@@ -7,13 +7,11 @@ import { useTutorial } from '../hooks/useTutorial';
 import { useDragPaint } from '../hooks/useDragPaint';
 import { downloadPuzzleFile } from '../engine/serialization';
 import { getHintCost } from '../engine/hints';
-import { calculateReward } from '../engine/coins';
-import { CellState } from '../engine/types';
-import { EDGE_REVEAL_COST, BOMB_COST } from '../engine/constants';
+import { calculateCoinReward } from '../engine/economy';
+import { CellState, Tool } from '../engine/types';
+import { EDGE_REVEAL_COST, BOMB_COST, PLAY_COST, REPLAY_COIN_COST, REPLAY_TOKEN_REWARD } from '../engine/constants';
 import NonogramGrid from './NonogramGrid';
-import Toolbar from './Toolbar';
 import HintPrompt from './HintPrompt';
-import PowerUpToolbar from './PowerUpToolbar';
 import TutorialOverlay from './TutorialOverlay';
 import { CoinDisplay } from './CoinDisplay';
 import styles from '../styles/GamePage.module.css';
@@ -42,6 +40,29 @@ function countRevealable(
   return count;
 }
 
+/** Generate a 5x5 thumbnail from the solution (downsampled). */
+function getSolutionThumb(solution: number[], size: number): boolean[] {
+  const thumb: boolean[] = [];
+  const step = size / 5;
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 5; c++) {
+      const sr = Math.floor(r * step);
+      const sc = Math.floor(c * step);
+      thumb.push(solution[sr * size + sc] === 1);
+    }
+  }
+  return thumb;
+}
+
+/** Count filled cells in grid that match the solution. */
+function countFilledCells(grid: CellState[], solution: number[]): number {
+  let count = 0;
+  for (let i = 0; i < grid.length; i++) {
+    if (grid[i] === CellState.Filled && solution[i] === 1) count++;
+  }
+  return count;
+}
+
 export default function GamePage() {
   const { puzzleId } = useParams<{ puzzleId: string }>();
   const navigate = useNavigate();
@@ -52,7 +73,6 @@ export default function GamePage() {
   const [hintPrompt, setHintPrompt] = useState<{ axis: 'row' | 'col'; index: number } | null>(null);
   const [edgeRevealUsed, setEdgeRevealUsed] = useState(false);
   const [bombUsed, setBombUsed] = useState(false);
-  const [wasCompleted, setWasCompleted] = useState(false);
   const rewardedRef = useRef(false);
 
   const [searchParams] = useSearchParams();
@@ -69,12 +89,17 @@ export default function GamePage() {
 
   const gameOptions = useMemo(() => ({ onSaveProgress }), [onSaveProgress]);
   const game = useNonogramGame(gameOptions);
-  const { wallet, earn, spend } = useSharedWallet();
+  const { wallet, earnTokens, spendTokens, earnCoins, spendCoins } = useSharedWallet();
   const { tutorialSeen, markTutorialSeen } = useTutorial();
   const soundProvider = useSoundProvider();
   const [muted, setMuted] = useState(() => soundProvider.isMuted());
   const toolRef = useRef(game.tool);
   toolRef.current = game.tool;
+
+  // Track whether the token/coin cost has been paid to start the puzzle
+  const [gamePaid, setGamePaid] = useState(false);
+  const [insufficientFunds, setInsufficientFunds] = useState<'tokens' | 'coins' | null>(null);
+  const [isReplay, setIsReplay] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -88,9 +113,32 @@ export default function GamePage() {
       game.loadPuzzle(puzzle, progress);
       setElapsedTime(progress?.elapsedTime ?? 0);
       rewardedRef.current = progress?.completed ?? false;
-      setWasCompleted(progress?.completed ?? false);
       setEdgeRevealUsed(false);
       setBombUsed(false);
+
+      const wasAlreadyCompleted = progress?.completed ?? false;
+      setIsReplay(wasAlreadyCompleted);
+
+      if (wasAlreadyCompleted) {
+        const ok = await spendCoins(REPLAY_COIN_COST, `Replay: ${puzzle.title}`);
+        if (ok) {
+          setGamePaid(true);
+          setInsufficientFunds(null);
+        } else {
+          setInsufficientFunds('coins');
+          setGamePaid(false);
+        }
+      } else {
+        const ok = await spendTokens(PLAY_COST, `Play: ${puzzle.title}`);
+        if (ok) {
+          setGamePaid(true);
+          setInsufficientFunds(null);
+        } else {
+          setInsufficientFunds('tokens');
+          setGamePaid(false);
+        }
+      }
+
       setLoading(false);
     }
     load();
@@ -115,14 +163,22 @@ export default function GamePage() {
     return () => clearInterval(id);
   }, [game.puzzle, game.completed]);
 
-  const handleReset = useCallback(() => {
+  const handleReset = useCallback(async () => {
+    const ok = await spendCoins(REPLAY_COIN_COST, `Replay: ${game.puzzle?.title ?? 'puzzle'}`);
+    if (!ok) {
+      setInsufficientFunds('coins');
+      return;
+    }
+    await earnTokens(REPLAY_TOKEN_REWARD, `Replay reward: ${game.puzzle?.title ?? 'puzzle'}`);
     game.resetGrid();
     setElapsedTime(0);
     setEdgeRevealUsed(false);
     setBombUsed(false);
-    setWasCompleted(false);
     rewardedRef.current = false;
-  }, [game]);
+    setIsReplay(true);
+    setGamePaid(true);
+    setInsufficientFunds(null);
+  }, [game, spendCoins, earnTokens]);
 
   const toggleMute = useCallback(() => {
     const next = !soundProvider.isMuted();
@@ -133,7 +189,6 @@ export default function GamePage() {
   const gamePaintCell = game.paintCell;
   const isDraggingRef = useRef(false);
 
-  // Only play sound on the first cell of a drag to avoid lag during fast painting
   const paintCellDrag = useCallback((row: number, col: number, mode: DragMode) => {
     const painted = gamePaintCell(row, col, mode);
     if (painted && mode === 'fill' && !isDraggingRef.current) {
@@ -153,15 +208,18 @@ export default function GamePage() {
     game.undo();
   }, [game, soundProvider]);
 
-  // Award coins when puzzle is completed
+  // Award coins when puzzle is completed (and tokens on replay)
   useEffect(() => {
     if (game.completed && game.puzzle?.difficulty && !rewardedRef.current) {
       rewardedRef.current = true;
       soundProvider.playFanfare();
-      const reward = calculateReward(game.puzzle.difficulty);
-      earn(reward, `Completed: ${game.puzzle.title}`);
+      const reward = calculateCoinReward(game.puzzle.difficulty);
+      earnCoins(reward, `Completed: ${game.puzzle.title}`);
+      if (isReplay) {
+        earnTokens(REPLAY_TOKEN_REWARD, `Replay reward: ${game.puzzle.title}`);
+      }
     }
-  }, [game.completed, game.puzzle, earn, soundProvider]);
+  }, [game.completed, game.puzzle, earnCoins, earnTokens, isReplay, soundProvider]);
 
   const handleClueClick = useCallback(
     (axis: 'row' | 'col', index: number) => {
@@ -173,7 +231,7 @@ export default function GamePage() {
   const handleHintConfirm = useCallback(async () => {
     if (!hintPrompt || !game.puzzle) return;
     const cost = getHintCost(game.puzzle.difficulty);
-    const ok = await spend(cost, `Hint: ${hintPrompt.axis} ${hintPrompt.index + 1}`);
+    const ok = await spendCoins(cost, `Hint: ${hintPrompt.axis} ${hintPrompt.index + 1}`);
     if (ok) {
       if (hintPrompt.axis === 'row') {
         game.applyRowHint(hintPrompt.index);
@@ -182,29 +240,29 @@ export default function GamePage() {
       }
     }
     setHintPrompt(null);
-  }, [hintPrompt, game, spend]);
+  }, [hintPrompt, game, spendCoins]);
 
   const handleHintCancel = useCallback(() => {
     setHintPrompt(null);
   }, []);
 
   const handleEdgeReveal = useCallback(async () => {
-    const ok = await spend(EDGE_REVEAL_COST, 'Power-up: Edge Reveal');
+    const ok = await spendCoins(EDGE_REVEAL_COST, 'Power-up: Edge Reveal');
     if (ok) {
       game.applyEdgeReveal();
       setEdgeRevealUsed(true);
     }
-  }, [spend, game]);
+  }, [spendCoins, game]);
 
   const handleBomb = useCallback(async () => {
-    const ok = await spend(BOMB_COST, 'Power-up: Bomb');
+    const ok = await spendCoins(BOMB_COST, 'Power-up: Bomb');
     if (ok) {
       game.applyBomb();
       setBombUsed(true);
     }
-  }, [spend, game]);
+  }, [spendCoins, game]);
 
-  // Keyboard shortcuts: Ctrl+Z → undo, Ctrl+Shift+Z / Ctrl+Y → redo
+  // Keyboard shortcuts: Ctrl+Z -> undo, Ctrl+Shift+Z / Ctrl+Y -> redo
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
@@ -229,7 +287,6 @@ export default function GamePage() {
     gridSize: game.puzzle?.size ?? 0,
   });
 
-  /** Keyboard activation: same effect as a single click on the cell. */
   const handleActivateCell = useCallback(
     (row: number, col: number) => {
       const mode = game.getDragMode(row, col);
@@ -256,29 +313,82 @@ export default function GamePage() {
     [],
   );
 
+  // Keep edgeRevealUsed/bombUsed referenced to avoid lint warnings
+  void edgeRevealUsed;
+  void bombUsed;
+  void handleEdgeReveal;
+  void handleBomb;
+
   if (loading || !game.puzzle) {
     return <div className={styles.page}>Loading...</div>;
   }
 
+  const backUrl = themeId ? `/themes/${themeId}` : '/puzzles';
+
+  // Insufficient funds gate
+  if (insufficientFunds && !gamePaid) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.insufficientOverlay}>
+          <div className={styles.insufficientCard} role="alert">
+            {insufficientFunds === 'tokens' ? (
+              <>
+                <div className={styles.insufficientIcon} aria-hidden="true">🎟️</div>
+                <h2 className={styles.insufficientTitle}>Need Tokens</h2>
+                <p className={styles.insufficientText}>
+                  You need {PLAY_COST} 🎟️ {PLAY_COST === 1 ? 'token' : 'tokens'} to play this puzzle.
+                  Earn tokens by replaying completed puzzles!
+                </p>
+                <p className={styles.insufficientBalance}>
+                  Your balance: {wallet.tokens} 🎟️
+                </p>
+              </>
+            ) : (
+              <>
+                <div className={styles.insufficientIcon} aria-hidden="true">🪙</div>
+                <h2 className={styles.insufficientTitle}>Need Coins</h2>
+                <p className={styles.insufficientText}>
+                  You need {REPLAY_COIN_COST} 🪙 coins to replay this puzzle.
+                  Earn coins by completing new puzzles!
+                </p>
+                <p className={styles.insufficientBalance}>
+                  Your balance: {wallet.coins} 🪙
+                </p>
+              </>
+            )}
+            <button
+              className={styles.insufficientButton}
+              onClick={() => navigate(backUrl)}
+            >
+              ← Browse Puzzles
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
   const difficulty = game.puzzle.difficulty;
-  const showRealTitle = game.completed || wasCompleted;
-  const displayTitle = showRealTitle ? game.puzzle.title : 'Mystery Puzzle';
   const badgeClass = difficulty
     ? `${styles.difficultyBadge} ${styles[`badge${difficulty.charAt(0).toUpperCase()}${difficulty.slice(1)}`]}`
     : undefined;
 
-  const coinReward = difficulty ? calculateReward(difficulty) : 0;
-  const backUrl = themeId ? `/themes/${themeId}` : '/puzzles';
+  const coinReward = difficulty ? calculateCoinReward(difficulty) : 0;
+  const totalCells = game.puzzle.solution.filter(c => c === 1).length;
+  const solvedCells = countFilledCells(game.grid, game.puzzle.solution);
+  const progressPct = totalCells > 0 ? Math.round((solvedCells / totalCells) * 100) : 0;
+  const solutionThumb = getSolutionThumb(game.puzzle.solution, game.puzzle.size);
+
+  // Display "Mystery Puzzle" until solved
+  const displayTitle = game.completed ? game.puzzle.title : 'Mystery Puzzle';
 
   return (
     <div className={styles.page}>
-      <div className={styles.header}>
-        <button className={styles.backButton} onClick={() => navigate(backUrl)}>
-          ← {themeId ? 'Theme' : 'Back'}
-        </button>
-
-        {themeName ? (
-          <h1 className={styles.puzzleTitle}>
+      {/* Top Bar */}
+      <div className={styles.topBar}>
+        <h1 className={styles.puzzleTitle}>
+          {themeName && (
             <span className={styles.breadcrumb}>
               <button
                 className={styles.breadcrumbLink}
@@ -287,27 +397,24 @@ export default function GamePage() {
               >
                 {themeName}
               </button>
-              <span aria-hidden="true"> › </span>
+              <span aria-hidden="true"> &rsaquo; </span>
             </span>
-            {displayTitle}
-            {difficulty && (
-              <span className={badgeClass}>
-                {difficulty} · {game.puzzle.size}×{game.puzzle.size}
-              </span>
-            )}
-          </h1>
-        ) : (
-          <h1 className={styles.puzzleTitle}>
-            {displayTitle}
-            {difficulty && (
-              <span className={badgeClass}>
-                {difficulty} · {game.puzzle.size}×{game.puzzle.size}
-              </span>
-            )}
-          </h1>
-        )}
-
-        <div className={styles.headerRight}>
+          )}
+          {game.completed ? game.puzzle.title : (
+            <>Puzzle <span className={styles.titleMuted}>&mdash;</span> {displayTitle}</>
+          )}
+        </h1>
+        <div className={styles.topBarStats}>
+          <div className={styles.statItem}>
+            <span aria-hidden="true">&#x23F1;&#xFE0F;</span>
+            <span className={styles.statValue}>{formatTime(elapsedTime)}</span>
+          </div>
+          {difficulty && (
+            <span className={badgeClass}>
+              {difficulty} &middot; {game.puzzle.size}&times;{game.puzzle.size}
+            </span>
+          )}
+          <span className={styles.sizeBadge}>{game.puzzle.size}&times;{game.puzzle.size}</span>
           <CoinDisplay />
           <button
             className={styles.muteButton}
@@ -327,43 +434,139 @@ export default function GamePage() {
         </div>
       </div>
 
-      <div className={styles.gameArea}>
-        <Toolbar
-          activeTool={game.tool}
-          onToolChange={game.setTool}
-          onReset={handleReset}
-          onUndo={undoWithSound}
-          onRedo={game.redo}
-          canUndo={game.canUndo}
-          canRedo={game.canRedo}
-          completed={game.completed}
-        />
+      {/* Main Game Layout */}
+      <main className={styles.gameMain}>
+        <div className={styles.puzzleArea}>
+          {/* Puzzle board */}
+          <NonogramGrid
+            grid={game.grid}
+            size={game.puzzle.size}
+            rowClues={game.puzzle.rowClues}
+            colClues={game.puzzle.colClues}
+            completed={game.completed}
+            onCellMouseDown={dragPaint.handleCellMouseDown}
+            onCellMouseEnter={dragPaint.handleCellMouseEnter}
+            onMouseUp={dragPaint.handleMouseUp}
+            onActivateCell={handleActivateCell}
+            onToolChange={game.setTool}
+            onClueClick={handleClueClick}
+          />
 
-        <PowerUpToolbar
-          edgeRevealUsed={edgeRevealUsed}
-          bombUsed={bombUsed}
-          currentCoins={wallet.coins}
-          onEdgeReveal={handleEdgeReveal}
-          onBomb={handleBomb}
-        />
+          {/* Vertical tool palette */}
+          <div className={styles.toolPalette} role="toolbar" aria-label="Drawing tools">
+            <button
+              className={`${styles.toolBtn} ${game.tool === Tool.Fill ? styles.toolBtnActive : ''}`}
+              onClick={() => game.setTool(Tool.Fill)}
+              title="Fill tool"
+              disabled={game.completed}
+              aria-pressed={game.tool === Tool.Fill}
+            >
+              🖊️
+            </button>
+            <button
+              className={`${styles.toolBtn} ${game.tool === Tool.Cross ? styles.toolBtnActive : ''}`}
+              onClick={() => game.setTool(Tool.Cross)}
+              title="X-Mark tool"
+              disabled={game.completed}
+              aria-pressed={game.tool === Tool.Cross}
+            >
+              ✕
+            </button>
+            <div className={styles.toolDivider} />
+            <button
+              className={styles.toolBtn}
+              onClick={undoWithSound}
+              title="Undo (Ctrl+Z)"
+              disabled={!game.canUndo || game.completed}
+            >
+              ↩️
+            </button>
+            <button
+              className={styles.toolBtn}
+              onClick={game.redo}
+              title="Redo (Ctrl+Shift+Z)"
+              disabled={!game.canRedo || game.completed}
+            >
+              ↪️
+            </button>
+          </div>
+        </div>
 
-        <div className={styles.timer}>{formatTime(elapsedTime)}</div>
+        {/* Sidebar */}
+        <aside className={styles.sidebar}>
+          {/* Puzzle Info Card */}
+          <div className={styles.sidebarCard}>
+            <div className={styles.sidebarTitle}>Puzzle Info</div>
+            <div className={game.completed ? styles.puzzleThumbRevealed : styles.puzzleThumb}>
+              {solutionThumb.map((on, i) => (
+                <div key={i} className={on ? styles.thumbCellOn : styles.thumbCellOff} />
+              ))}
+            </div>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Name</span>
+              <span className={game.completed ? styles.infoValue : styles.hiddenName}>
+                {displayTitle}
+              </span>
+            </div>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Size</span>
+              <span className={styles.infoValue}>{game.puzzle.size}&times;{game.puzzle.size}</span>
+            </div>
+            {difficulty && (
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Difficulty</span>
+                <span className={badgeClass}>{difficulty}</span>
+              </div>
+            )}
+          </div>
 
-        <NonogramGrid
-          grid={game.grid}
-          size={game.puzzle.size}
-          rowClues={game.puzzle.rowClues}
-          colClues={game.puzzle.colClues}
-          completed={game.completed}
-          onCellMouseDown={dragPaint.handleCellMouseDown}
-          onCellMouseEnter={dragPaint.handleCellMouseEnter}
-          onMouseUp={dragPaint.handleMouseUp}
-          onActivateCell={handleActivateCell}
-          onToolChange={game.setTool}
-          onClueClick={handleClueClick}
-        />
-      </div>
+          {/* Actions Card */}
+          <div className={styles.sidebarCard}>
+            <div className={styles.sidebarTitle}>Actions</div>
+            <button
+              className={styles.actionBtnGold}
+              onClick={() => {
+                if (game.puzzle) {
+                  setHintPrompt({ axis: 'row', index: 0 });
+                }
+              }}
+              disabled={game.completed}
+            >
+              ✨ Get Hint
+            </button>
+            <button
+              className={styles.actionBtnMuted}
+              onClick={handleReset}
+              disabled={game.completed}
+            >
+              Reset Puzzle
+            </button>
+          </div>
 
+          {/* Progress Card */}
+          <div className={styles.sidebarCard}>
+            <div className={styles.sidebarTitle}>Progress</div>
+            <div
+              className={styles.progressTrack}
+              role="progressbar"
+              aria-valuenow={solvedCells}
+              aria-valuemin={0}
+              aria-valuemax={totalCells}
+              aria-label={`${solvedCells} of ${totalCells} cells solved`}
+            >
+              <div
+                className={styles.progressFill}
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+            <div className={styles.progressText}>
+              {solvedCells} / {totalCells} cells solved
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      {/* Hint Prompt Modal */}
       {hintPrompt && game.puzzle && (
         <HintPrompt
           axis={hintPrompt.axis}
@@ -382,10 +585,12 @@ export default function GamePage() {
         />
       )}
 
+      {/* Tutorial */}
       {!tutorialSeen && !loading && (
         <TutorialOverlay onComplete={markTutorialSeen} />
       )}
 
+      {/* Completion Modal */}
       {game.completed && (
         <div className={styles.completionOverlay}>
           {confettiParticles.map(p => (
@@ -399,16 +604,43 @@ export default function GamePage() {
               }}
             />
           ))}
-          <div className={styles.completionMessage}>
-            <span className={styles.checkMark}>✓</span>
-            <h2>Puzzle Complete!</h2>
-            <p>Solved "{game.puzzle.title}" in {formatTime(elapsedTime)}!</p>
+          <div className={styles.completionCard}>
+            <div className={styles.completionEmoji} aria-hidden="true">🎉</div>
+            <h2 className={styles.completionTitle}>Puzzle Complete!</h2>
+
+            {/* Revealed pattern */}
+            <div
+              className={styles.completionPattern}
+              style={{
+                gridTemplateColumns: `repeat(${game.puzzle.size}, 14px)`,
+                gridTemplateRows: `repeat(${game.puzzle.size}, 14px)`,
+              }}
+            >
+              {game.puzzle.solution.map((cell, i) => (
+                <div
+                  key={i}
+                  className={cell === 1 ? styles.cpCellOn : styles.cpCellOff}
+                />
+              ))}
+            </div>
+
+            <div className={styles.completionStats}>
+              <div>
+                <div className={styles.compStatValue}>{formatTime(elapsedTime)}</div>
+                <div className={styles.compStatLabel}>Time</div>
+              </div>
+            </div>
+
             {coinReward > 0 && (
               <p className={styles.coinReward} aria-label={`Earned ${coinReward} coins`}>
                 +{coinReward} <span aria-hidden="true">🪙</span>
               </p>
             )}
+
             <div className={styles.completionButtons}>
+              <button className={styles.nextPuzzleButton} onClick={() => navigate('/puzzles')}>
+                Next Puzzle →
+              </button>
               <button className={styles.playAgainButton} onClick={handleReset}>
                 Play Again
               </button>
@@ -420,9 +652,6 @@ export default function GamePage() {
                   Back to Theme
                 </button>
               )}
-              <button className={styles.continueButton} onClick={() => navigate('/puzzles')}>
-                More Puzzles
-              </button>
             </div>
           </div>
         </div>
