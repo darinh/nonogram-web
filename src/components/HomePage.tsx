@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { usePuzzles } from '../hooks/usePuzzles';
 import { useProgress } from '../hooks/useProgress';
 import { useStreak } from '../hooks/useStreak';
@@ -93,6 +93,12 @@ export default function HomePage() {
           </button>
         </section>
       )}
+
+      <footer className={styles.footer}>
+        <Link to="/privacy" className={styles.footerLink}>Privacy Policy</Link>
+        <span className={styles.footerDot}>·</span>
+        <Link to="/terms" className={styles.footerLink}>Terms &amp; Conditions</Link>
+      </footer>
     </div>
   );
 }

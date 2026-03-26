@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuthProvider } from '../providers/useProviders';
 import type { User } from '../engine/auth-types';
 
@@ -20,6 +20,18 @@ export function useAuth() {
     }
   };
 
+  const loginWithGoogle = useCallback(async () => {
+    if (!authProvider.loginWithGoogle) {
+      throw new Error('Google sign-in is not supported by this auth provider');
+    }
+    setLoading(true);
+    try {
+      await authProvider.loginWithGoogle();
+    } finally {
+      setLoading(false);
+    }
+  }, [authProvider]);
+
   const register = async (username: string, password: string, displayName?: string) => {
     setLoading(true);
     try {
@@ -33,5 +45,7 @@ export function useAuth() {
     await authProvider.logout();
   };
 
-  return { user, loading, login, register, logout };
+  const supportsGoogle = !!authProvider.loginWithGoogle;
+
+  return { user, loading, login, loginWithGoogle, register, logout, supportsGoogle };
 }
