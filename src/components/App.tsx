@@ -24,6 +24,7 @@ import UserMenu from './UserMenu';
 import ThemeBrowserPage from './ThemeBrowserPage';
 import ThemeGridPage from './ThemeGridPage';
 import { CoinDisplay } from './CoinDisplay';
+import { Footer } from './Layout';
 import ThemeToggle from './ThemeToggle';
 import { WalletStateProvider } from '../providers/wallet/WalletContext';
 import styles from '../styles/App.module.css';
@@ -65,6 +66,7 @@ export default function App() {
                   <Route path="/terms" element={<TermsPage />} />
                 </Routes>
               </main>
+              <Footer />
             </div>
           </BrowserRouter>
         </AuthSwitchedProviders>
