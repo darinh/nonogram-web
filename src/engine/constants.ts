@@ -16,6 +16,13 @@ export const EDGE_REVEAL_COST = 25;
 export const BOMB_COST = 30;
 export const MAX_TRANSACTIONS = 100;
 
+// Dual-currency economy constants
+export const PLAY_COST = 1;            // tokens to play an unplayed puzzle
+export const REPLAY_COIN_COST = 5;     // coins to replay a completed puzzle
+export const REPLAY_TOKEN_REWARD = 1;  // tokens earned from replay
+export const STARTING_TOKENS = 10;     // starting token balance for new users
+export const STARTING_COINS = 0;       // starting coin balance for new users
+
 export const DIFFICULTY_COLORS: Record<Difficulty, string> = {
   blue: '#0597F2', green: '#74BF04', yellow: '#BFA004', orange: '#F28705', red: '#F20574',
 };

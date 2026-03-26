@@ -8,6 +8,8 @@ export type {
   ThemeGridCell,
   WalletState,
   CoinTransaction,
+  DualWalletState,
+  EconomyTransaction,
   ThemeProgress,
   BombConfig,
   BombResult,
@@ -24,8 +26,22 @@ export {
   BOMB_COST,
   MAX_TRANSACTIONS,
   DIFFICULTY_COLORS,
+  PLAY_COST,
+  REPLAY_COIN_COST,
+  REPLAY_TOKEN_REWARD,
+  STARTING_TOKENS,
+  STARTING_COINS,
 } from './constants';
 export { calculateReward, earnCoins, spendCoins, createEmptyWallet } from './coins';
+export {
+  createEmptyDualWallet,
+  earnTokens,
+  spendTokens,
+  earnDualCoins,
+  spendDualCoins,
+  calculateCoinReward,
+  getHintCoinCost,
+} from './economy';
 export { getDifficultyColor, getDifficultyLabel, getDifficultyOrder, suggestGridSize } from './difficulty';
 export { applyRowHint, applyColHint, getHintCost } from './hints';
 export { getEdgeCells, applyEdgeReveal, selectBombTargets, applyBomb } from './powerups';

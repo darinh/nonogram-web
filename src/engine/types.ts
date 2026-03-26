@@ -54,7 +54,7 @@ export interface ThemeGridCell {
   difficulty: Difficulty;
 }
 
-// Coin/wallet system
+// Coin/wallet system (legacy single-currency)
 export interface WalletState {
   coins: number;
   totalEarned: number;
@@ -64,6 +64,25 @@ export interface WalletState {
 
 export interface CoinTransaction {
   type: 'earn' | 'spend';
+  amount: number;
+  reason: string;
+  timestamp: string;
+}
+
+// Dual-currency wallet system
+export interface DualWalletState {
+  tokens: number;
+  coins: number;
+  totalTokensEarned: number;
+  totalTokensSpent: number;
+  totalCoinsEarned: number;
+  totalCoinsSpent: number;
+  transactions: EconomyTransaction[];
+}
+
+export interface EconomyTransaction {
+  type: 'earn' | 'spend';
+  currency: 'tokens' | 'coins';
   amount: number;
   reason: string;
   timestamp: string;
