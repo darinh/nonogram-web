@@ -134,12 +134,12 @@ function AuthSwitchedProviders({ children }: { children: ReactNode }) {
 
   const progressProvider = useMemo(
     () => user ? new FirestoreProgressProvider(user.id) : new LocalStorageProgressProvider(),
-    [user?.id],
+    [user],
   );
 
   const walletProvider = useMemo(
     () => user ? new FirestoreWalletProvider(user.id) : new LocalStorageWalletProvider(),
-    [user?.id],
+    [user],
   );
 
   return (

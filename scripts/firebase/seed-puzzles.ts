@@ -9,7 +9,7 @@
  *   FIRESTORE_EMULATOR_HOST=localhost:8080 npx tsx scripts/firebase/seed-puzzles.ts
  */
 
-import type { PuzzleDefinition } from '../../src/engine/types.js';
+// import type { PuzzleDefinition } from '../../src/engine/types.js';
 import { bundledPuzzles } from '../../src/data/puzzles/index.js';
 
 export interface SeedPuzzleStats {
