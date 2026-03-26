@@ -110,6 +110,8 @@ function SiteNav() {
         <NavLink to="/daily" className={linkClass} onClick={closeMenu}>Daily</NavLink>
         <NavLink to="/create" className={linkClass} onClick={closeMenu}>Create</NavLink>
         <NavLink to="/stats" className={linkClass} onClick={closeMenu}>Stats</NavLink>
+        <NavLink to="/profile" className={linkClass} onClick={closeMenu}>Profile</NavLink>
+        <NavLink to="/howtoplay" className={linkClass} onClick={closeMenu}>How to Play</NavLink>
       </div>
 
       <div className={styles.navRight}>
