@@ -95,6 +95,15 @@
   background-size: 100% 100%;
   background-position: center;
   image-rendering: pixelated;
+  transition: filter 400ms ease, opacity 400ms ease;
+}
+
+/* ── Preview Hidden (blur for incomplete themes) ─────── */
+
+.previewHidden {
+  filter: blur(3px);
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .gridBackgroundPlaceholder {

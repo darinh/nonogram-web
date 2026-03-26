@@ -125,3 +125,11 @@
   border-color: var(--color-blue);
   color: var(--color-blue);
 }
+
+/* ── Preview Hidden (blur for unsolved puzzles) ──────── */
+
+.previewHidden {
+  filter: blur(3px);
+  opacity: 0.6;
+  pointer-events: none;
+}
