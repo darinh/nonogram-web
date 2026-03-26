@@ -1,13 +1,23 @@
 # Project Manager Memory
 
 ## Active Context
-- Working on: nonogram puzzle game — **Firebase + Legal + Polish initiative** ✅ IMPLEMENTED
+- Working on: nonogram puzzle game — **Site Redesign initiative** 🔵 PLANNED (not yet implemented)
 - Stack: TypeScript 5.9, React 19, Vite 8, Vitest 4, Firebase Hosting + Firestore + Auth
 - Live URL: https://nonogram-game-app.web.app
 - Test count: 336 unit tests (24 files, all passing) + 4 E2E test suites (Playwright)
-- **Previous initiative**: 9-feature improvement plan — ✅ IMPLEMENTED (21 todos)
-- **Current initiative**: Firebase + Legal + Polish — ✅ IMPLEMENTED (11 todos)
-  - 7 workstreams completed: README, CI/CD deploy, Google Auth, Firestore providers, DB migration, legal pages, legal agent template
+- **Previous initiatives**: 9-feature plan ✅, Firebase + Legal + Polish ✅
+- **Current initiative**: Site Redesign — 🔵 PLANNED (18 todos, 35 dependency edges)
+  - 4 workstreams: Visual redesign (mockup-based), Economy overhaul (dual currency), UX changes (hidden names, blurred previews), Mobile responsiveness
+  - Mockup reference: ~/projects/mocks/nonogram/ (index.html, puzzles.html, play.html, profile.html, howtoplay.html)
+  - Key changes: neon pink (#e40c6e) on dark (#0a0a0a), Lato 900 headings, card-based layouts with pink drop shadows, animated hero, floating geometric decorations, hamburger nav, 3 responsive breakpoints
+  - Economy: tokens (to play) + coins (for hints), replays cost coins and earn tokens, BALANCE_CONFIG for tuning
+  - New pages: /profile (player card, stats, achievements, activity), /howtoplay (step-by-step tutorial with grid demos)
+  - UX: puzzle names hidden until solved, solution previews blurred until completed
+  - 4 items immediately startable: ds-tokens, econ-engine, ux-hide-names, ux-blur-previews
+  - Critical path: ds-tokens → nav-redesign → page-play → ux-mobile → test-e2e-mobile (5 sequential)
+  - Max parallelism: 7 items (5 page redesigns + 2 UX changes)
+  - Specialists: ui-engineer (16 todos), qa-engineer (2 todos)
+  - Future work (not blocking): economy balance tuning, theme time-limits, real-money store, community puzzles, video tutorial
   - Branch: feat/firebase-integration
   - Key deliverables:
     - Firebase SDK installed, src/firebase.ts config module
@@ -105,3 +115,24 @@
   - **Streak**: StreakData in ProgressProvider, StreakDisplay component, integrated into Stats/Home/DailyPuzzle
   - **Tutorial**: TutorialOverlay (5-step walkthrough), useTutorial hook, auto-show on first visit, "How to Play" link
   - **Animations**: CSS transitions on cell fill/strikethrough/confetti, completion overlay entrance animation
+
+### 2025-07-21 — Site Redesign Plan
+- **What**: Analyzed 5 HTML mockups (index, puzzles, play, profile, howtoplay) and current codebase. Decomposed into 18 todos across 7 phases with 35 dependency edges. 4 workstreams: visual redesign, economy overhaul, UX changes, mobile responsiveness.
+- **Key Architecture Decisions**:
+  - AD-1: New design-system.css layer for all mockup tokens (colors, typography, shadows, animations)
+  - AD-2: Color palette shift from #F20574 → #e40c6e neon pink on dark #0a0a0a backgrounds
+  - AD-3: Typography swap — Lato 900 for headings (was M PLUS), M PLUS stays for body
+  - AD-4: Shared .card pattern — 2px pink border, drop-shadow(4px 4px 0 pink), hover lift
+  - AD-5: Dual currency — tokens (to play) + coins (for hints), with BALANCE_CONFIG for tuning
+  - AD-6: Puzzle names hidden until solved (names are hints!)
+  - AD-7: Blurred thumbnails with scrambled colors until completion
+  - AD-8: Fixed dark nav with hamburger menu on mobile
+  - AD-9: Grid texture overlay utility class
+  - AD-10: Mobile-first with 3 breakpoints (600/768/1024px)
+- **Parallelism**: 4 items start immediately (ds-tokens, econ-engine, ux-hide-names, ux-blur-previews). Max 7 concurrent. Critical path: 5 sequential items.
+- **Specialists**: ui-engineer (16 todos), qa-engineer (2 todos)
+- **Future work**: Economy balance tuning, theme time-limits, real-money store, community puzzles, video tutorial — none blocking.
+- **Risks**: Economy balance (mitigated by BALANCE_CONFIG), dark theme conflicts (dark becomes default), mobile regressions (E2E tests).
+- **Plan location**: Session plan.md
+- **Evidence**: 18 SQL todos, 35 dependency edges, plan.md written
+- **Impact**: Plan only — no implementation yet. This is the largest visual overhaul to date. Current design is clean/minimal white; target is bold neon-pink-on-dark with animated hero, card layouts, and floating decorations.
