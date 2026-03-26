@@ -9,7 +9,7 @@ import { downloadPuzzleFile } from '../engine/serialization';
 import { getHintCost } from '../engine/hints';
 import { calculateCoinReward } from '../engine/economy';
 import { CellState, Tool } from '../engine/types';
-import { EDGE_REVEAL_COST, BOMB_COST } from '../engine/constants';
+import { EDGE_REVEAL_COST, BOMB_COST, PLAY_COST, REPLAY_COIN_COST, REPLAY_TOKEN_REWARD } from '../engine/constants';
 import NonogramGrid from './NonogramGrid';
 import HintPrompt from './HintPrompt';
 import TutorialOverlay from './TutorialOverlay';
@@ -89,12 +89,17 @@ export default function GamePage() {
 
   const gameOptions = useMemo(() => ({ onSaveProgress }), [onSaveProgress]);
   const game = useNonogramGame(gameOptions);
-  const { wallet, earnCoins, spendCoins } = useSharedWallet();
+  const { wallet, earnTokens, spendTokens, earnCoins, spendCoins } = useSharedWallet();
   const { tutorialSeen, markTutorialSeen } = useTutorial();
   const soundProvider = useSoundProvider();
   const [muted, setMuted] = useState(() => soundProvider.isMuted());
   const toolRef = useRef(game.tool);
   toolRef.current = game.tool;
+
+  // Track whether the token/coin cost has been paid to start the puzzle
+  const [gamePaid, setGamePaid] = useState(false);
+  const [insufficientFunds, setInsufficientFunds] = useState<'tokens' | 'coins' | null>(null);
+  const [isReplay, setIsReplay] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -110,6 +115,30 @@ export default function GamePage() {
       rewardedRef.current = progress?.completed ?? false;
       setEdgeRevealUsed(false);
       setBombUsed(false);
+
+      const wasAlreadyCompleted = progress?.completed ?? false;
+      setIsReplay(wasAlreadyCompleted);
+
+      if (wasAlreadyCompleted) {
+        const ok = await spendCoins(REPLAY_COIN_COST, `Replay: ${puzzle.title}`);
+        if (ok) {
+          setGamePaid(true);
+          setInsufficientFunds(null);
+        } else {
+          setInsufficientFunds('coins');
+          setGamePaid(false);
+        }
+      } else {
+        const ok = await spendTokens(PLAY_COST, `Play: ${puzzle.title}`);
+        if (ok) {
+          setGamePaid(true);
+          setInsufficientFunds(null);
+        } else {
+          setInsufficientFunds('tokens');
+          setGamePaid(false);
+        }
+      }
+
       setLoading(false);
     }
     load();
@@ -134,13 +163,22 @@ export default function GamePage() {
     return () => clearInterval(id);
   }, [game.puzzle, game.completed]);
 
-  const handleReset = useCallback(() => {
+  const handleReset = useCallback(async () => {
+    const ok = await spendCoins(REPLAY_COIN_COST, `Replay: ${game.puzzle?.title ?? 'puzzle'}`);
+    if (!ok) {
+      setInsufficientFunds('coins');
+      return;
+    }
+    await earnTokens(REPLAY_TOKEN_REWARD, `Replay reward: ${game.puzzle?.title ?? 'puzzle'}`);
     game.resetGrid();
     setElapsedTime(0);
     setEdgeRevealUsed(false);
     setBombUsed(false);
     rewardedRef.current = false;
-  }, [game]);
+    setIsReplay(true);
+    setGamePaid(true);
+    setInsufficientFunds(null);
+  }, [game, spendCoins, earnTokens]);
 
   const toggleMute = useCallback(() => {
     const next = !soundProvider.isMuted();
@@ -170,15 +208,18 @@ export default function GamePage() {
     game.undo();
   }, [game, soundProvider]);
 
-  // Award coins when puzzle is completed
+  // Award coins when puzzle is completed (and tokens on replay)
   useEffect(() => {
     if (game.completed && game.puzzle?.difficulty && !rewardedRef.current) {
       rewardedRef.current = true;
       soundProvider.playFanfare();
       const reward = calculateCoinReward(game.puzzle.difficulty);
       earnCoins(reward, `Completed: ${game.puzzle.title}`);
+      if (isReplay) {
+        earnTokens(REPLAY_TOKEN_REWARD, `Replay reward: ${game.puzzle.title}`);
+      }
     }
-  }, [game.completed, game.puzzle, earnCoins, soundProvider]);
+  }, [game.completed, game.puzzle, earnCoins, earnTokens, isReplay, soundProvider]);
 
   const handleClueClick = useCallback(
     (axis: 'row' | 'col', index: number) => {
@@ -282,13 +323,58 @@ export default function GamePage() {
     return <div className={styles.page}>Loading...</div>;
   }
 
+  const backUrl = themeId ? `/themes/${themeId}` : '/puzzles';
+
+  // Insufficient funds gate
+  if (insufficientFunds && !gamePaid) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.insufficientOverlay}>
+          <div className={styles.insufficientCard} role="alert">
+            {insufficientFunds === 'tokens' ? (
+              <>
+                <div className={styles.insufficientIcon} aria-hidden="true">🎟️</div>
+                <h2 className={styles.insufficientTitle}>Need Tokens</h2>
+                <p className={styles.insufficientText}>
+                  You need {PLAY_COST} 🎟️ {PLAY_COST === 1 ? 'token' : 'tokens'} to play this puzzle.
+                  Earn tokens by replaying completed puzzles!
+                </p>
+                <p className={styles.insufficientBalance}>
+                  Your balance: {wallet.tokens} 🎟️
+                </p>
+              </>
+            ) : (
+              <>
+                <div className={styles.insufficientIcon} aria-hidden="true">🪙</div>
+                <h2 className={styles.insufficientTitle}>Need Coins</h2>
+                <p className={styles.insufficientText}>
+                  You need {REPLAY_COIN_COST} 🪙 coins to replay this puzzle.
+                  Earn coins by completing new puzzles!
+                </p>
+                <p className={styles.insufficientBalance}>
+                  Your balance: {wallet.coins} 🪙
+                </p>
+              </>
+            )}
+            <button
+              className={styles.insufficientButton}
+              onClick={() => navigate(backUrl)}
+            >
+              ← Browse Puzzles
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
   const difficulty = game.puzzle.difficulty;
   const badgeClass = difficulty
     ? `${styles.difficultyBadge} ${styles[`badge${difficulty.charAt(0).toUpperCase()}${difficulty.slice(1)}`]}`
     : undefined;
 
   const coinReward = difficulty ? calculateCoinReward(difficulty) : 0;
-  const backUrl = themeId ? `/themes/${themeId}` : '/puzzles';
   const totalCells = game.puzzle.solution.filter(c => c === 1).length;
   const solvedCells = countFilledCells(game.grid, game.puzzle.solution);
   const progressPct = totalCells > 0 ? Math.round((solvedCells / totalCells) * 100) : 0;
