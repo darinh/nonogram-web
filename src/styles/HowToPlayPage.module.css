@@ -1,0 +1,368 @@
+/* ═══════════════════════════════════════════════════════
+   HowToPlayPage — Tutorial/educational page
+   Uses design tokens from design-system.css
+   ═══════════════════════════════════════════════════════ */
+
+.page {
+  background: var(--bg-card, #fff);
+  color: var(--text-dark, #1a1a1a);
+  min-height: 100vh;
+}
+
+.section { padding: 5rem 2rem; }
+.sectionDark { background: var(--bg-dark, #0a0a0a); color: var(--text-light, #fff); }
+.sectionLight { background: var(--bg-card, #fff); color: var(--text-dark, #1a1a1a); }
+.container { max-width: 1100px; margin: 0 auto; }
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--text-light, #fff);
+  background: #000;
+  display: inline-block;
+  padding: 0.4em 1.2em 0.4em 1em;
+  border-left: 6px solid var(--pink, #e40c6e);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hero {
+  padding-top: calc(var(--nav-height, 60px) + 4rem);
+  padding-bottom: 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(228, 12, 110, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(228, 12, 110, 0.08) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 6rem);
+  letter-spacing: 0.08em;
+  text-shadow: 3px 3px 0 var(--pink, #e40c6e), 6px 6px 0 rgba(228, 12, 110, 0.3);
+  position: relative;
+  line-height: 1.1;
+  color: var(--text-light, #fff);
+}
+
+.heroSubtitle {
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  margin-top: 1rem;
+  opacity: 0.8;
+  font-weight: 400;
+  position: relative;
+}
+
+.introGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.card {
+  background: var(--bg-card, #fff);
+  border: 2px solid var(--pink, #e40c6e);
+  border-radius: var(--radius-md, 12px);
+  filter: drop-shadow(4px 4px 0 var(--pink, #e40c6e));
+  padding: 2rem;
+  color: var(--text-dark, #1a1a1a);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.gridDemoContainer {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gridDemoLabel {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted, #888);
+}
+
+.arrowBetween {
+  font-size: 2rem;
+  color: var(--pink, #e40c6e);
+  display: flex;
+  align-items: center;
+  font-weight: 900;
+}
+
+.nonoGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 32px);
+  grid-template-rows: repeat(5, 32px);
+  gap: 2px;
+  border: 2px solid var(--text-dark, #1a1a1a);
+}
+
+.nonoCell {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border-light, #e0e0e0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #ccc;
+  transition: background 0.3s;
+}
+
+.nonoCellFilled { background: var(--pink, #e40c6e); border-color: var(--pink, #e40c6e); }
+.nonoCellX { color: #ccc; font-weight: 700; font-size: 0.9rem; }
+.nonoCellHighlight { background: var(--cyan, #03bbed); border-color: var(--cyan, #03bbed); }
+
+.gridWithClues {
+  display: inline-grid;
+  grid-template-columns: 50px repeat(5, 32px);
+  gap: 0;
+}
+
+.clueCorner { width: 50px; height: 50px; }
+
+.clueCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  padding: 2px 6px;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: var(--text-dark, #1a1a1a);
+  min-height: 50px;
+}
+
+.sectionDark .clueCol { color: var(--text-light, #fff); }
+
+.clueRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  padding: 2px 6px;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: var(--text-dark, #1a1a1a);
+  min-width: 50px;
+  background: rgba(228, 12, 110, 0.08);
+  border-radius: 4px;
+}
+
+.sectionDark .clueRow { color: var(--text-light, #fff); background: rgba(228, 12, 110, 0.15); }
+
+.gridRow { display: contents; }
+
+.stepContent {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.stepNumber {
+  width: 64px;
+  height: 64px;
+  border: 3px solid var(--pink, #e40c6e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: var(--pink, #e40c6e);
+  flex-shrink: 0;
+}
+
+.stepText h3 {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.sectionDark .stepText h3 { color: var(--text-light, #fff); }
+
+.stepText p { font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem; }
+.sectionDark .stepText p { color: rgba(255, 255, 255, 0.85); }
+.pinkText { color: var(--pink, #e40c6e); }
+.stepVisual { display: flex; align-items: center; justify-content: center; }
+
+.revealCaption {
+  text-align: center;
+  margin-top: 0.8rem;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  color: var(--pink, #e40c6e);
+  font-size: 1.1rem;
+}
+
+.callout {
+  background: var(--bg-card, #fff);
+  border: 2px solid var(--pink, #e40c6e);
+  border-radius: var(--radius-md, 12px);
+  padding: 1.2rem 1.5rem;
+  font-size: 0.95rem;
+  color: var(--text-dark, #1a1a1a);
+  margin-top: 1rem;
+  filter: drop-shadow(3px 3px 0 var(--pink, #e40c6e));
+}
+
+.calloutGold {
+  composes: callout;
+  border-color: var(--gold, #ffc600);
+  filter: drop-shadow(3px 3px 0 var(--gold, #ffc600));
+  background: #fffdf0;
+}
+
+.tipsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+.tipCard {
+  background: var(--bg-card, #fff);
+  border: 2px solid var(--pink, #e40c6e);
+  border-radius: var(--radius-md, 12px);
+  padding: 1.8rem;
+  filter: drop-shadow(4px 4px 0 var(--pink, #e40c6e));
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.tipCard strong { font-family: var(--font-heading); display: block; margin-bottom: 0.3rem; }
+.tipCard p { margin: 0; }
+.tipIcon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+
+.videoWrap {
+  max-width: 720px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  border: 3px solid var(--pink, #e40c6e);
+  border-radius: var(--radius-lg, 16px);
+  filter: drop-shadow(6px 6px 0 var(--pink, #e40c6e));
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.videoWrap:hover { transform: scale(1.01); }
+
+.videoWrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(228, 12, 110, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(228, 12, 110, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.playBtn {
+  width: 80px;
+  height: 80px;
+  border: 3px solid var(--pink, #e40c6e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--pink, #e40c6e);
+  background: rgba(228, 12, 110, 0.1);
+  transition: background 0.3s, transform 0.3s;
+  position: relative;
+}
+
+.playBtn:hover { background: var(--pink, #e40c6e); color: var(--text-light, #fff); transform: scale(1.1); }
+
+.videoCaption {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.ctaSection { text-align: center; }
+
+.ctaTitle {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1.5rem;
+  color: var(--text-light, #fff);
+}
+
+.ctaButton {
+  display: inline-block;
+  border: 2px solid var(--pink, #e40c6e);
+  border-radius: 2em;
+  padding: 0.8em 2.5em;
+  color: var(--text-light, #fff);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.2rem;
+  background: var(--pink, #e40c6e);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ctaButton:hover { background: #c00a5c; transform: translateY(-2px); }
+
+@media (max-width: 900px) {
+  .stepContent { grid-template-columns: 60px 1fr; }
+  .stepContent .stepVisual { grid-column: 1 / -1; justify-self: center; }
+}
+
+@media (max-width: 768px) {
+  .introGrid { grid-template-columns: 1fr; }
+  .section { padding: 3rem 1.5rem; }
+}
+
+@media (max-width: 600px) {
+  .stepContent { grid-template-columns: 1fr; }
+  .stepContent .stepNumber { justify-self: center; }
+  .tipsGrid { grid-template-columns: 1fr; }
+  .nonoGrid { grid-template-columns: repeat(5, 28px); grid-template-rows: repeat(5, 28px); }
+  .nonoCell { width: 28px; height: 28px; }
+  .gridWithClues { grid-template-columns: 40px repeat(5, 28px); }
+  .clueCorner { width: 40px; height: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playBtn, .videoWrap { transition: none; }
+}
