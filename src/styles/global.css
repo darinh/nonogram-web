@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap');
 @import './themes.css';
 @import './design-system.css';
+@import './animations.css';
 
 :root {
   --color-pink: #F20574;
