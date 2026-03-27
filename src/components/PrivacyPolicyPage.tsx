@@ -43,8 +43,8 @@ export default function PrivacyPolicyPage() {
             calculate your current and longest streaks
           </li>
           <li>
-            <strong>App preferences:</strong> Settings such as dark mode and
-            sound preferences
+            <strong>App preferences:</strong> Settings such as sound
+            preferences
           </li>
         </ul>
       </section>
@@ -85,7 +85,7 @@ export default function PrivacyPolicyPage() {
             streak tracking
           </li>
           <li>
-            To remember your preferences (dark mode, sound settings) across
+            To remember your preferences (sound settings) across
             sessions
           </li>
         </ul>
@@ -148,7 +148,7 @@ export default function PrivacyPolicyPage() {
           </li>
           <li>
             <strong>localStorage:</strong> Used to store your game progress (for
-            anonymous users), preferences (dark mode, sound settings), and other
+            anonymous users), preferences (sound settings), and other
             app state
           </li>
         </ul>

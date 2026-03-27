@@ -29,7 +29,6 @@ import ThemeBrowserPage from './ThemeBrowserPage';
 import ThemeGridPage from './ThemeGridPage';
 import { CoinDisplay } from './CoinDisplay';
 import { Footer } from './Layout';
-import ThemeToggle from './ThemeToggle';
 import { WalletStateProvider } from '../providers/wallet/WalletContext';
 import styles from '../styles/App.module.css';
 import '../styles/global.css';
@@ -121,7 +120,6 @@ function SiteNav() {
       <div className={styles.navRight}>
         <CoinDisplay />
         <NavAuth closeMenu={closeMenu} />
-        <ThemeToggle />
       </div>
 
       <button
