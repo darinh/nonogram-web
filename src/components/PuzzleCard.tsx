@@ -34,6 +34,7 @@ export default function PuzzleCard({ puzzle, progress, onClick, onExport }: Puzz
       className={`${styles.card} ${difficultyClass}`}
       role="button"
       tabIndex={0}
+      aria-label={`${displayTitle}, ${puzzle.size}×${puzzle.size}`}
       onClick={onClick}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
     >

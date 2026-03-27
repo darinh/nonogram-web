@@ -186,6 +186,7 @@ export default function CreatorPage() {
                 className={styles.uploadArea}
                 role="button"
                 tabIndex={0}
+                aria-label="Upload image"
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInputRef.current?.click(); } }}
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={e => e.preventDefault()}
@@ -254,6 +255,7 @@ export default function CreatorPage() {
               }`}
               role={tab === 'manual' ? 'button' : undefined}
               tabIndex={tab === 'manual' ? 0 : undefined}
+              aria-label={tab === 'manual' ? `Cell row ${Math.floor(i / size) + 1}, column ${(i % size) + 1}, ${(activeGrid?.[i] ?? 0) === 1 ? 'filled' : 'empty'}` : undefined}
               onClick={tab === 'manual' ? () => toggleManualCell(i) : undefined}
               onKeyDown={tab === 'manual' ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleManualCell(i); } } : undefined}
               style={tab === 'manual' ? { cursor: 'pointer' } : undefined}

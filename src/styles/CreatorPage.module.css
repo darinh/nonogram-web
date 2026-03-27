@@ -215,8 +215,7 @@
 }
 
 .titleInput::placeholder {
-  color: var(--color-dark);
-  opacity: 0.35;
+  color: #767676;
 }
 
 .titleInput:focus {

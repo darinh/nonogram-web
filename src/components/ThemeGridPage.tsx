@@ -96,14 +96,15 @@ export default function ThemeGridPage() {
                 onClick={() => navigate(`/themes/${themeId}/${cell.puzzleId}`)}
                 role="button"
                 tabIndex={0}
+                aria-label={`Puzzle ${i + 1}, ${isCompleted ? 'completed' : cell.difficulty}`}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') navigate(`/themes/${themeId}/${cell.puzzleId}`);
                 }}
               >
                 {isCompleted ? (
-                  <span className={styles.checkmark}>✓</span>
+                  <span className={styles.checkmark} aria-hidden="true">✓</span>
                 ) : (
-                  <span className={`${styles.dot} ${difficultyDotClass[cell.difficulty] ?? ''}`} />
+                  <span className={`${styles.dot} ${difficultyDotClass[cell.difficulty] ?? ''}`} aria-hidden="true" />
                 )}
               </div>
             );

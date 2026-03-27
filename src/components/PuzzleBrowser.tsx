@@ -303,6 +303,7 @@ export default function PuzzleBrowser() {
                 onClick={() => navigate(`/play/${puzzle.id}`)}
                 role="button"
                 tabIndex={0}
+                aria-label={`${displayTitle}, ${puzzle.size}×${puzzle.size}, ${starCount} star difficulty`}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/play/${puzzle.id}`); }}
               >
                 <div className={styles.cardPreview}>

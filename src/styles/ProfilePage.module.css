@@ -140,7 +140,7 @@
 
 .xpBarLabel {
   font-size: 0.75rem;
-  color: var(--text-muted, #888);
+  color: var(--text-muted, #636363);
   display: flex;
   justify-content: space-between;
   margin-top: -0.3rem;
@@ -185,7 +185,7 @@
 
 .statLabel {
   font-size: 0.85rem;
-  color: var(--text-muted, #888);
+  color: var(--text-muted, #636363);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 700;
@@ -251,7 +251,7 @@
 
 .activityTime {
   font-size: 0.78rem;
-  color: var(--text-muted, #888);
+  color: var(--text-muted, #636363);
   white-space: nowrap;
   min-width: 85px;
   padding-top: 2px;
