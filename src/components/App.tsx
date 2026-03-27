@@ -10,6 +10,9 @@ import { LocalStorageProgressProvider } from '../providers/progress/LocalStorage
 import { StaticThemeProvider } from '../providers/theme';
 import { LocalStorageWalletProvider } from '../providers/wallet';
 import { LocalStorageAuthProvider } from '../providers/auth/LocalStorageAuthProvider';
+import { FirebaseAuthProvider } from '../providers/auth/FirebaseAuthProvider';
+import { isConfigured } from '../firebase';
+import type { AuthProvider } from '../providers/auth/AuthProvider';
 import HomePage from './HomePage';
 import PuzzleBrowser from './PuzzleBrowser';
 import GamePage from './GamePage';
@@ -19,7 +22,6 @@ import ProfilePage from './ProfilePage';
 import HowToPlayPage from './HowToPlayPage';
 import DailyPuzzlePage from './DailyPuzzlePage';
 import LoginPage from './LoginPage';
-import RegisterPage from './RegisterPage';
 import PrivacyPolicyPage from './PrivacyPolicyPage';
 import TermsPage from './TermsPage';
 import UserMenu from './UserMenu';
@@ -40,7 +42,10 @@ export default function App() {
   );
   const themeProvider = useMemo(() => new StaticThemeProvider(), []);
   const soundProvider = useMemo(() => new WebAudioSoundProvider(), []);
-  const authProvider = useMemo(() => new LocalStorageAuthProvider(), []);
+  const authProvider = useMemo<AuthProvider>(
+    () => isConfigured ? new FirebaseAuthProvider() : new LocalStorageAuthProvider(),
+    [],
+  );
 
   return (
     <AuthProviderContext.Provider value={authProvider}>
@@ -65,7 +70,6 @@ export default function App() {
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/howtoplay" element={<HowToPlayPage />} />
                   <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />
                   <Route path="/terms" element={<TermsPage />} />
                 </Routes>
