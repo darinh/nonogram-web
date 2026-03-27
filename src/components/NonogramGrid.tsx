@@ -147,7 +147,10 @@ export default function NonogramGrid({
               gridColumn: maxRowClueLen + 1 + colIdx,
               gridRow: clueRow + 1,
             }}
+            role={onClueClick && !completed ? 'button' : undefined}
+            tabIndex={onClueClick && !completed ? 0 : undefined}
             onClick={onClueClick && !completed ? () => onClueClick('col', colIdx) : undefined}
+            onKeyDown={onClueClick && !completed ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClueClick('col', colIdx); } } : undefined}
           >
             {n !== null && <span className={styles.clueNumber}>{n}</span>}
           </div>
@@ -169,7 +172,10 @@ export default function NonogramGrid({
               gridColumn: clueCol + 1,
               gridRow: maxColClueLen + 1 + rowIdx,
             }}
+            role={onClueClick && !completed ? 'button' : undefined}
+            tabIndex={onClueClick && !completed ? 0 : undefined}
             onClick={onClueClick && !completed ? () => onClueClick('row', rowIdx) : undefined}
+            onKeyDown={onClueClick && !completed ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClueClick('row', rowIdx); } } : undefined}
           >
             {n !== null && <span className={styles.clueNumber}>{n}</span>}
           </div>

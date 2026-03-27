@@ -18,7 +18,7 @@ function ThemeCard({ theme, progress, onClick }: ThemeCardProps) {
   const percent = Math.round((completed / PUZZLES_PER_THEME) * 100);
 
   return (
-    <article
+    <div
       className={styles.card}
       role="button"
       tabIndex={0}
@@ -69,7 +69,7 @@ function ThemeCard({ theme, progress, onClick }: ThemeCardProps) {
           )}
         </div>
       </div>
-    </article>
+    </div>
   );
 }
 

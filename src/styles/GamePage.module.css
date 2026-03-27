@@ -388,3 +388,39 @@
   .nextPuzzleButton, .playAgainButton, .themeButton { width: 100%; min-height: 44px; }
   .toolBtn { width: 44px; height: 44px; }
 }
+
+/* ── Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .completionOverlay {
+    animation: none;
+  }
+  .completionCard {
+    animation: none;
+  }
+  .coinReward,
+  .tokenReward {
+    animation: none;
+    opacity: 1;
+  }
+  .confetti {
+    animation: none;
+    display: none;
+  }
+  .insufficientCard {
+    animation: none;
+  }
+  .toolBtn,
+  .actionBtn,
+  .insufficientButton,
+  .nextPuzzleButton,
+  .playAgainButton,
+  .themeButton,
+  .muteButton,
+  .exportButton,
+  .breadcrumbLink {
+    transition: none;
+  }
+  .progressFill {
+    transition: none;
+  }
+}

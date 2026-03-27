@@ -30,7 +30,13 @@ export default function PuzzleCard({ puzzle, progress, onClick, onExport }: Puzz
   const displayTitle = isCompleted ? puzzle.title : 'Mystery Puzzle';
 
   return (
-    <div className={`${styles.card} ${difficultyClass}`} onClick={onClick}>
+    <div
+      className={`${styles.card} ${difficultyClass}`}
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+    >
       <div className={styles.header}>
         <h3 className={styles.title}>{displayTitle}</h3>
         <span className={styles.size}>{puzzle.size}×{puzzle.size}</span>

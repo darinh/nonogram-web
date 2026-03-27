@@ -217,3 +217,23 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ── Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .filled {
+    animation: none;
+  }
+  .xMark {
+    animation: none;
+    opacity: 1;
+  }
+  .cell {
+    transition: none;
+  }
+  .clueNumber {
+    transition: none;
+  }
+  .clickableClue {
+    transition: none;
+  }
+}

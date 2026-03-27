@@ -352,30 +352,40 @@ export default function StatsPage() {
           <table className={styles.table} id="details-table">
             <thead>
               <tr>
-                <th scope="col" onClick={() => handleSort('title')}>
-                  Puzzle{sortIndicator('title') && (
-                    <span className={styles.sortArrow}>{sortIndicator('title')}</span>
-                  )}
+                <th scope="col">
+                  <button type="button" className={styles.sortButton} onClick={() => handleSort('title')}>
+                    Puzzle{sortIndicator('title') && (
+                      <span className={styles.sortArrow}>{sortIndicator('title')}</span>
+                    )}
+                  </button>
                 </th>
-                <th scope="col" onClick={() => handleSort('size')}>
-                  Size{sortIndicator('size') && (
-                    <span className={styles.sortArrow}>{sortIndicator('size')}</span>
-                  )}
+                <th scope="col">
+                  <button type="button" className={styles.sortButton} onClick={() => handleSort('size')}>
+                    Size{sortIndicator('size') && (
+                      <span className={styles.sortArrow}>{sortIndicator('size')}</span>
+                    )}
+                  </button>
                 </th>
-                <th scope="col" onClick={() => handleSort('completed')}>
-                  Status{sortIndicator('completed') && (
-                    <span className={styles.sortArrow}>{sortIndicator('completed')}</span>
-                  )}
+                <th scope="col">
+                  <button type="button" className={styles.sortButton} onClick={() => handleSort('completed')}>
+                    Status{sortIndicator('completed') && (
+                      <span className={styles.sortArrow}>{sortIndicator('completed')}</span>
+                    )}
+                  </button>
                 </th>
-                <th scope="col" onClick={() => handleSort('time')}>
-                  Time{sortIndicator('time') && (
-                    <span className={styles.sortArrow}>{sortIndicator('time')}</span>
-                  )}
+                <th scope="col">
+                  <button type="button" className={styles.sortButton} onClick={() => handleSort('time')}>
+                    Time{sortIndicator('time') && (
+                      <span className={styles.sortArrow}>{sortIndicator('time')}</span>
+                    )}
+                  </button>
                 </th>
-                <th scope="col" onClick={() => handleSort('lastPlayed')}>
-                  Last Played{sortIndicator('lastPlayed') && (
-                    <span className={styles.sortArrow}>{sortIndicator('lastPlayed')}</span>
-                  )}
+                <th scope="col">
+                  <button type="button" className={styles.sortButton} onClick={() => handleSort('lastPlayed')}>
+                    Last Played{sortIndicator('lastPlayed') && (
+                      <span className={styles.sortArrow}>{sortIndicator('lastPlayed')}</span>
+                    )}
+                  </button>
                 </th>
               </tr>
             </thead>

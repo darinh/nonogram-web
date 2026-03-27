@@ -195,3 +195,19 @@
     min-height: 44px;
   }
 }
+
+/* ── Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation: none;
+  }
+  .card {
+    animation: none;
+  }
+  .dot,
+  .nextButton,
+  .backButton,
+  .skipButton {
+    transition: none;
+  }
+}

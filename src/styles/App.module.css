@@ -60,7 +60,7 @@
 }
 
 .navLink {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
   font-family: var(--font-heading);
   font-size: 0.85rem;
   font-weight: 700;
@@ -219,5 +219,22 @@
 
   .navRight {
     gap: 0.5rem;
+  }
+}
+
+/* ── Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .navLink,
+  .navLink::after {
+    transition: none;
+  }
+  .hamburgerBar {
+    transition: none;
+  }
+  .navLinks {
+    transition: none;
+  }
+  .mobileOverlay {
+    transition: none;
   }
 }

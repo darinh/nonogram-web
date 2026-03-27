@@ -266,6 +266,7 @@ export default function PuzzleBrowser() {
               className={styles.sortSelect}
               value={sortBy}
               onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
+              aria-label="Sort puzzles by"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -275,6 +276,7 @@ export default function PuzzleBrowser() {
               className={styles.sortSelect}
               value={sizeFilter}
               onChange={(e) => { setSizeFilter(e.target.value); setCurrentPage(1); }}
+              aria-label="Filter by puzzle size"
             >
               {SIZE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -345,6 +347,7 @@ export default function PuzzleBrowser() {
               className={styles.pageButton}
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={safePage === 1}
+              aria-label="Previous page"
             >
               «
             </button>
@@ -365,6 +368,7 @@ export default function PuzzleBrowser() {
               className={styles.pageButton}
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={safePage === totalPages}
+              aria-label="Next page"
             >
               »
             </button>

@@ -152,8 +152,9 @@ export default function CreatorPage() {
 
       <div className={styles.controls}>
         <div className={styles.controlGroup}>
-          <label className={styles.label}>Puzzle Title</label>
+          <label htmlFor="puzzle-title" className={styles.label}>Puzzle Title</label>
           <input
+            id="puzzle-title"
             type="text"
             className={styles.titleInput}
             value={title}
@@ -163,8 +164,8 @@ export default function CreatorPage() {
         </div>
 
         <div className={styles.controlGroup}>
-          <label className={styles.label}>Grid Size</label>
-          <div className={styles.sizeSelector}>
+          <span className={styles.label} id="grid-size-label">Grid Size</span>
+          <div className={styles.sizeSelector} role="radiogroup" aria-labelledby="grid-size-label">
             {([5, 10, 15] as GridSize[]).map(s => (
               <button
                 key={s}
@@ -180,9 +181,12 @@ export default function CreatorPage() {
         {tab === 'photo' && (
           <>
             <div className={styles.controlGroup}>
-              <label className={styles.label}>Upload Image</label>
+              <label htmlFor="upload-image" className={styles.label}>Upload Image</label>
               <div
                 className={styles.uploadArea}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInputRef.current?.click(); } }}
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={e => e.preventDefault()}
                 onDrop={e => {
@@ -202,6 +206,7 @@ export default function CreatorPage() {
                   <p>Click or drag an image here</p>
                 )}
                 <input
+                  id="upload-image"
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
@@ -212,10 +217,11 @@ export default function CreatorPage() {
             </div>
 
             <div className={styles.controlGroup}>
-              <label className={styles.label}>
+              <label htmlFor="threshold" className={styles.label}>
                 Threshold: {threshold}
               </label>
               <input
+                id="threshold"
                 type="range"
                 min="0"
                 max="255"
@@ -230,9 +236,9 @@ export default function CreatorPage() {
 
       {/* Grid preview */}
       <div className={styles.previewSection}>
-        <h3 className={styles.previewTitle}>
+        <h2 className={styles.previewTitle}>
           {tab === 'photo' ? 'Preview' : 'Draw Your Puzzle'}
-        </h3>
+        </h2>
         <div
           className={styles.gridPreview}
           style={{
@@ -246,7 +252,10 @@ export default function CreatorPage() {
               className={`${styles.previewCell} ${
                 (activeGrid?.[i] ?? 0) === 1 ? styles.previewFilled : ''
               }`}
+              role={tab === 'manual' ? 'button' : undefined}
+              tabIndex={tab === 'manual' ? 0 : undefined}
               onClick={tab === 'manual' ? () => toggleManualCell(i) : undefined}
+              onKeyDown={tab === 'manual' ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleManualCell(i); } } : undefined}
               style={tab === 'manual' ? { cursor: 'pointer' } : undefined}
             />
           ))}

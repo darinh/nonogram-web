@@ -6,6 +6,7 @@ import { useSharedWallet } from '../hooks/useSharedWallet';
 import { useAuth } from '../hooks/useAuth';
 import { useTutorial } from '../hooks/useTutorial';
 import { useDragPaint } from '../hooks/useDragPaint';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { downloadPuzzleFile } from '../engine/serialization';
 import { getHintCost } from '../engine/hints';
 import { calculateCoinReward } from '../engine/economy';
@@ -100,7 +101,10 @@ export default function GamePage() {
   const toolRef = useRef(game.tool);
   toolRef.current = game.tool;
 
-  // Track whether the token/coin cost has been paid to start the puzzle
+  // Display "Mystery Puzzle" until solved
+  const pageTitle = game.completed ? game.puzzle?.title ?? 'Mystery Puzzle' : 'Mystery Puzzle';
+  usePageTitle(`${pageTitle} — Nonogram`);
+
   const [gamePaid, setGamePaid] = useState(false);
   const [insufficientFunds, setInsufficientFunds] = useState<'tokens' | 'coins' | null>(null);
   const [isReplay, setIsReplay] = useState(false);
@@ -473,6 +477,7 @@ export default function GamePage() {
               title="Fill tool"
               disabled={game.completed}
               aria-pressed={game.tool === Tool.Fill}
+              aria-label="Fill tool"
             >
               🖊️
             </button>
@@ -482,6 +487,7 @@ export default function GamePage() {
               title="X-Mark tool"
               disabled={game.completed}
               aria-pressed={game.tool === Tool.Cross}
+              aria-label="X-Mark tool"
             >
               ✕
             </button>
@@ -490,6 +496,7 @@ export default function GamePage() {
               className={styles.toolBtn}
               onClick={undoWithSound}
               title="Undo (Ctrl+Z)"
+              aria-label="Undo"
               disabled={!game.canUndo || game.completed}
             >
               ↩️
@@ -498,6 +505,7 @@ export default function GamePage() {
               className={styles.toolBtn}
               onClick={game.redo}
               title="Redo (Ctrl+Shift+Z)"
+              aria-label="Redo"
               disabled={!game.canRedo || game.completed}
             >
               ↪️
@@ -606,7 +614,7 @@ export default function GamePage() {
 
       {/* Completion Modal */}
       {game.completed && (
-        <div className={styles.completionOverlay}>
+        <div className={styles.completionOverlay} aria-live="assertive" role="alert">
           {confettiParticles.map(p => (
             <div
               key={p.key}
