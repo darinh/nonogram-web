@@ -31,6 +31,8 @@ export {
   REPLAY_TOKEN_REWARD,
   STARTING_TOKENS,
   STARTING_COINS,
+  SAMPLE_PUZZLE_IDS,
+  isFreePlayPuzzle,
 } from './constants';
 export { calculateReward, earnCoins, spendCoins, createEmptyWallet } from './coins';
 export {

@@ -3,11 +3,13 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { usePuzzleProvider, useProgressProvider, useThemeProvider, useSoundProvider } from '../providers/useProviders';
 import { useNonogramGame } from '../hooks/useNonogramGame';
 import { useSharedWallet } from '../hooks/useSharedWallet';
+import { useAuth } from '../hooks/useAuth';
 import { useTutorial } from '../hooks/useTutorial';
 import { useDragPaint } from '../hooks/useDragPaint';
 import { downloadPuzzleFile } from '../engine/serialization';
 import { getHintCost } from '../engine/hints';
 import { calculateCoinReward } from '../engine/economy';
+import { isFreePlayPuzzle } from '../engine/constants';
 import { CellState, Tool } from '../engine/types';
 import { EDGE_REVEAL_COST, BOMB_COST, PLAY_COST, REPLAY_COIN_COST, REPLAY_TOKEN_REWARD } from '../engine/constants';
 import NonogramGrid from './NonogramGrid';
@@ -90,6 +92,8 @@ export default function GamePage() {
   const gameOptions = useMemo(() => ({ onSaveProgress }), [onSaveProgress]);
   const game = useNonogramGame(gameOptions);
   const { wallet, earnTokens, spendTokens, earnCoins, spendCoins } = useSharedWallet();
+  const { user } = useAuth();
+  const isAnonymous = user === null;
   const { tutorialSeen, markTutorialSeen } = useTutorial();
   const soundProvider = useSoundProvider();
   const [muted, setMuted] = useState(() => soundProvider.isMuted());
@@ -119,7 +123,11 @@ export default function GamePage() {
       const wasAlreadyCompleted = progress?.completed ?? false;
       setIsReplay(wasAlreadyCompleted);
 
-      if (wasAlreadyCompleted) {
+      // Skip economy checks for anonymous users on free-play puzzles
+      if (isAnonymous && isFreePlayPuzzle(puzzleId)) {
+        setGamePaid(true);
+        setInsufficientFunds(null);
+      } else if (wasAlreadyCompleted) {
         const ok = await spendCoins(REPLAY_COIN_COST, `Replay: ${puzzle.title}`);
         if (ok) {
           setGamePaid(true);
@@ -164,12 +172,15 @@ export default function GamePage() {
   }, [game.puzzle, game.completed]);
 
   const handleReset = useCallback(async () => {
-    const ok = await spendCoins(REPLAY_COIN_COST, `Replay: ${game.puzzle?.title ?? 'puzzle'}`);
-    if (!ok) {
-      setInsufficientFunds('coins');
-      return;
+    // Anonymous users on free-play puzzles don't pay replay cost
+    if (!(isAnonymous && puzzleId && isFreePlayPuzzle(puzzleId))) {
+      const ok = await spendCoins(REPLAY_COIN_COST, `Replay: ${game.puzzle?.title ?? 'puzzle'}`);
+      if (!ok) {
+        setInsufficientFunds('coins');
+        return;
+      }
+      await earnTokens(REPLAY_TOKEN_REWARD, `Replay reward: ${game.puzzle?.title ?? 'puzzle'}`);
     }
-    await earnTokens(REPLAY_TOKEN_REWARD, `Replay reward: ${game.puzzle?.title ?? 'puzzle'}`);
     game.resetGrid();
     setElapsedTime(0);
     setEdgeRevealUsed(false);
@@ -178,7 +189,7 @@ export default function GamePage() {
     setIsReplay(true);
     setGamePaid(true);
     setInsufficientFunds(null);
-  }, [game, spendCoins, earnTokens]);
+  }, [game, spendCoins, earnTokens, isAnonymous, puzzleId]);
 
   const toggleMute = useCallback(() => {
     const next = !soundProvider.isMuted();
@@ -213,13 +224,15 @@ export default function GamePage() {
     if (game.completed && game.puzzle?.difficulty && !rewardedRef.current) {
       rewardedRef.current = true;
       soundProvider.playFanfare();
-      const reward = calculateCoinReward(game.puzzle.difficulty);
-      earnCoins(reward, `Completed: ${game.puzzle.title}`);
-      if (isReplay) {
-        earnTokens(REPLAY_TOKEN_REWARD, `Replay reward: ${game.puzzle.title}`);
+      if (!isAnonymous) {
+        const reward = calculateCoinReward(game.puzzle.difficulty);
+        earnCoins(reward, `Completed: ${game.puzzle.title}`);
+        if (isReplay) {
+          earnTokens(REPLAY_TOKEN_REWARD, `Replay reward: ${game.puzzle.title}`);
+        }
       }
     }
-  }, [game.completed, game.puzzle, earnCoins, earnTokens, isReplay, soundProvider]);
+  }, [game.completed, game.puzzle, earnCoins, earnTokens, isReplay, soundProvider, isAnonymous]);
 
   const handleClueClick = useCallback(
     (axis: 'row' | 'col', index: number) => {
@@ -582,6 +595,7 @@ export default function GamePage() {
           )}
           onConfirm={handleHintConfirm}
           onCancel={handleHintCancel}
+          isAnonymous={isAnonymous}
         />
       )}
 
@@ -631,7 +645,7 @@ export default function GamePage() {
               </div>
             </div>
 
-            {coinReward > 0 && (
+            {coinReward > 0 && !isAnonymous && (
               <p className={styles.coinReward} aria-label={`Earned ${coinReward} coins`}>
                 +{coinReward} <span aria-hidden="true">🪙</span>
               </p>

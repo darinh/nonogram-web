@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext, SoundProviderContext, AuthProviderContext } from '../providers/ProviderContext';
 import { WebAudioSoundProvider } from '../providers/sound';
 import { useAuth } from '../hooks/useAuth';
@@ -66,8 +66,8 @@ export default function App() {
                   <Route path="/daily" element={<DailyPuzzlePage />} />
                   <Route path="/play/:puzzleId" element={<GamePage />} />
                   <Route path="/create" element={<CreatorPage />} />
-                  <Route path="/stats" element={<StatsPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/stats" element={<RequireAuth><StatsPage /></RequireAuth>} />
+                  <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
                   <Route path="/howtoplay" element={<HowToPlayPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />
@@ -148,6 +148,13 @@ function NavAuth({ closeMenu }: { closeMenu: () => void }) {
   const { user } = useAuth();
   if (user) return <UserMenu />;
   return <NavLink to="/login" className={styles.navLink} onClick={closeMenu}>Login</NavLink>;
+}
+
+/** Redirects to /login when the user is not authenticated. */
+function RequireAuth({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  if (user === null) return <Navigate to="/login" replace />;
+  return <>{children}</>;
 }
 
 /** Switches progress and wallet providers based on auth state. */
