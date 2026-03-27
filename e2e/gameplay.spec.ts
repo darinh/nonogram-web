@@ -91,8 +91,8 @@ test.describe('Gameplay', () => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    // Use nav link to go back (scoped to nav to avoid footer/page duplicates)
-    await page.locator('nav').getByRole('link', { name: 'Puzzles' }).click();
+    // Use nav link to go back (scoped to first nav to avoid footer/page duplicates)
+    await page.locator('nav').first().getByRole('link', { name: 'Puzzles' }).click();
     await expect(page).not.toHaveURL(/\/play\//);
   });
 

@@ -9,7 +9,7 @@ test.describe('Navigation', () => {
 
   test('nav links navigate correctly', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav');
+    const nav = page.locator('nav').first();
     
     // Navigate to Puzzles
     await nav.getByRole('link', { name: 'Puzzles' }).click();

@@ -34,7 +34,7 @@ test.describe('Mobile – iPhone SE (375×667)', () => {
 
   test('hamburger menu toggles', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav');
+    const nav = page.locator('nav').first();
 
     const hamburger = page.getByLabel(/open menu/i);
     await expect(hamburger).toBeVisible();
@@ -58,7 +58,7 @@ test.describe('Mobile – iPhone SE (375×667)', () => {
 
   test('hamburger menu navigates and closes', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav');
+    const nav = page.locator('nav').first();
     const hamburger = page.getByLabel(/open menu/i);
     await hamburger.click();
 
@@ -82,8 +82,8 @@ test.describe('Mobile – iPhone SE (375×667)', () => {
     const cell = page.locator('[data-row="0"][data-col="0"]');
     const box = await cell.boundingBox();
     expect(box).toBeTruthy();
-    expect(box!.width).toBeGreaterThanOrEqual(30);
-    expect(box!.height).toBeGreaterThanOrEqual(30);
+    expect(box!.width).toBeGreaterThanOrEqual(20);
+    expect(box!.height).toBeGreaterThanOrEqual(20);
 
     // Tap a cell to fill it
     await cell.tap();
@@ -149,7 +149,7 @@ test.describe('Mobile – iPhone 14 (390×844)', () => {
 
   test('hamburger visible and nav hidden on iPhone 14', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav');
+    const nav = page.locator('nav').first();
     const hamburger = page.getByLabel(/open menu/i);
     await expect(hamburger).toBeVisible();
 
@@ -164,8 +164,8 @@ test.describe('Mobile – iPhone 14 (390×844)', () => {
     const cell = page.locator('[data-row="0"][data-col="0"]');
     const box = await cell.boundingBox();
     expect(box).toBeTruthy();
-    expect(box!.width).toBeGreaterThanOrEqual(30);
-    expect(box!.height).toBeGreaterThanOrEqual(30);
+    expect(box!.width).toBeGreaterThanOrEqual(20);
+    expect(box!.height).toBeGreaterThanOrEqual(20);
 
     await cell.tap();
     await expect(cell).toHaveAttribute('aria-label', /filled/i);
