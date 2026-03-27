@@ -250,6 +250,7 @@ export default function PuzzleBrowser() {
       {/* ══════ FILTER BAR ══════ */}
       <section className={styles.filterSection}>
         <div className={styles.filterBar}>
+          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
           <div className={styles.categories} tabIndex={0} role="region" aria-label="Puzzle categories">
             {CATEGORIES.map((cat) => (
               <button
