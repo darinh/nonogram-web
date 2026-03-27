@@ -1,11 +1,8 @@
 import {
   signInWithPopup,
   GoogleAuthProvider,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile,
 } from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
 import { auth as _auth } from '../../firebase';
@@ -29,17 +26,12 @@ export class FirebaseAuthProvider implements AuthProvider {
     return this.mapUser(result.user);
   }
 
-  async login(username: string, password: string): Promise<User> {
-    const result = await signInWithEmailAndPassword(auth, username, password);
-    return this.mapUser(result.user);
+  async login(): Promise<User> {
+    throw new Error('Password login is no longer supported. Use Google sign-in.');
   }
 
-  async register(username: string, password: string, displayName?: string): Promise<User> {
-    const result = await createUserWithEmailAndPassword(auth, username, password);
-    if (displayName) {
-      await updateProfile(result.user, { displayName });
-    }
-    return this.mapUser(result.user);
+  async register(): Promise<User> {
+    throw new Error('Password registration is no longer supported. Use Google sign-in.');
   }
 
   async logout(): Promise<void> {

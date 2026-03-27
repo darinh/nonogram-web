@@ -23,6 +23,14 @@ export const REPLAY_TOKEN_REWARD = 1;  // tokens earned from replay
 export const STARTING_TOKENS = 10;     // starting token balance for new users
 export const STARTING_COINS = 0;       // starting coin balance for new users
 
+// Puzzle IDs that can be played without authentication or token cost
+export const SAMPLE_PUZZLE_IDS: ReadonlySet<string> = new Set(['heart-5x5']);
+
+/** Returns true if the puzzle is free to play (daily or sample). */
+export function isFreePlayPuzzle(puzzleId: string): boolean {
+  return puzzleId.startsWith('daily-') || SAMPLE_PUZZLE_IDS.has(puzzleId);
+}
+
 export const DIFFICULTY_COLORS: Record<Difficulty, string> = {
   blue: '#0597F2', green: '#74BF04', yellow: '#BFA004', orange: '#F28705', red: '#F20574',
 };

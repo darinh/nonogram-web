@@ -22,6 +22,8 @@ interface HintPromptProps {
    * @deprecated Pass `currentCoins` instead for the enhanced UI.
    */
   canAfford?: boolean;
+  /** When true, shows a "Sign in to use hints" message instead of the purchase UI. */
+  isAnonymous?: boolean;
 }
 
 /**
@@ -46,6 +48,7 @@ export default function HintPrompt({
   currentCoins,
   revealableCount,
   canAfford: canAffordLegacy,
+  isAnonymous = false,
 }: HintPromptProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const confirmRef = useRef<HTMLButtonElement>(null);
@@ -144,6 +147,22 @@ export default function HintPrompt({
       >
         <h2 className={styles.title}>Reveal {displayLabel}</h2>
 
+        {isAnonymous ? (
+          <>
+            <p className={styles.info}>Sign in to use hints</p>
+            <div className={styles.buttons}>
+              <button
+                ref={cancelRef}
+                className={styles.cancelButton}
+                onClick={onCancel}
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+          </>
+        ) : (
+        <>
         {alreadyRevealed ? (
           <p className={styles.alreadySolved}>
             This {axisNoun} is already solved!
@@ -196,6 +215,8 @@ export default function HintPrompt({
                 : 'Not enough coins'}
           </button>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

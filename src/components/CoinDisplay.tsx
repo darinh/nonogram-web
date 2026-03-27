@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSharedWallet } from '../hooks/useSharedWallet';
+import { useAuth } from '../hooks/useAuth';
 import styles from '../styles/CoinDisplay.module.css';
 
 /** Format counts for compact display: 150 -> "150", 1200 -> "1.2k", 10000 -> "10k" */
@@ -14,6 +15,7 @@ function formatCount(n: number): string {
  * Pill-shaped badges in the app header with animated pulse on changes.
  */
 export function CoinDisplay() {
+  const { user } = useAuth();
   const { wallet, loading } = useSharedWallet();
   const [prevTokens, setPrevTokens] = useState(wallet.tokens);
   const [prevCoins, setPrevCoins] = useState(wallet.coins);
@@ -30,7 +32,7 @@ export function CoinDisplay() {
     setCoinAnimating(true);
   }
 
-  if (loading) return null;
+  if (loading || !user) return null;
 
   const tokenClass = tokenAnimating
     ? `${styles.pill} ${styles.tokenPill} ${styles.animate}`

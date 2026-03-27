@@ -60,6 +60,24 @@ export class LocalStorageAuthProvider implements AuthProvider {
     }
   }
 
+  async loginWithGoogle(): Promise<User> {
+    // Local dev fallback: create/login a "Google" user with a generated name
+    const displayName = `Player_${Math.random().toString(36).slice(2, 7)}`;
+    const username = `${displayName.toLowerCase()}@local`;
+    const user: User = {
+      id: simpleHash(username),
+      username,
+      displayName,
+    };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    } catch (e) {
+      console.warn('Failed to save to localStorage:', e);
+    }
+    this.notifyListeners(user);
+    return user;
+  }
+
   async register(username: string, password: string, displayName?: string): Promise<User> {
     const registry = this.getRegistry();
     if (registry[username]) {
