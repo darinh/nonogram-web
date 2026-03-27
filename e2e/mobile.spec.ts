@@ -1,5 +1,12 @@
 import { test, expect, devices } from '@playwright/test';
 
+// Strip defaultBrowserType to allow use inside describe blocks
+function deviceConfig(name: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { defaultBrowserType, ...rest } = devices[name];
+  return rest;
+}
+
 const HEART_SOLUTION: [number, number][] = [
   [0, 1], [0, 3],
   [1, 0], [1, 1], [1, 2], [1, 3], [1, 4],
@@ -17,7 +24,7 @@ async function dismissTutorial(page: import('@playwright/test').Page) {
 }
 
 test.describe('Mobile – iPhone SE (375×667)', () => {
-  test.use({ ...devices['iPhone SE'] });
+  test.use(deviceConfig('iPhone SE'));
 
   test('homepage loads on mobile', async ({ page }) => {
     await page.goto('/');
@@ -134,7 +141,7 @@ test.describe('Mobile – iPhone SE (375×667)', () => {
 });
 
 test.describe('Mobile – iPhone 14 (390×844)', () => {
-  test.use({ ...devices['iPhone 14'] });
+  test.use(deviceConfig('iPhone 14'));
 
   test('homepage loads on iPhone 14', async ({ page }) => {
     await page.goto('/');
