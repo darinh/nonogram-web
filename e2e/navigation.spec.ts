@@ -4,7 +4,7 @@ test.describe('Navigation', () => {
   test('homepage loads with title and actions', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('h1')).toContainText('Nonogram');
-    await expect(page.getByText('Browse Puzzles')).toBeVisible();
+    await expect(page.getByText('Play Now').first()).toBeVisible();
   });
 
   test('nav links navigate correctly', async ({ page }) => {
@@ -22,10 +22,6 @@ test.describe('Navigation', () => {
     await page.getByRole('link', { name: 'Create' }).click();
     await expect(page).toHaveURL('/create');
     
-    // Navigate to Stats
-    await page.getByRole('link', { name: /Stats/ }).click();
-    await expect(page).toHaveURL('/stats');
-    
     // Navigate home via logo
     await page.getByRole('link', { name: 'Nonogram' }).first().click();
     await expect(page).toHaveURL('/');
@@ -33,7 +29,8 @@ test.describe('Navigation', () => {
 
   test('puzzle browser shows puzzle cards', async ({ page }) => {
     await page.goto('/puzzles');
-    await expect(page.getByRole('heading', { name: 'Heart' })).toBeVisible();
+    // Puzzle names are hidden until solved — shows "Mystery Puzzle"
+    await expect(page.getByRole('heading', { name: 'Mystery Puzzle' }).first()).toBeVisible();
   });
 
   test('theme browser shows theme cards', async ({ page }) => {
@@ -43,10 +40,10 @@ test.describe('Navigation', () => {
     await expect(page.getByRole('heading', { name: 'Ocean' })).toBeVisible();
   });
 
-  test('stats page shows empty state', async ({ page }) => {
+  test('stats page redirects to login when unauthenticated', async ({ page }) => {
     await page.goto('/stats');
-    await expect(page.locator('h1')).toContainText('Stats');
-    await expect(page.getByText('No stats yet')).toBeVisible();
+    await expect(page).toHaveURL('/login');
+    await expect(page.locator('h1')).toContainText('Welcome');
   });
 
   test('create page loads', async ({ page }) => {
