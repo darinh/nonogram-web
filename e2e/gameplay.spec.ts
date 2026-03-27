@@ -26,9 +26,9 @@ test.describe('Gameplay', () => {
     await expect(page.locator('h1')).toContainText('Mystery Puzzle');
 
     // Grid with cells
-    const grid = page.locator('[role="grid"][aria-label="Nonogram puzzle grid"]');
+    const grid = page.locator('[role="group"][aria-label="Nonogram puzzle grid"]');
     await expect(grid).toBeVisible();
-    const cells = grid.locator('[role="gridcell"]');
+    const cells = grid.locator('[role="button"]');
     await expect(cells).toHaveCount(25); // 5x5
 
     // Timer visible (shows format like "00:00")

@@ -75,7 +75,7 @@ test.describe('Mobile – iPhone SE (375×667)', () => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    const grid = page.locator('[role="grid"][aria-label="Nonogram puzzle grid"]');
+    const grid = page.locator('[role="group"][aria-label="Nonogram puzzle grid"]');
     await expect(grid).toBeVisible();
 
     // Cells should be touchable (at least 30px)

@@ -250,7 +250,7 @@ export default function PuzzleBrowser() {
       {/* ══════ FILTER BAR ══════ */}
       <section className={styles.filterSection}>
         <div className={styles.filterBar}>
-          <div className={styles.categories}>
+          <div className={styles.categories} tabIndex={0} role="region" aria-label="Puzzle categories">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
