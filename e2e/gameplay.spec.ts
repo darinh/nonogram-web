@@ -22,8 +22,8 @@ test.describe('Gameplay', () => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    // Puzzle title
-    await expect(page.locator('h1')).toContainText('Heart');
+    // Puzzle title (hidden until solved)
+    await expect(page.locator('h1')).toContainText('Mystery Puzzle');
 
     // Grid with cells
     const grid = page.locator('[role="grid"][aria-label="Nonogram puzzle grid"]');
@@ -31,8 +31,8 @@ test.describe('Gameplay', () => {
     const cells = grid.locator('[role="gridcell"]');
     await expect(cells).toHaveCount(25); // 5x5
 
-    // Timer visible
-    await expect(page.locator('[class*="timer"]')).toBeVisible();
+    // Timer visible (shows format like "00:00")
+    await expect(page.getByText(/\d{2}:\d{2}/)).toBeVisible();
   });
 
   test('can click cells to fill them', async ({ page }) => {
@@ -50,9 +50,9 @@ test.describe('Gameplay', () => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    await expect(page.getByText('Fill')).toBeVisible();
-    await expect(page.getByText('Mark X')).toBeVisible();
-    await expect(page.getByText('Reset')).toBeVisible();
+    // Tools are emoji buttons with title attributes
+    await expect(page.locator('[title="Fill tool"]')).toBeVisible();
+    await expect(page.locator('[title="X-Mark tool"]')).toBeVisible();
   });
 
   test('undo and redo buttons exist', async ({ page }) => {
@@ -79,19 +79,20 @@ test.describe('Gameplay', () => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    // Switch to cross tool
-    await page.getByText('Mark X').click();
+    // Switch to cross tool via title
+    await page.locator('[title="X-Mark tool"]').click();
     const cell = page.locator('[data-row="0"][data-col="0"]');
     await cell.click();
 
     await expect(cell).toHaveAttribute('aria-label', /crossed/i);
   });
 
-  test('back button navigates away', async ({ page }) => {
+  test('navigating away from game works', async ({ page }) => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    await page.getByText('← Back').click();
+    // Use nav link to go back (scoped to first nav to avoid footer/page duplicates)
+    await page.locator('nav').first().getByRole('link', { name: 'Puzzles' }).click();
     await expect(page).not.toHaveURL(/\/play\//);
   });
 
@@ -99,7 +100,8 @@ test.describe('Gameplay', () => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    const timer = page.locator('[class*="timer"]');
+    // Timer shows mm:ss format
+    const timer = page.getByText(/\d{2}:\d{2}/).first();
     const timerText1 = await timer.textContent();
     await page.waitForTimeout(2000);
     const timerText2 = await timer.textContent();
