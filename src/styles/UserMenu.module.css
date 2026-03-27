@@ -83,3 +83,14 @@
 .signOutButton:hover {
   background: var(--color-pink-light);
 }
+
+/* ── Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .dropdown {
+    animation: none;
+  }
+  .avatar,
+  .signOutButton {
+    transition: none;
+  }
+}

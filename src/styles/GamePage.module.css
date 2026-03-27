@@ -185,7 +185,7 @@
 }
 
 .infoRow:last-child { border-bottom: none; }
-.infoLabel { color: #888; font-weight: 700; }
+.infoLabel { color: #636363; font-weight: 700; }
 .infoValue { font-weight: 700; color: #333; }
 
 .actionBtn {
@@ -203,8 +203,8 @@
 .actionBtnGold { composes: actionBtn; border-color: var(--gold, #ffc600); color: #b8900a; }
 .actionBtnGold:hover { background: var(--gold, #ffc600); color: #000; }
 
-.actionBtnMuted { composes: actionBtn; border-color: #bbb; color: #888; }
-.actionBtnMuted:hover { background: #888; color: var(--text-light, #fff); }
+.actionBtnMuted { composes: actionBtn; border-color: #bbb; color: #636363; }
+.actionBtnMuted:hover { background: #636363; color: var(--text-light, #fff); }
 
 .progressTrack {
   width: 100%; height: 10px; background: #1a1a2e;
@@ -217,7 +217,7 @@
   border-radius: 5px; transition: width 0.4s ease;
 }
 
-.progressText { font-size: 0.82rem; color: #888; text-align: center; font-weight: 700; }
+.progressText { font-size: 0.82rem; color: #636363; text-align: center; font-weight: 700; }
 
 .difficultyBadge {
   display: inline-block; margin-left: 10px; padding: 2px 10px;
@@ -268,7 +268,7 @@
 }
 
 .compStatLabel {
-  font-size: 0.7rem; color: #888; text-transform: uppercase;
+  font-size: 0.7rem; color: #636363; text-transform: uppercase;
   letter-spacing: 0.06em; font-weight: 700;
 }
 
@@ -280,7 +280,7 @@
 
 .tokenReward {
   font-family: var(--font-heading); font-weight: 900; font-size: 1.1rem;
-  color: #f8b4d9; margin: 0.25rem 0;
+  color: #b44c85; margin: 0.25rem 0;
   animation: popIn 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 400ms forwards; opacity: 0;
 }
 
@@ -301,7 +301,7 @@
   color: var(--text, #fff); margin: 0 0 0.75rem;
 }
 .insufficientText {
-  color: var(--text-muted, #aaa); font-size: 0.95rem; line-height: 1.5; margin: 0 0 1rem;
+  color: var(--text-muted, #636363); font-size: 0.95rem; line-height: 1.5; margin: 0 0 1rem;
 }
 .insufficientBalance {
   font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem;
@@ -362,7 +362,7 @@
 .confetti:nth-child(5n) { background: var(--orange, #ef780f); }
 .confetti:nth-child(7n) { background: var(--pink, #e40c6e); border-radius: 50%; }
 
-.hiddenName { font-style: italic; color: #888; }
+.hiddenName { font-style: italic; color: #636363; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
@@ -387,4 +387,40 @@
   .completionButtons { flex-direction: column; gap: 8px; width: 100%; }
   .nextPuzzleButton, .playAgainButton, .themeButton { width: 100%; min-height: 44px; }
   .toolBtn { width: 44px; height: 44px; }
+}
+
+/* ── Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .completionOverlay {
+    animation: none;
+  }
+  .completionCard {
+    animation: none;
+  }
+  .coinReward,
+  .tokenReward {
+    animation: none;
+    opacity: 1;
+  }
+  .confetti {
+    animation: none;
+    display: none;
+  }
+  .insufficientCard {
+    animation: none;
+  }
+  .toolBtn,
+  .actionBtn,
+  .insufficientButton,
+  .nextPuzzleButton,
+  .playAgainButton,
+  .themeButton,
+  .muteButton,
+  .exportButton,
+  .breadcrumbLink {
+    transition: none;
+  }
+  .progressFill {
+    transition: none;
+  }
 }

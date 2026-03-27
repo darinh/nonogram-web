@@ -271,19 +271,37 @@
   color: var(--color-dark);
   opacity: 0.5;
   text-align: left;
-  padding: 8px 12px;
+  padding: 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 2px solid var(--color-light);
-  cursor: pointer;
-  user-select: none;
-  transition: color var(--transition);
   white-space: nowrap;
 }
 
-.table th:hover {
+.sortButton {
+  all: unset;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  text-align: inherit;
+  padding: 8px 12px;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  user-select: none;
+  transition: color var(--transition);
+  display: block;
+  box-sizing: border-box;
+}
+
+.sortButton:hover {
   color: var(--color-pink);
   opacity: 1;
+}
+
+.sortButton:focus-visible {
+  outline: 2px solid var(--color-pink);
+  outline-offset: 2px;
 }
 
 .table td {
@@ -407,8 +425,16 @@
 
   .table th,
   .table td {
-    padding: 8px;
+    padding: 0;
     font-size: 0.75rem;
+  }
+
+  .table td {
+    padding: 8px;
+  }
+
+  .sortButton {
+    padding: 8px;
   }
 }
 

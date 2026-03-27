@@ -211,3 +211,14 @@
     height: 100px;
   }
 }
+
+/* ── Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .backLink,
+  .card {
+    transition: none;
+  }
+  .progressFill {
+    transition: none;
+  }
+}

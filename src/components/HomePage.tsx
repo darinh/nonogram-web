@@ -131,7 +131,8 @@ export default function HomePage() {
         <div className="reveal">
           <SectionTitle>Gallery</SectionTitle>
         </div>
-        <div className={`${styles.galleryScroll} reveal`}>
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+        <div className={`${styles.galleryScroll} reveal`} tabIndex={0} role="region" aria-label="Featured puzzles">
           {GALLERY_PUZZLES.map((p) => (
             <div key={p.name} className={styles.galleryCard}>
               <div className={styles.miniGrid}>

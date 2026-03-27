@@ -567,3 +567,26 @@
     padding: 1.25rem;
   }
 }
+
+/* ── Reduced Motion ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .pageTitle {
+    animation: none;
+  }
+  .dailyCard::before {
+    animation: none;
+  }
+  .puzzleCard {
+    animation: none;
+    transition: none;
+  }
+  .playButton,
+  .catPill,
+  .pageButton,
+  .importButton {
+    transition: none;
+  }
+  .progressFill {
+    transition: none;
+  }
+}

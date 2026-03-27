@@ -137,6 +137,7 @@ export default function HintPrompt({
       onClick={handleBackdropClick}
       role="presentation"
     >
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={modalRef}
         className={styles.card}

@@ -121,7 +121,7 @@ export default function NonogramGrid({
         setGridElement(el);
       }}
       className={`${styles.container} ${completed ? styles.completed : ''}`}
-      role="grid"
+      role="group"
       aria-label="Nonogram puzzle grid"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -147,7 +147,11 @@ export default function NonogramGrid({
               gridColumn: maxRowClueLen + 1 + colIdx,
               gridRow: clueRow + 1,
             }}
+            role={onClueClick && !completed && n !== null ? 'button' : undefined}
+            tabIndex={onClueClick && !completed && n !== null ? 0 : undefined}
+            aria-label={onClueClick && !completed && n !== null ? `Column ${colIdx + 1} clue ${n}` : undefined}
             onClick={onClueClick && !completed ? () => onClueClick('col', colIdx) : undefined}
+            onKeyDown={onClueClick && !completed ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClueClick('col', colIdx); } } : undefined}
           >
             {n !== null && <span className={styles.clueNumber}>{n}</span>}
           </div>
@@ -169,7 +173,11 @@ export default function NonogramGrid({
               gridColumn: clueCol + 1,
               gridRow: maxColClueLen + 1 + rowIdx,
             }}
+            role={onClueClick && !completed && n !== null ? 'button' : undefined}
+            tabIndex={onClueClick && !completed && n !== null ? 0 : undefined}
+            aria-label={onClueClick && !completed && n !== null ? `Row ${rowIdx + 1} clue ${n}` : undefined}
             onClick={onClueClick && !completed ? () => onClueClick('row', rowIdx) : undefined}
+            onKeyDown={onClueClick && !completed ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClueClick('row', rowIdx); } } : undefined}
           >
             {n !== null && <span className={styles.clueNumber}>{n}</span>}
           </div>
@@ -192,7 +200,7 @@ export default function NonogramGrid({
           return (
             <div
               key={`cell-${row}-${col}`}
-              role="gridcell"
+              role="button"
               aria-label={`Row ${row + 1}, Column ${col + 1}, ${cellStateLabel(cellState)}`}
               tabIndex={getCellTabIndex(row, col)}
               onKeyDown={handleCellKeyDown}

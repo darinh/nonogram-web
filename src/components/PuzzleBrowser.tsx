@@ -250,7 +250,8 @@ export default function PuzzleBrowser() {
       {/* ══════ FILTER BAR ══════ */}
       <section className={styles.filterSection}>
         <div className={styles.filterBar}>
-          <div className={styles.categories}>
+          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+          <div className={styles.categories} tabIndex={0} role="region" aria-label="Puzzle categories">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
@@ -266,6 +267,7 @@ export default function PuzzleBrowser() {
               className={styles.sortSelect}
               value={sortBy}
               onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
+              aria-label="Sort puzzles by"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -275,6 +277,7 @@ export default function PuzzleBrowser() {
               className={styles.sortSelect}
               value={sizeFilter}
               onChange={(e) => { setSizeFilter(e.target.value); setCurrentPage(1); }}
+              aria-label="Filter by puzzle size"
             >
               {SIZE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -301,6 +304,7 @@ export default function PuzzleBrowser() {
                 onClick={() => navigate(`/play/${puzzle.id}`)}
                 role="button"
                 tabIndex={0}
+                aria-label={`${displayTitle}, ${puzzle.size}×${puzzle.size}, ${starCount} star difficulty`}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/play/${puzzle.id}`); }}
               >
                 <div className={styles.cardPreview}>
@@ -345,6 +349,7 @@ export default function PuzzleBrowser() {
               className={styles.pageButton}
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={safePage === 1}
+              aria-label="Previous page"
             >
               «
             </button>
@@ -365,6 +370,7 @@ export default function PuzzleBrowser() {
               className={styles.pageButton}
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={safePage === totalPages}
+              aria-label="Next page"
             >
               »
             </button>

@@ -160,8 +160,13 @@
   appearance: none;
   -webkit-appearance: none;
   background: var(--color-light);
-  outline: none;
+  outline: 2px solid transparent;
   cursor: pointer;
+}
+
+.thresholdSlider:focus-visible {
+  outline: 2px solid var(--color-pink);
+  outline-offset: 2px;
 }
 
 .thresholdSlider::-webkit-slider-thumb {
@@ -200,13 +205,17 @@
   font-family: var(--font-body);
   font-size: 1rem;
   color: var(--color-dark);
-  outline: none;
+  outline: 2px solid transparent;
   transition: border-color var(--transition);
 }
 
+.titleInput:focus-visible {
+  outline: 2px solid var(--color-pink);
+  outline-offset: 2px;
+}
+
 .titleInput::placeholder {
-  color: var(--color-dark);
-  opacity: 0.35;
+  color: #767676;
 }
 
 .titleInput:focus {

@@ -53,9 +53,12 @@ export default function App() {
       <ThemeProviderContext.Provider value={themeProvider}>
         <AuthSwitchedProviders>
           <BrowserRouter>
+            <a href="#main-content" className="sr-only" style={{ position: 'absolute', zIndex: 9999, padding: '1rem', background: 'var(--color-pink)', color: '#fff', left: 0, top: 0 }} onFocus={(e) => e.currentTarget.style.position = 'static'} onBlur={(e) => e.currentTarget.style.position = 'absolute'}>
+              Skip to main content
+            </a>
             <div className={styles.app}>
               <SiteNav />
-              <main className={styles.content}>
+              <main id="main-content" className={styles.content}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/puzzles" element={<PuzzleBrowser />} />
