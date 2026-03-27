@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { PuzzleProviderContext, ProgressProviderContext, ThemeProviderContext, WalletProviderContext, SoundProviderContext, AuthProviderContext } from '../providers/ProviderContext';
 import { WebAudioSoundProvider } from '../providers/sound';
 import { useAuth } from '../hooks/useAuth';
@@ -10,6 +10,9 @@ import { LocalStorageProgressProvider } from '../providers/progress/LocalStorage
 import { StaticThemeProvider } from '../providers/theme';
 import { LocalStorageWalletProvider } from '../providers/wallet';
 import { LocalStorageAuthProvider } from '../providers/auth/LocalStorageAuthProvider';
+import { FirebaseAuthProvider } from '../providers/auth/FirebaseAuthProvider';
+import { isConfigured } from '../firebase';
+import type { AuthProvider } from '../providers/auth/AuthProvider';
 import HomePage from './HomePage';
 import PuzzleBrowser from './PuzzleBrowser';
 import GamePage from './GamePage';
@@ -19,7 +22,6 @@ import ProfilePage from './ProfilePage';
 import HowToPlayPage from './HowToPlayPage';
 import DailyPuzzlePage from './DailyPuzzlePage';
 import LoginPage from './LoginPage';
-import RegisterPage from './RegisterPage';
 import PrivacyPolicyPage from './PrivacyPolicyPage';
 import TermsPage from './TermsPage';
 import UserMenu from './UserMenu';
@@ -40,7 +42,10 @@ export default function App() {
   );
   const themeProvider = useMemo(() => new StaticThemeProvider(), []);
   const soundProvider = useMemo(() => new WebAudioSoundProvider(), []);
-  const authProvider = useMemo(() => new LocalStorageAuthProvider(), []);
+  const authProvider = useMemo<AuthProvider>(
+    () => isConfigured ? new FirebaseAuthProvider() : new LocalStorageAuthProvider(),
+    [],
+  );
 
   return (
     <AuthProviderContext.Provider value={authProvider}>
@@ -61,11 +66,10 @@ export default function App() {
                   <Route path="/daily" element={<DailyPuzzlePage />} />
                   <Route path="/play/:puzzleId" element={<GamePage />} />
                   <Route path="/create" element={<CreatorPage />} />
-                  <Route path="/stats" element={<StatsPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/stats" element={<RequireAuth><StatsPage /></RequireAuth>} />
+                  <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
                   <Route path="/howtoplay" element={<HowToPlayPage />} />
                   <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />
                   <Route path="/terms" element={<TermsPage />} />
                 </Routes>
@@ -144,6 +148,13 @@ function NavAuth({ closeMenu }: { closeMenu: () => void }) {
   const { user } = useAuth();
   if (user) return <UserMenu />;
   return <NavLink to="/login" className={styles.navLink} onClick={closeMenu}>Login</NavLink>;
+}
+
+/** Redirects to /login when the user is not authenticated. */
+function RequireAuth({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  if (user === null) return <Navigate to="/login" replace />;
+  return <>{children}</>;
 }
 
 /** Switches progress and wallet providers based on auth state. */

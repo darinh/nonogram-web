@@ -16,6 +16,8 @@ interface PowerUpToolbarProps {
   onEdgeReveal: () => void;
   /** Called when user confirms bomb purchase */
   onBomb: () => void;
+  /** When true, disables all power-ups with a sign-in message */
+  isAnonymous?: boolean;
 }
 
 type ConfirmTarget = 'edge' | 'bomb';
@@ -26,6 +28,7 @@ export default function PowerUpToolbar({
   currentCoins,
   onEdgeReveal,
   onBomb,
+  isAnonymous = false,
 }: PowerUpToolbarProps) {
   const [confirming, setConfirming] = useState<ConfirmTarget | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -34,8 +37,8 @@ export default function PowerUpToolbar({
   const canAffordEdge = currentCoins >= EDGE_REVEAL_COST;
   const canAffordBomb = currentCoins >= BOMB_COST;
 
-  const edgeDisabled = edgeRevealUsed || !canAffordEdge;
-  const bombDisabled = bombUsed || !canAffordBomb;
+  const edgeDisabled = isAnonymous || edgeRevealUsed || !canAffordEdge;
+  const bombDisabled = isAnonymous || bombUsed || !canAffordBomb;
 
   // Clear timer on unmount
   useEffect(() => {
@@ -109,11 +112,13 @@ export default function PowerUpToolbar({
           onClick={() => setConfirming('edge')}
           disabled={edgeDisabled}
           title={
-            edgeRevealUsed
-              ? 'Edge reveal already used'
-              : canAffordEdge
-                ? `Reveal edge cells (${EDGE_REVEAL_COST} coins)`
-                : 'Not enough coins'
+            isAnonymous
+              ? 'Sign in to use power-ups'
+              : edgeRevealUsed
+                ? 'Edge reveal already used'
+                : canAffordEdge
+                  ? `Reveal edge cells (${EDGE_REVEAL_COST} coins)`
+                  : 'Not enough coins'
           }
           type="button"
         >
@@ -159,11 +164,13 @@ export default function PowerUpToolbar({
           onClick={() => setConfirming('bomb')}
           disabled={bombDisabled}
           title={
-            bombUsed
-              ? 'Bomb already used'
-              : canAffordBomb
-                ? `Random reveal (${BOMB_COST} coins)`
-                : 'Not enough coins'
+            isAnonymous
+              ? 'Sign in to use power-ups'
+              : bombUsed
+                ? 'Bomb already used'
+                : canAffordBomb
+                  ? `Random reveal (${BOMB_COST} coins)`
+                  : 'Not enough coins'
           }
           type="button"
         >
