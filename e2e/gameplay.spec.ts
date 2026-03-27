@@ -31,8 +31,8 @@ test.describe('Gameplay', () => {
     const cells = grid.locator('[role="gridcell"]');
     await expect(cells).toHaveCount(25); // 5x5
 
-    // Timer visible
-    await expect(page.locator('[class*="timer"]')).toBeVisible();
+    // Timer visible (shows format like "00:00")
+    await expect(page.getByText(/\d{2}:\d{2}/)).toBeVisible();
   });
 
   test('can click cells to fill them', async ({ page }) => {
@@ -91,8 +91,8 @@ test.describe('Gameplay', () => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    // Use nav link to go back
-    await page.getByRole('link', { name: 'Puzzles' }).click();
+    // Use nav link to go back (scoped to nav to avoid footer/page duplicates)
+    await page.locator('nav').getByRole('link', { name: 'Puzzles' }).click();
     await expect(page).not.toHaveURL(/\/play\//);
   });
 
@@ -100,7 +100,8 @@ test.describe('Gameplay', () => {
     await page.goto('/play/heart-5x5');
     await dismissTutorial(page);
 
-    const timer = page.locator('[class*="timer"]');
+    // Timer shows mm:ss format
+    const timer = page.getByText(/\d{2}:\d{2}/).first();
     const timerText1 = await timer.textContent();
     await page.waitForTimeout(2000);
     const timerText2 = await timer.textContent();

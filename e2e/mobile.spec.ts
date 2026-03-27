@@ -34,20 +34,21 @@ test.describe('Mobile – iPhone SE (375×667)', () => {
 
   test('hamburger menu toggles', async ({ page }) => {
     await page.goto('/');
+    const nav = page.locator('nav');
 
     const hamburger = page.getByLabel(/open menu/i);
     await expect(hamburger).toBeVisible();
 
     // Nav links should be hidden (off-screen via transform) initially
-    const puzzlesLink = page.getByRole('link', { name: 'Puzzles' });
+    const puzzlesLink = nav.getByRole('link', { name: 'Puzzles' });
     await expect(puzzlesLink).not.toBeInViewport();
 
     // Open menu
     await hamburger.click();
     await expect(puzzlesLink).toBeInViewport();
-    await expect(page.getByRole('link', { name: 'Themes' })).toBeInViewport();
-    await expect(page.getByRole('link', { name: 'Profile' })).toBeInViewport();
-    await expect(page.getByRole('link', { name: 'How to Play' })).toBeInViewport();
+    await expect(nav.getByRole('link', { name: 'Themes' })).toBeInViewport();
+    await expect(nav.getByRole('link', { name: 'Profile' })).toBeInViewport();
+    await expect(nav.getByRole('link', { name: 'How to Play' })).toBeInViewport();
 
     // Close menu
     const closeBtn = page.getByLabel(/close menu/i);
@@ -57,15 +58,16 @@ test.describe('Mobile – iPhone SE (375×667)', () => {
 
   test('hamburger menu navigates and closes', async ({ page }) => {
     await page.goto('/');
+    const nav = page.locator('nav');
     const hamburger = page.getByLabel(/open menu/i);
     await hamburger.click();
 
     // Navigate to a non-auth-protected page
-    await page.getByRole('link', { name: 'Puzzles' }).click();
+    await nav.getByRole('link', { name: 'Puzzles' }).click();
     await expect(page).toHaveURL('/puzzles');
 
     // Menu should close after navigation
-    const themesLink = page.getByRole('link', { name: 'Themes' });
+    const themesLink = nav.getByRole('link', { name: 'Themes' });
     await expect(themesLink).not.toBeInViewport();
   });
 
@@ -147,10 +149,11 @@ test.describe('Mobile – iPhone 14 (390×844)', () => {
 
   test('hamburger visible and nav hidden on iPhone 14', async ({ page }) => {
     await page.goto('/');
+    const nav = page.locator('nav');
     const hamburger = page.getByLabel(/open menu/i);
     await expect(hamburger).toBeVisible();
 
-    const puzzlesLink = page.getByRole('link', { name: 'Puzzles' });
+    const puzzlesLink = nav.getByRole('link', { name: 'Puzzles' });
     await expect(puzzlesLink).not.toBeInViewport();
   });
 

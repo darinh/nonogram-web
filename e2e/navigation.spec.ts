@@ -9,21 +9,22 @@ test.describe('Navigation', () => {
 
   test('nav links navigate correctly', async ({ page }) => {
     await page.goto('/');
+    const nav = page.locator('nav');
     
     // Navigate to Puzzles
-    await page.getByRole('link', { name: 'Puzzles' }).click();
+    await nav.getByRole('link', { name: 'Puzzles' }).click();
     await expect(page).toHaveURL('/puzzles');
     
     // Navigate to Themes
-    await page.getByRole('link', { name: 'Themes' }).click();
+    await nav.getByRole('link', { name: 'Themes' }).click();
     await expect(page).toHaveURL('/themes');
     
     // Navigate to Create
-    await page.getByRole('link', { name: 'Create' }).click();
+    await nav.getByRole('link', { name: 'Create' }).click();
     await expect(page).toHaveURL('/create');
     
     // Navigate home via logo
-    await page.getByRole('link', { name: 'Nonogram' }).first().click();
+    await nav.getByRole('link', { name: 'Nonogram' }).click();
     await expect(page).toHaveURL('/');
   });
 
