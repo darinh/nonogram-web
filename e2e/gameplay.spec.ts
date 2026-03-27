@@ -28,7 +28,7 @@ test.describe('Gameplay', () => {
     // Grid with cells
     const grid = page.locator('[role="group"][aria-label="Nonogram puzzle grid"]');
     await expect(grid).toBeVisible();
-    const cells = grid.locator('[role="button"]');
+    const cells = grid.locator('[data-row][data-col]');
     await expect(cells).toHaveCount(25); // 5x5
 
     // Timer visible (shows format like "00:00")
